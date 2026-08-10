@@ -1,0 +1,616 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#292724"
+    >
+
+    <meta
+        name="description"
+        content="Área exclusiva dos clientes Suas Memórias Aqui."
+    >
+
+    <title>
+        Área do Cliente | Suas Memórias Aqui
+    </title>
+
+
+    <!-- =====================================================
+         FONTES
+    ====================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         ÍCONES
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/login.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     LOADING
+========================================================= -->
+
+<div
+    id="loginLoading"
+    class="login-loading"
+>
+
+    <div class="loading-spinner"></div>
+
+    <p>
+        Verificando acesso...
+    </p>
+
+</div>
+
+
+<!-- =========================================================
+     PÁGINA
+========================================================= -->
+
+<main class="login-page">
+
+
+    <!-- =====================================================
+         LADO DA IMAGEM
+    ====================================================== -->
+
+    <section class="login-visual">
+
+        <div class="visual-overlay"></div>
+
+
+        <div class="visual-content">
+
+            <div class="visual-brand">
+
+                <div class="brand-mark">
+                    SM
+                </div>
+
+                <div>
+
+                    <strong>
+                        SUAS MEMÓRIAS
+                    </strong>
+
+                    <span>
+                        FOTOGRAFIA &amp; STORY MAKER
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="visual-message">
+
+                <span>
+                    ÁREA EXCLUSIVA
+                </span>
+
+                <h1>
+                    Suas memórias,
+                    sempre com você.
+                </h1>
+
+                <p>
+                    Acesse suas fotografias,
+                    vídeos e todos os registros
+                    preparados especialmente
+                    para você.
+                </p>
+
+            </div>
+
+
+            <div class="visual-footer">
+
+                <span>
+                    © 2026 Suas Memórias Aqui
+                </span>
+
+                <span>
+                    Ponta Grossa • Paraná
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LADO DO LOGIN
+    ====================================================== -->
+
+    <section class="login-panel">
+
+
+        <div class="login-box">
+
+
+            <!-- MARCA MOBILE -->
+
+            <div class="mobile-brand">
+
+                <div class="brand-mark">
+                    SM
+                </div>
+
+                <div>
+
+                    <strong>
+                        SUAS MEMÓRIAS
+                    </strong>
+
+                    <span>
+                        FOTOGRAFIA &amp; STORY MAKER
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- CABEÇALHO -->
+
+            <div class="login-heading">
+
+                <span>
+                    ÁREA DO CLIENTE
+                </span>
+
+                <h2>
+                    Bem-vindo(a) de volta.
+                </h2>
+
+                <p>
+                    Entre para acessar suas
+                    memórias.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 FORMULÁRIO
+            ================================================== -->
+
+            <form
+                id="clientLoginForm"
+                class="login-form"
+            >
+
+
+                <!-- E-MAIL -->
+
+                <div class="form-group">
+
+                    <label
+                        for="email"
+                    >
+                        E-mail
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-regular fa-envelope"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="seuemail@exemplo.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- SENHA -->
+
+                <div class="form-group">
+
+                    <div class="label-row">
+
+                        <label
+                            for="password"
+                        >
+                            Senha
+                        </label>
+
+                        <button
+                            type="button"
+                            id="forgotPasswordButton"
+                            class="forgot-button"
+                        >
+                            Esqueci minha senha
+                        </button>
+
+                    </div>
+
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Digite sua senha"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="password-toggle"
+                            aria-label="Mostrar senha"
+                        >
+
+                            <i class="fa-regular fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LEMBRAR -->
+
+                <label
+                    class="remember-me"
+                >
+
+                    <input
+                        type="checkbox"
+                        id="rememberMe"
+                    >
+
+                    <span class="custom-checkbox"></span>
+
+                    <span>
+                        Lembrar meu acesso
+                    </span>
+
+                </label>
+
+
+                <!-- BOTÃO -->
+
+                <button
+                    type="submit"
+                    id="loginButton"
+                    class="login-button"
+                >
+
+                    <span id="loginButtonText">
+                        Entrar na minha área
+                    </span>
+
+                    <i
+                        id="loginButtonIcon"
+                        class="fa-solid fa-arrow-right"
+                    ></i>
+
+                </button>
+
+
+                <!-- MENSAGEM -->
+
+                <div
+                    id="loginMessage"
+                    class="login-message"
+                    role="alert"
+                ></div>
+
+
+            </form>
+
+
+            <!-- DIVISOR -->
+
+            <div class="divider">
+
+                <span>
+                    ou
+                </span>
+
+            </div>
+
+
+            <!-- GOOGLE -->
+
+            <button
+                type="button"
+                id="googleLoginButton"
+                class="google-button"
+            >
+
+                <span class="google-icon">
+                    G
+                </span>
+
+                <span>
+                    Continuar com Google
+                </span>
+
+            </button>
+
+
+            <!-- CADASTRO -->
+
+            <div class="register-area">
+
+                <span>
+                    Ainda não possui uma conta?
+                </span>
+
+                <button
+                    type="button"
+                    id="registerButton"
+                >
+                    Solicitar acesso
+                </button>
+
+            </div>
+
+
+            <!-- VOLTAR -->
+
+            <a
+                href="index.html"
+                class="back-home"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Voltar para o site
+
+            </a>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+<!-- =========================================================
+     MODAL — RECUPERAÇÃO DE SENHA
+========================================================= -->
+
+<div
+    id="forgotPasswordModal"
+    class="modal-overlay"
+>
+
+    <div class="modal-box">
+
+
+        <button
+            type="button"
+            id="closeForgotModal"
+            class="modal-close"
+            aria-label="Fechar"
+        >
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+
+        <div class="modal-icon">
+
+            <i class="fa-regular fa-envelope"></i>
+
+        </div>
+
+
+        <span class="modal-eyebrow">
+            RECUPERAÇÃO DE ACESSO
+        </span>
+
+
+        <h3>
+            Esqueceu sua senha?
+        </h3>
+
+
+        <p>
+            Informe seu e-mail e enviaremos
+            as instruções para criar uma
+            nova senha.
+        </p>
+
+
+        <form
+            id="resetPasswordForm"
+        >
+
+            <div class="form-group">
+
+                <label
+                    for="resetEmail"
+                >
+                    E-mail
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="fa-regular fa-envelope"></i>
+
+                    <input
+                        type="email"
+                        id="resetEmail"
+                        placeholder="seuemail@exemplo.com"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                id="resetPasswordButton"
+                class="login-button"
+            >
+
+                Enviar instruções
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+            </button>
+
+
+            <div
+                id="resetMessage"
+                class="login-message"
+            ></div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL — SOLICITAR ACESSO
+========================================================= -->
+
+<div
+    id="registerModal"
+    class="modal-overlay"
+>
+
+    <div class="modal-box">
+
+
+        <button
+            type="button"
+            id="closeRegisterModal"
+            class="modal-close"
+            aria-label="Fechar"
+        >
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+
+        <div class="modal-icon">
+
+            <i class="fa-regular fa-user"></i>
+
+        </div>
+
+
+        <span class="modal-eyebrow">
+            NOVO CLIENTE
+        </span>
+
+
+        <h3>
+            Solicite seu acesso
+        </h3>
+
+
+        <p>
+            Para manter sua galeria segura,
+            o acesso dos clientes é liberado
+            pela nossa equipe.
+        </p>
+
+
+        <a
+            href="https://wa.me/5542988620679?text=Ol%C3%A1!%20Gostaria%20de%20solicitar%20acesso%20%C3%A0%20%C3%A1rea%20do%20cliente%20da%20LS.fotostory."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="login-button modal-whatsapp"
+        >
+
+            <i class="fa-brands fa-whatsapp"></i>
+
+            Solicitar pelo WhatsApp
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script
+    type="module"
+    src="js/cliente-login.js"
+></script>
+
+
+</body>
+
+</html>
+```
