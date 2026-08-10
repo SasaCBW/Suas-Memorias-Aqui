@@ -1,0 +1,977 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Painel administrativo — Suas Memórias Aqui">
+
+    <title>Painel Administrativo | Suas Memórias Aqui</title>
+
+
+    <!-- GOOGLE FONTS -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+
+    <!-- CSS -->
+
+    <link rel="stylesheet"
+          href="css/admin.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar">
+
+
+        <!-- LOGO -->
+
+        <div class="admin-logo">
+
+            <a href="admin.html">
+
+                <span class="admin-logo-icon">
+                    SM
+                </span>
+
+                <span class="admin-logo-text">
+
+                    Suas Memórias
+
+                    <small>
+                        Administração
+                    </small>
+
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- MENU -->
+
+        <nav class="admin-navigation">
+
+
+            <a
+                href="#dashboard"
+                class="admin-nav-link active">
+
+                <span>
+                    ▦
+                </span>
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                href="#clientes"
+                class="admin-nav-link">
+
+                <span>
+                    ♙
+                </span>
+
+                Clientes
+
+            </a>
+
+
+            <a
+                href="#galerias"
+                class="admin-nav-link">
+
+                <span>
+                    ▧
+                </span>
+
+                Galerias
+
+            </a>
+
+
+            <a
+                href="#eventos"
+                class="admin-nav-link">
+
+                <span>
+                    ◷
+                </span>
+
+                Eventos
+
+            </a>
+
+
+            <a
+                href="agendamento.html"
+                class="admin-nav-link">
+
+                <span>
+                    ◫
+                </span>
+
+                Agendamentos
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- PARTE INFERIOR -->
+
+        <div class="admin-sidebar-bottom">
+
+
+            <a
+                href="index.html"
+                class="admin-nav-link">
+
+                <span>
+                    ↗
+                </span>
+
+                Ver site
+
+            </a>
+
+
+            <button
+                type="button"
+                id="adminLogout"
+                class="admin-logout">
+
+                <span>
+                    ⇥
+                </span>
+
+                Sair
+
+            </button>
+
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="admin-main">
+
+
+        <!-- HEADER -->
+
+        <header class="admin-header">
+
+
+            <button
+                type="button"
+                id="adminMenuButton"
+                class="admin-menu-button">
+
+                ☰
+
+            </button>
+
+
+            <div class="admin-header-title">
+
+                <span>
+                    ADMINISTRAÇÃO
+                </span>
+
+                <h1>
+                    Painel de controle
+                </h1>
+
+            </div>
+
+
+            <div class="admin-user">
+
+                <div
+                    class="admin-avatar"
+                    id="adminAvatar">
+
+                    A
+
+                </div>
+
+
+                <div>
+
+                    <strong
+                        id="adminName">
+
+                        Administrador
+
+                    </strong>
+
+                    <span
+                        id="adminEmail">
+
+                        verificando...
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             CONTEÚDO
+        ================================================== -->
+
+        <div class="admin-content">
+
+
+            <!-- =================================================
+                 DASHBOARD
+            ================================================== -->
+
+            <section
+                id="dashboard"
+                class="admin-section">
+
+
+                <div class="admin-welcome">
+
+                    <div>
+
+                        <span>
+                            SUAS MEMÓRIAS AQUI
+                        </span>
+
+                        <h2>
+                            Bom trabalho!
+                        </h2>
+
+                        <p>
+                            Gerencie seus clientes,
+                            galerias e eventos em um
+                            único lugar.
+                        </p>
+
+                    </div>
+
+
+                    <div class="admin-welcome-symbol">
+
+                        ✦
+
+                    </div>
+
+                </div>
+
+
+                <!-- CARDS -->
+
+                <div class="admin-stats">
+
+
+                    <div class="admin-stat-card">
+
+                        <div class="stat-icon">
+                            ♙
+                        </div>
+
+                        <div>
+
+                            <span>
+                                CLIENTES
+                            </span>
+
+                            <strong
+                                id="totalClientes">
+
+                                0
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-stat-card">
+
+                        <div class="stat-icon">
+                            ▧
+                        </div>
+
+                        <div>
+
+                            <span>
+                                GALERIAS
+                            </span>
+
+                            <strong
+                                id="totalGalerias">
+
+                                0
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-stat-card">
+
+                        <div class="stat-icon">
+                            📸
+                        </div>
+
+                        <div>
+
+                            <span>
+                                FOTOS
+                            </span>
+
+                            <strong
+                                id="totalFotos">
+
+                                0
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-stat-card">
+
+                        <div class="stat-icon">
+                            ◷
+                        </div>
+
+                        <div>
+
+                            <span>
+                                EVENTOS
+                            </span>
+
+                            <strong
+                                id="totalEventos">
+
+                                0
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CLIENTES
+            ================================================== -->
+
+            <section
+                id="clientes"
+                class="admin-section">
+
+
+                <div class="admin-section-heading">
+
+                    <div>
+
+                        <span>
+                            GERENCIAMENTO
+                        </span>
+
+                        <h2>
+                            Clientes
+                        </h2>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="newClientButton"
+                        class="admin-primary-button">
+
+                        + Novo cliente
+
+                    </button>
+
+                </div>
+
+
+                <div class="admin-panel">
+
+
+                    <div class="admin-panel-top">
+
+                        <div>
+
+                            <strong>
+                                Clientes cadastrados
+                            </strong>
+
+                            <span>
+                                Usuários com acesso à plataforma
+                            </span>
+
+                        </div>
+
+
+                        <div class="admin-search">
+
+                            <span>
+                                ⌕
+                            </span>
+
+                            <input
+                                type="search"
+                                id="clientSearch"
+                                placeholder="Buscar cliente...">
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="admin-table-wrapper">
+
+
+                        <table
+                            class="admin-table">
+
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Cliente
+                                    </th>
+
+                                    <th>
+                                        E-mail
+                                    </th>
+
+                                    <th>
+                                        Galerias
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Ações
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+                                id="clientsTableBody">
+
+
+                                <tr>
+
+                                    <td
+                                        colspan="5"
+                                        class="empty-table">
+
+                                        <div>
+                                            ♙
+                                        </div>
+
+                                        <strong>
+                                            Nenhum cliente cadastrado
+                                        </strong>
+
+                                        <span>
+                                            Os clientes aparecerão
+                                            aqui quando forem
+                                            cadastrados.
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+
+                            </tbody>
+
+                        </table>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 GALERIAS
+            ================================================== -->
+
+            <section
+                id="galerias"
+                class="admin-section">
+
+
+                <div class="admin-section-heading">
+
+                    <div>
+
+                        <span>
+                            CONTEÚDO
+                        </span>
+
+                        <h2>
+                            Galerias
+                        </h2>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="newGalleryButton"
+                        class="admin-primary-button">
+
+                        + Nova galeria
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="admin-gallery-grid"
+                    id="adminGalleryGrid">
+
+
+                    <div
+                        class="admin-empty-card">
+
+                        <div>
+                            ▧
+                        </div>
+
+                        <h3>
+                            Nenhuma galeria criada
+                        </h3>
+
+                        <p>
+                            Crie uma galeria para começar
+                            a disponibilizar fotos aos seus
+                            clientes.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 EVENTOS
+            ================================================== -->
+
+            <section
+                id="eventos"
+                class="admin-section">
+
+
+                <div class="admin-section-heading">
+
+                    <div>
+
+                        <span>
+                            AGENDA
+                        </span>
+
+                        <h2>
+                            Eventos
+                        </h2>
+
+                    </div>
+
+
+                    <a
+                        href="agendamento.html"
+                        class="admin-primary-button">
+
+                        Ver agendamentos
+
+                    </a>
+
+                </div>
+
+
+                <div class="admin-panel">
+
+
+                    <div
+                        class="event-admin-list"
+                        id="adminEventList">
+
+
+                        <div
+                            class="admin-empty-card compact">
+
+                            <div>
+                                ◷
+                            </div>
+
+                            <h3>
+                                Nenhum evento registrado
+                            </h3>
+
+                            <p>
+                                Os próximos eventos aparecerão
+                                aqui.
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="admin-footer">
+
+            <span>
+                © 2026 Suas Memórias Aqui
+            </span>
+
+            <span>
+                Painel administrativo
+            </span>
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         MODAL — NOVO CLIENTE
+    ====================================================== -->
+
+    <div
+        class="admin-modal"
+        id="clientModal"
+        aria-hidden="true">
+
+
+        <div class="modal-overlay"
+             id="clientModalOverlay">
+        </div>
+
+
+        <div class="modal-box">
+
+
+            <button
+                type="button"
+                class="modal-close"
+                id="closeClientModal">
+
+                ×
+
+            </button>
+
+
+            <div class="modal-heading">
+
+                <span>
+                    NOVO CADASTRO
+                </span>
+
+                <h2>
+                    Adicionar cliente
+                </h2>
+
+                <p>
+                    Preencha os dados básicos
+                    do cliente.
+                </p>
+
+            </div>
+
+
+            <form
+                id="clientForm"
+                class="admin-form">
+
+
+                <div class="form-group">
+
+                    <label for="clientFullName">
+                        Nome completo
+                    </label>
+
+                    <input
+                        type="text"
+                        id="clientFullName"
+                        placeholder="Nome do cliente"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="clientEmailInput">
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        id="clientEmailInput"
+                        placeholder="cliente@email.com"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="clientEvent">
+                        Evento
+                    </label>
+
+                    <input
+                        type="text"
+                        id="clientEvent"
+                        placeholder="Ex.: Casamento, aniversário...">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="clientEventDate">
+                        Data do evento
+                    </label>
+
+                    <input
+                        type="date"
+                        id="clientEventDate">
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="admin-primary-button full">
+
+                    Cadastrar cliente
+
+                </button>
+
+
+                <div
+                    id="clientFormMessage"
+                    class="admin-form-message">
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MODAL — NOVA GALERIA
+    ====================================================== -->
+
+    <div
+        class="admin-modal"
+        id="galleryModal"
+        aria-hidden="true">
+
+
+        <div
+            class="modal-overlay"
+            id="galleryModalOverlay">
+        </div>
+
+
+        <div class="modal-box">
+
+
+            <button
+                type="button"
+                class="modal-close"
+                id="closeGalleryModal">
+
+                ×
+
+            </button>
+
+
+            <div class="modal-heading">
+
+                <span>
+                    NOVA GALERIA
+                </span>
+
+                <h2>
+                    Criar galeria
+                </h2>
+
+                <p>
+                    Crie um espaço para as fotos
+                    de um cliente.
+                </p>
+
+            </div>
+
+
+            <form
+                id="galleryForm"
+                class="admin-form">
+
+
+                <div class="form-group">
+
+                    <label for="galleryName">
+                        Nome da galeria
+                    </label>
+
+                    <input
+                        type="text"
+                        id="galleryName"
+                        placeholder="Ex.: Casamento Ana & João"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="galleryClient">
+                        Cliente
+                    </label>
+
+                    <select
+                        id="galleryClient"
+                        required>
+
+                        <option value="">
+                            Selecione um cliente
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="admin-primary-button full">
+
+                    Criar galeria
+
+                </button>
+
+
+                <div
+                    id="galleryFormMessage"
+                    class="admin-form-message">
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="js/admin.js">
+    </script>
+
+
+</body>
+
+</html>
+```
