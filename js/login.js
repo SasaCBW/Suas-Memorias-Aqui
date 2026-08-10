@@ -2,179 +2,120 @@
 /* =========================================================
    SUAS MEMÓRIAS AQUI
    LOGIN.JS
-   Autenticação real com Firebase
-========================================================= */
-
-
-/* =========================================================
-   FIREBASE
+   Login dos clientes
 ========================================================= */
 
 import {
-    auth,
-    googleProvider
+    auth
 } from "./firebase.js";
 
 import {
     signInWithEmailAndPassword,
     signInWithPopup,
-    sendPasswordResetEmail
+    GoogleAuthProvider,
+    sendPasswordResetEmail,
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
 /* =========================================================
-   ELEMENTOS DA PÁGINA
+   CONFIGURAÇÃO
+========================================================= */
+
+const CLIENT_PAGE =
+    "cliente.html";
+
+
+/* =========================================================
+   ELEMENTOS
 ========================================================= */
 
 const loginForm =
-    document.getElementById("loginForm");
+    document.getElementById(
+        "loginForm"
+    );
 
 const emailInput =
-    document.getElementById("email");
+    document.getElementById(
+        "email"
+    );
 
 const passwordInput =
-    document.getElementById("password");
-
-const togglePassword =
-    document.getElementById("togglePassword");
+    document.getElementById(
+        "password"
+    );
 
 const loginButton =
-    document.getElementById("loginButton");
+    document.getElementById(
+        "loginButton"
+    );
 
-const googleLogin =
-    document.getElementById("googleLogin");
+const googleButton =
+    document.getElementById(
+        "googleLogin"
+    );
 
 const forgotPassword =
-    document.getElementById("forgotPassword");
+    document.getElementById(
+        "forgotPassword"
+    );
 
-const createAccount =
-    document.getElementById("createAccount");
+const togglePassword =
+    document.getElementById(
+        "togglePassword"
+    );
 
-const loginError =
-    document.getElementById("loginError");
-
-const accessModal =
-    document.getElementById("accessModal");
-
-const closeModal =
-    document.getElementById("closeModal");
-
-const modalOverlay =
-    document.getElementById("modalOverlay");
+const loginMessage =
+    document.getElementById(
+        "loginMessage"
+    );
 
 
 /* =========================================================
-   MOSTRAR / OCULTAR SENHA
+   GOOGLE
 ========================================================= */
 
-if (togglePassword && passwordInput) {
+const googleProvider =
+    new GoogleAuthProvider();
 
-    togglePassword.addEventListener(
-        "click",
-        () => {
 
-            const mostrando =
-                passwordInput.type === "text";
+googleProvider.setCustomParameters({
+    prompt: "select_account"
+});
 
-            if (mostrando) {
 
-                passwordInput.type = "password";
+/* =========================================================
+   VERIFICAR SESSÃO
+========================================================= */
 
-                togglePassword.textContent = "👁";
+onAuthStateChanged(
+    auth,
+    (user) => {
 
-                togglePassword.setAttribute(
-                    "aria-label",
-                    "Mostrar senha"
-                );
+        if (!user) {
+            return;
+        }
 
-            } else {
 
-                passwordInput.type = "text";
+        /*
+         * Se o usuário já estiver autenticado,
+         * não precisa fazer login novamente.
+         */
 
-                togglePassword.textContent = "🙈";
+        if (
+            window.location.pathname.endsWith(
+                "login.html"
+            )
+        ) {
 
-                togglePassword.setAttribute(
-                    "aria-label",
-                    "Ocultar senha"
-                );
-
-            }
+            window.location.replace(
+                CLIENT_PAGE
+            );
 
         }
-    );
 
-}
-
-
-/* =========================================================
-   MENSAGENS
-========================================================= */
-
-function mostrarMensagem(
-    mensagem,
-    tipo = "error"
-) {
-
-    if (!loginError) {
-        return;
     }
-
-    loginError.textContent =
-        mensagem;
-
-    loginError.className =
-        `form-message ${tipo} show`;
-
-}
-
-
-function limparMensagem() {
-
-    if (!loginError) {
-        return;
-    }
-
-    loginError.textContent = "";
-
-    loginError.className =
-        "form-message error";
-
-}
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-function definirLoading(
-    carregando
-) {
-
-    if (!loginButton) {
-        return;
-    }
-
-    loginButton.disabled =
-        carregando;
-
-    loginButton.classList.toggle(
-        "loading",
-        carregando
-    );
-
-}
-
-
-/* =========================================================
-   VALIDAÇÃO DE E-MAIL
-========================================================= */
-
-function emailValido(email) {
-
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        .test(email);
-
-}
+);
 
 
 /* =========================================================
@@ -185,27 +126,33 @@ if (loginForm) {
 
     loginForm.addEventListener(
         "submit",
-        async event => {
+        async (event) => {
 
             event.preventDefault();
 
+
             limparMensagem();
 
-            const email =
-                emailInput.value.trim();
 
-            const senha =
+            const email =
+                emailInput.value
+                    .trim()
+                    .toLowerCase();
+
+
+            const password =
                 passwordInput.value;
 
 
-            /* -----------------------------------------
-               VALIDAÇÕES
-            ----------------------------------------- */
+            /* =============================================
+               VALIDAÇÃO
+            ============================================== */
 
             if (!email) {
 
                 mostrarMensagem(
-                    "Digite seu e-mail."
+                    "Digite seu e-mail.",
+                    "error"
                 );
 
                 emailInput.focus();
@@ -215,23 +162,11 @@ if (loginForm) {
             }
 
 
-            if (!emailValido(email)) {
+            if (!password) {
 
                 mostrarMensagem(
-                    "Digite um e-mail válido."
-                );
-
-                emailInput.focus();
-
-                return;
-
-            }
-
-
-            if (!senha) {
-
-                mostrarMensagem(
-                    "Digite sua senha."
+                    "Digite sua senha.",
+                    "error"
                 );
 
                 passwordInput.focus();
@@ -241,45 +176,40 @@ if (loginForm) {
             }
 
 
-            definirLoading(true);
+            /* =============================================
+               BOTÃO
+            ============================================== */
 
+            definirEstadoLogin(
+                true
+            );
 
-            /* -----------------------------------------
-               FIREBASE AUTHENTICATION
-            ----------------------------------------- */
 
             try {
 
-                const resultado =
-                    await signInWithEmailAndPassword(
-                        auth,
-                        email,
-                        senha
-                    );
-
-
-                console.log(
-                    "Usuário conectado:",
-                    resultado.user.uid
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
                 );
 
 
                 mostrarMensagem(
-                    "Login realizado! Entrando na sua área...",
+                    "Login realizado com sucesso. Abrindo sua área...",
                     "success"
                 );
 
 
-                /* -------------------------------------
-                   REDIRECIONAMENTO
-                ------------------------------------- */
+                setTimeout(
+                    () => {
 
-                setTimeout(() => {
+                        window.location.replace(
+                            CLIENT_PAGE
+                        );
 
-                    window.location.href =
-                        "cliente.html";
-
-                }, 800);
+                    },
+                    700
+                );
 
 
             } catch (error) {
@@ -289,13 +219,15 @@ if (loginForm) {
                     error
                 );
 
-                mostrarMensagem(
-                    traduzirErroFirebase(
-                        error
-                    )
+
+                tratarErroFirebase(
+                    error
                 );
 
-                definirLoading(false);
+
+                definirEstadoLogin(
+                    false
+                );
 
             }
 
@@ -309,72 +241,79 @@ if (loginForm) {
    LOGIN COM GOOGLE
 ========================================================= */
 
-if (googleLogin) {
+if (googleButton) {
 
-    googleLogin.addEventListener(
+    googleButton.addEventListener(
         "click",
         async () => {
 
             limparMensagem();
 
-            googleLogin.disabled =
-                true;
 
-            const textoOriginal =
-                googleLogin.innerHTML;
-
-            googleLogin.innerHTML =
-                "Conectando...";
+            definirEstadoGoogle(
+                true
+            );
 
 
             try {
 
-                const resultado =
-                    await signInWithPopup(
-                        auth,
-                        googleProvider
-                    );
-
-
-                console.log(
-                    "Login Google:",
-                    resultado.user.uid
+                await signInWithPopup(
+                    auth,
+                    googleProvider
                 );
 
 
                 mostrarMensagem(
-                    "Login realizado! Entrando na sua área...",
+                    "Login realizado com sucesso. Abrindo sua área...",
                     "success"
                 );
 
 
-                setTimeout(() => {
+                setTimeout(
+                    () => {
 
-                    window.location.href =
-                        "cliente.html";
+                        window.location.replace(
+                            CLIENT_PAGE
+                        );
 
-                }, 800);
+                    },
+                    700
+                );
 
 
             } catch (error) {
 
                 console.error(
-                    "Erro no login Google:",
+                    "Erro no login com Google:",
                     error
                 );
 
-                mostrarMensagem(
-                    traduzirErroFirebase(
+
+                /*
+                 * Se o usuário fechou a janela
+                 * do Google, não mostramos erro
+                 * assustador.
+                 */
+
+                if (
+                    error.code ===
+                    "auth/popup-closed-by-user"
+                ) {
+
+                    limparMensagem();
+
+                } else {
+
+                    tratarErroFirebase(
                         error
-                    )
+                    );
+
+                }
+
+
+                definirEstadoGoogle(
+                    false
                 );
-
-
-                googleLogin.disabled =
-                    false;
-
-                googleLogin.innerHTML =
-                    textoOriginal;
 
             }
 
@@ -392,20 +331,22 @@ if (forgotPassword) {
 
     forgotPassword.addEventListener(
         "click",
-        async event => {
-
-            event.preventDefault();
+        async () => {
 
             limparMensagem();
 
+
             const email =
-                emailInput.value.trim();
+                emailInput.value
+                    .trim()
+                    .toLowerCase();
 
 
             if (!email) {
 
                 mostrarMensagem(
-                    "Digite seu e-mail para recuperar a senha."
+                    "Digite seu e-mail primeiro para receber o link de recuperação.",
+                    "error"
                 );
 
                 emailInput.focus();
@@ -415,17 +356,12 @@ if (forgotPassword) {
             }
 
 
-            if (!emailValido(email)) {
+            forgotPassword.disabled =
+                true;
 
-                mostrarMensagem(
-                    "Digite um e-mail válido."
-                );
 
-                emailInput.focus();
-
-                return;
-
-            }
+            forgotPassword.textContent =
+                "Enviando...";
 
 
             try {
@@ -437,7 +373,7 @@ if (forgotPassword) {
 
 
                 mostrarMensagem(
-                    "Enviamos um link de recuperação para seu e-mail.",
+                    "Enviamos um link de recuperação para o seu e-mail.",
                     "success"
                 );
 
@@ -449,10 +385,66 @@ if (forgotPassword) {
                     error
                 );
 
-                mostrarMensagem(
-                    traduzirErroFirebase(
-                        error
-                    )
+
+                tratarErroRecuperacao(
+                    error
+                );
+
+            } finally {
+
+                forgotPassword.disabled =
+                    false;
+
+                forgotPassword.textContent =
+                    "Esqueci minha senha";
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   MOSTRAR / ESCONDER SENHA
+========================================================= */
+
+if (togglePassword) {
+
+    togglePassword.addEventListener(
+        "click",
+        () => {
+
+            const senhaVisivel =
+                passwordInput.type ===
+                "text";
+
+
+            if (senhaVisivel) {
+
+                passwordInput.type =
+                    "password";
+
+                togglePassword.textContent =
+                    "◉";
+
+                togglePassword.setAttribute(
+                    "aria-label",
+                    "Mostrar senha"
+                );
+
+            } else {
+
+                passwordInput.type =
+                    "text";
+
+                togglePassword.textContent =
+                    "◌";
+
+                togglePassword.setAttribute(
+                    "aria-label",
+                    "Ocultar senha"
                 );
 
             }
@@ -464,212 +456,358 @@ if (forgotPassword) {
 
 
 /* =========================================================
-   MODAL DE SOLICITAÇÃO DE ACESSO
+   FUNÇÃO — ESTADO DO LOGIN
 ========================================================= */
 
-function abrirModal() {
+function definirEstadoLogin(
+    carregando
+) {
 
-    if (!accessModal) {
+    if (!loginButton) {
         return;
     }
 
-    accessModal.classList.add(
-        "active"
-    );
 
-    accessModal.setAttribute(
-        "aria-hidden",
-        "false"
-    );
+    loginButton.disabled =
+        carregando;
 
-    document.body.style.overflow =
-        "hidden";
+
+    if (carregando) {
+
+        loginButton.innerHTML = `
+            <span>
+                ENTRANDO...
+            </span>
+
+            <strong>
+                ...
+            </strong>
+        `;
+
+    } else {
+
+        loginButton.innerHTML = `
+            <span>
+                ENTRAR NA MINHA ÁREA
+            </span>
+
+            <strong>
+                →
+            </strong>
+        `;
+
+    }
 
 }
 
 
-function fecharModal() {
+/* =========================================================
+   FUNÇÃO — ESTADO GOOGLE
+========================================================= */
 
-    if (!accessModal) {
+function definirEstadoGoogle(
+    carregando
+) {
+
+    if (!googleButton) {
         return;
     }
 
-    accessModal.classList.remove(
-        "active"
-    );
 
-    accessModal.setAttribute(
-        "aria-hidden",
-        "true"
-    );
+    googleButton.disabled =
+        carregando;
 
-    document.body.style.overflow =
+
+    if (carregando) {
+
+        googleButton.innerHTML = `
+            <span>
+                G
+            </span>
+
+            <span>
+                Conectando...
+            </span>
+        `;
+
+    } else {
+
+        googleButton.innerHTML = `
+            <span class="google-icon">
+                G
+            </span>
+
+            <span>
+                Continuar com Google
+            </span>
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   MENSAGEM
+========================================================= */
+
+function mostrarMensagem(
+    texto,
+    tipo
+) {
+
+    if (!loginMessage) {
+        return;
+    }
+
+
+    loginMessage.textContent =
+        texto;
+
+
+    loginMessage.className =
+        `login-message ${tipo}`;
+
+}
+
+
+/* =========================================================
+   LIMPAR MENSAGEM
+========================================================= */
+
+function limparMensagem() {
+
+    if (!loginMessage) {
+        return;
+    }
+
+
+    loginMessage.textContent =
         "";
 
-}
-
-
-if (createAccount) {
-
-    createAccount.addEventListener(
-        "click",
-        abrirModal
-    );
-
-}
-
-
-if (closeModal) {
-
-    closeModal.addEventListener(
-        "click",
-        fecharModal
-    );
-
-}
-
-
-if (modalOverlay) {
-
-    modalOverlay.addEventListener(
-        "click",
-        fecharModal
-    );
+    loginMessage.className =
+        "login-message";
 
 }
 
 
 /* =========================================================
-   ESC FECHA MODAL
+   ERROS DE LOGIN
 ========================================================= */
 
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Escape" &&
-            accessModal &&
-            accessModal.classList.contains(
-                "active"
-            )
-        ) {
-
-            fecharModal();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   TRADUZIR ERROS DO FIREBASE
-========================================================= */
-
-function traduzirErroFirebase(
+function tratarErroFirebase(
     error
 ) {
 
-    const codigo =
-        error?.code || "";
+    let texto =
+        "Não foi possível realizar o login.";
 
 
-    switch (codigo) {
+    switch (
+        error.code
+    ) {
+
+        case "auth/invalid-credential":
+
+            texto =
+                "E-mail ou senha incorretos.";
+
+            break;
+
 
         case "auth/invalid-email":
 
-            return "O e-mail informado é inválido.";
+            texto =
+                "Digite um e-mail válido.";
+
+            break;
 
 
         case "auth/user-not-found":
 
-            return "Não encontramos uma conta com esse e-mail.";
+            texto =
+                "Não encontramos uma conta com esse e-mail.";
+
+            break;
 
 
         case "auth/wrong-password":
 
-            return "E-mail ou senha incorretos.";
+            texto =
+                "A senha informada está incorreta.";
 
-
-        case "auth/invalid-credential":
-
-            return "E-mail ou senha incorretos.";
-
-
-        case "auth/too-many-requests":
-
-            return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
-
-
-        case "auth/network-request-failed":
-
-            return "Verifique sua conexão com a internet.";
-
-
-        case "auth/popup-closed-by-user":
-
-            return "A janela do Google foi fechada.";
-
-
-        case "auth/popup-blocked":
-
-            return "O navegador bloqueou a janela do Google. Permita pop-ups para continuar.";
-
-
-        case "auth/unauthorized-domain":
-
-            return "Este domínio ainda não está autorizado no Firebase.";
-
-
-        case "auth/operation-not-allowed":
-
-            return "Este método de login ainda não foi ativado no Firebase.";
+            break;
 
 
         case "auth/user-disabled":
 
-            return "Esta conta foi desativada. Entre em contato conosco.";
+            texto =
+                "Esta conta foi desativada.";
+
+            break;
+
+
+        case "auth/too-many-requests":
+
+            texto =
+                "Muitas tentativas foram realizadas. Aguarde um pouco e tente novamente.";
+
+            break;
+
+
+        case "auth/network-request-failed":
+
+            texto =
+                "Não foi possível conectar ao servidor. Verifique sua internet.";
+
+            break;
+
+
+        case "auth/popup-blocked":
+
+            texto =
+                "O navegador bloqueou a janela do Google. Permita pop-ups para este site.";
+
+            break;
+
+
+        case "auth/popup-closed-by-user":
+
+            texto =
+                "A janela de login do Google foi fechada.";
+
+            break;
+
+
+        case "auth/account-exists-with-different-credential":
+
+            texto =
+                "Já existe uma conta com este e-mail usando outro método de login.";
+
+            break;
+
+
+        case "auth/operation-not-allowed":
+
+            texto =
+                "Este método de login ainda não está ativado no Firebase.";
+
+            break;
 
 
         default:
 
-            return "Não foi possível entrar. Verifique seus dados e tente novamente.";
+            console.error(
+                "Código do Firebase:",
+                error.code
+            );
+
+            break;
 
     }
+
+
+    mostrarMensagem(
+        texto,
+        "error"
+    );
 
 }
 
 
 /* =========================================================
-   LIMPAR MENSAGEM AO DIGITAR
+   ERROS DE RECUPERAÇÃO
 ========================================================= */
 
-if (emailInput) {
+function tratarErroRecuperacao(
+    error
+) {
 
-    emailInput.addEventListener(
-        "input",
-        limparMensagem
+    let texto =
+        "Não foi possível enviar o e-mail de recuperação.";
+
+
+    switch (
+        error.code
+    ) {
+
+        case "auth/invalid-email":
+
+            texto =
+                "Digite um e-mail válido.";
+
+            break;
+
+
+        case "auth/user-not-found":
+
+            /*
+             * Não revelamos informações
+             * desnecessárias sobre contas.
+             */
+
+            texto =
+                "Se esse e-mail estiver cadastrado, você receberá as instruções de recuperação.";
+
+            break;
+
+
+        case "auth/too-many-requests":
+
+            texto =
+                "Muitas solicitações foram feitas. Aguarde um pouco e tente novamente.";
+
+            break;
+
+
+        case "auth/network-request-failed":
+
+            texto =
+                "Verifique sua conexão com a internet.";
+
+            break;
+
+    }
+
+
+    mostrarMensagem(
+        texto,
+        "error"
     );
 
 }
 
+
+/* =========================================================
+   ENTER
+========================================================= */
 
 if (passwordInput) {
 
     passwordInput.addEventListener(
-        "input",
-        limparMensagem
+        "keydown",
+        (event) => {
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+                loginForm?.requestSubmit();
+
+            }
+
+        }
     );
 
 }
 
 
 /* =========================================================
-   INFORMAÇÃO NO CONSOLE
+   FINAL
 ========================================================= */
 
 console.log(
-    "Suas Memórias Aqui — autenticação Firebase carregada."
+    "Suas Memórias Aqui — Login de clientes carregado."
 );
 ```
