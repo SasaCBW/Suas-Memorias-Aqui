@@ -12,17 +12,17 @@
     >
 
     <meta
-        name="theme-color"
-        content="#1e1d1a"
+        name="description"
+        content="Suas Memórias Aqui — fotografia e Story Maker. Um espaço exclusivo para guardar e reviver momentos especiais."
     >
 
     <meta
-        name="description"
-        content="Área exclusiva dos clientes — Suas Memórias Aqui."
+        name="theme-color"
+        content="#292724"
     >
 
     <title>
-        Acesso do Cliente | Suas Memórias Aqui
+        Suas Memórias Aqui | Acesso do Cliente
     </title>
 
 
@@ -30,7 +30,10 @@
          FONTES
     ====================================================== -->
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
     <link
         rel="preconnect"
@@ -39,18 +42,18 @@
     >
 
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
         rel="stylesheet"
     >
 
 
     <!-- =====================================================
-         ÍCONES
+         FONT AWESOME
     ====================================================== -->
 
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
 
@@ -82,71 +85,66 @@
 
         <section class="login-visual">
 
-
             <div class="login-visual-image"></div>
-
 
             <div class="login-visual-overlay"></div>
 
 
-            <div class="login-visual-content">
+            <div class="visual-content">
 
+                <div class="visual-brand">
 
-                <a
-                    href="index.html"
-                    class="login-brand"
-                >
-
-                    <span class="login-brand-mark">
+                    <div class="visual-brand-mark">
                         SM
-                    </span>
+                    </div>
 
-                    <span class="login-brand-text">
-
-                        Suas Memórias
+                    <div>
+                        <strong>
+                            SUAS MEMÓRIAS
+                        </strong>
 
                         <small>
-                            FOTOGRAFIA & STORY MAKER
+                            FOTOGRAFIA &amp; STORY MAKER
                         </small>
-
-                    </span>
-
-                </a>
-
-
-                <div class="login-quote">
-
-                    <span class="quote-line"></span>
-
-                    <p>
-                        Histórias passam.
-                        Memórias ficam.
-                    </p>
-
-                    <span class="quote-author">
-                        SUAS MEMÓRIAS AQUI
-                    </span>
+                    </div>
 
                 </div>
 
 
-                <div class="login-visual-footer">
+                <div class="visual-message">
+
+                    <span>
+                        CADA MOMENTO TEM UMA HISTÓRIA
+                    </span>
+
+                    <h1>
+                        Suas memórias
+                        <em>merecem ser eternizadas.</em>
+                    </h1>
+
+                    <p>
+                        Um espaço exclusivo para você
+                        acessar, reviver e guardar os
+                        momentos que fizeram parte da
+                        sua história.
+                    </p>
+
+                </div>
+
+
+                <div class="visual-footer">
 
                     <span>
                         FOTOGRAFIA
                     </span>
 
-                    <span>
-                        •
-                    </span>
+                    <i></i>
 
                     <span>
                         STORY MAKER
                     </span>
 
-                    <span>
-                        •
-                    </span>
+                    <i></i>
 
                     <span>
                         EXPERIÊNCIAS
@@ -159,38 +157,39 @@
         </section>
 
 
+
         <!-- =================================================
-             LADO DO FORMULÁRIO
+             LADO DO LOGIN
         ================================================== -->
 
         <section class="login-panel">
 
+            <div class="login-container">
 
-            <div class="login-panel-inner">
 
+                <!-- =================================================
+                     MARCA MOBILE
+                ================================================== -->
 
-                <!-- LOGO MOBILE -->
+                <div class="mobile-brand">
 
-                <a
-                    href="index.html"
-                    class="mobile-brand"
-                >
-
-                    <span class="login-brand-mark">
+                    <div class="mobile-brand-mark">
                         SM
-                    </span>
+                    </div>
 
-                    <span class="login-brand-text">
+                    <div>
 
-                        Suas Memórias
+                        <strong>
+                            SUAS MEMÓRIAS
+                        </strong>
 
                         <small>
-                            FOTOGRAFIA & STORY MAKER
+                            FOTOGRAFIA &amp; STORY MAKER
                         </small>
 
-                    </span>
+                    </div>
 
-                </a>
+                </div>
 
 
                 <!-- =================================================
@@ -203,35 +202,51 @@
                         ÁREA EXCLUSIVA
                     </span>
 
-                    <h1>
-                        Bem-vindo.
-                    </h1>
+                    <h2>
+                        Bem-vindo(a)
+                    </h2>
 
                     <p>
                         Entre na sua conta para acessar
-                        suas memórias e conteúdos exclusivos.
+                        suas fotografias e memórias.
                     </p>
 
                 </div>
 
 
                 <!-- =================================================
-                     ALERTA
+                     MENSAGEM DE ERRO
                 ================================================== -->
 
                 <div
-                    class="login-alert"
-                    id="loginAlert"
+                    id="loginError"
+                    class="login-message error"
                     role="alert"
                     aria-live="polite"
                 >
+                    <i class="fa-solid fa-circle-exclamation"></i>
 
-                    <i
-                        class="fa-solid fa-circle-exclamation"
-                    ></i>
+                    <span id="loginErrorText">
+                        Não foi possível entrar.
+                    </span>
 
-                    <span id="loginAlertText">
-                        Ocorreu um erro.
+                </div>
+
+
+                <!-- =================================================
+                     MENSAGEM DE SUCESSO
+                ================================================== -->
+
+                <div
+                    id="loginSuccess"
+                    class="login-message success"
+                    role="status"
+                    aria-live="polite"
+                >
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <span id="loginSuccessText">
+                        Login realizado.
                     </span>
 
                 </div>
@@ -248,7 +263,7 @@
                 >
 
 
-                    <!-- E-MAIL -->
+                    <!-- EMAIL -->
 
                     <div class="form-group">
 
@@ -258,29 +273,26 @@
                             E-mail
                         </label>
 
-
                         <div class="input-wrapper">
 
                             <i
-                                class="fa-regular fa-envelope"
+                                class="fa-regular fa-envelope input-icon"
                             ></i>
-
 
                             <input
                                 type="email"
                                 id="email"
                                 name="email"
-                                placeholder="seuemail@email.com"
+                                placeholder="seuemail@exemplo.com"
                                 autocomplete="email"
                                 required
                             >
 
                         </div>
 
-
                         <small
-                            class="field-error"
                             id="emailError"
+                            class="field-error"
                         ></small>
 
                     </div>
@@ -299,8 +311,8 @@
                             </label>
 
                             <a
-                                href="#"
-                                id="forgotPassword"
+                                href="recuperar-senha.html"
+                                class="forgot-password"
                             >
                                 Esqueci minha senha
                             </a>
@@ -311,9 +323,8 @@
                         <div class="input-wrapper">
 
                             <i
-                                class="fa-solid fa-lock"
+                                class="fa-solid fa-lock input-icon"
                             ></i>
-
 
                             <input
                                 type="password"
@@ -324,26 +335,22 @@
                                 required
                             >
 
-
                             <button
                                 type="button"
-                                class="password-toggle"
-                                id="passwordToggle"
+                                id="togglePassword"
+                                class="toggle-password"
                                 aria-label="Mostrar senha"
                             >
-
                                 <i
                                     class="fa-regular fa-eye"
                                 ></i>
-
                             </button>
 
                         </div>
 
-
                         <small
-                            class="field-error"
                             id="passwordError"
+                            class="field-error"
                         ></small>
 
                     </div>
@@ -363,7 +370,7 @@
                             <span class="custom-checkbox"></span>
 
                             <span>
-                                Lembrar meu acesso
+                                Lembrar de mim
                             </span>
 
                         </label>
@@ -371,26 +378,24 @@
                     </div>
 
 
-                    <!-- BOTÃO -->
+                    <!-- BOTÃO LOGIN -->
 
                     <button
                         type="submit"
-                        class="login-button"
                         id="loginButton"
+                        class="login-button"
                     >
 
-                        <span id="loginButtonText">
-                            Entrar na minha área
+                        <span
+                            id="loginButtonText"
+                        >
+                            Entrar na minha conta
                         </span>
 
                         <i
+                            id="loginButtonIcon"
                             class="fa-solid fa-arrow-right"
                         ></i>
-
-                        <span
-                            class="button-loader"
-                            id="buttonLoader"
-                        ></span>
 
                     </button>
 
@@ -417,8 +422,8 @@
 
                 <button
                     type="button"
+                    id="googleLoginButton"
                     class="google-button"
-                    id="googleLogin"
                 >
 
                     <span class="google-icon">
@@ -433,22 +438,46 @@
 
 
                 <!-- =================================================
-                     CADASTRO
+                     CRIAR CONTA
                 ================================================== -->
 
-                <div class="login-register">
+                <div class="create-account">
+
+                    <span>
+                        Ainda não possui uma conta?
+                    </span>
+
+                    <a
+                        href="cadastro.html"
+                    >
+                        Criar minha conta
+                    </a>
+
+                </div>
+
+
+                <!-- =================================================
+                     CONTATO
+                ================================================== -->
+
+                <div class="login-contact">
 
                     <p>
-                        Ainda não possui acesso?
+                        Precisa de ajuda?
                     </p>
 
                     <a
-                        href="contato.html"
+                        href="https://wa.me/5542988620679"
+                        target="_blank"
+                        rel="noopener noreferrer"
                     >
-                        Solicitar acesso
+
                         <i
-                            class="fa-solid fa-arrow-right"
+                            class="fa-brands fa-whatsapp"
                         ></i>
+
+                        Fale com Sarah
+
                     </a>
 
                 </div>
@@ -464,15 +493,9 @@
                         © 2026 Suas Memórias Aqui
                     </span>
 
-                    <span class="footer-dot">
-                        •
+                    <span>
+                        Fotografia &amp; Story Maker
                     </span>
-
-                    <a
-                        href="contato.html"
-                    >
-                        Fale conosco
-                    </a>
 
                 </footer>
 
@@ -481,123 +504,27 @@
 
         </section>
 
+
     </main>
 
 
     <!-- =====================================================
-         MODAL RECUPERAR SENHA
+         LOADING
     ====================================================== -->
 
     <div
-        class="password-modal"
-        id="passwordModal"
+        id="loginLoading"
+        class="login-loading"
         aria-hidden="true"
     >
 
-        <div
-            class="password-modal-backdrop"
-            id="passwordModalBackdrop"
-        ></div>
+        <div class="loading-box">
 
-
-        <div
-            class="password-modal-content"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="passwordModalTitle"
-        >
-
-            <button
-                type="button"
-                class="modal-close"
-                id="modalClose"
-                aria-label="Fechar"
-            >
-                ×
-            </button>
-
-
-            <div class="modal-icon">
-
-                <i
-                    class="fa-regular fa-envelope"
-                ></i>
-
-            </div>
-
-
-            <span class="login-eyebrow">
-                RECUPERAÇÃO
-            </span>
-
-
-            <h2 id="passwordModalTitle">
-                Esqueceu sua senha?
-            </h2>
-
+            <div class="loading-spinner"></div>
 
             <p>
-                Informe o e-mail cadastrado e
-                enviaremos as instruções para
-                criar uma nova senha.
+                Entrando na sua conta...
             </p>
-
-
-            <form
-                id="resetPasswordForm"
-                class="reset-form"
-            >
-
-                <div class="form-group">
-
-                    <label
-                        for="resetEmail"
-                    >
-                        E-mail
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <i
-                            class="fa-regular fa-envelope"
-                        ></i>
-
-                        <input
-                            type="email"
-                            id="resetEmail"
-                            placeholder="seuemail@email.com"
-                            autocomplete="email"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="login-button"
-                    id="resetButton"
-                >
-
-                    <span>
-                        Enviar instruções
-                    </span>
-
-                    <i
-                        class="fa-solid fa-arrow-right"
-                    ></i>
-
-                </button>
-
-
-                <div
-                    class="reset-message"
-                    id="resetMessage"
-                ></div>
-
-            </form>
 
         </div>
 
