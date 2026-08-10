@@ -12,17 +12,17 @@
     >
 
     <meta
-        name="description"
-        content="Suas Memórias Aqui — acesso exclusivo às suas fotografias e histórias."
-    >
-
-    <meta
         name="theme-color"
         content="#20201e"
     >
 
+    <meta
+        name="description"
+        content="Área exclusiva dos clientes — Suas Memórias Aqui."
+    >
+
     <title>
-        Acesso do Cliente | Suas Memórias Aqui
+        Área do Cliente | Suas Memórias Aqui
     </title>
 
 
@@ -39,8 +39,18 @@
     >
 
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
         rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         ÍCONES
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
 
@@ -60,175 +70,123 @@
 
 
     <!-- =====================================================
-         FUNDO DECORATIVO
-    ====================================================== -->
-
-    <div class="login-background">
-
-        <div class="background-shape shape-one"></div>
-
-        <div class="background-shape shape-two"></div>
-
-        <div class="background-grain"></div>
-
-    </div>
-
-
-    <!-- =====================================================
-         CONTAINER PRINCIPAL
+         LADO VISUAL
     ====================================================== -->
 
     <main class="login-page">
 
 
-        <!-- =================================================
-             LADO ESQUERDO
-        ================================================== -->
+        <section class="login-visual">
 
-        <section class="login-brand">
+            <div class="login-visual-bg"></div>
 
-
-            <div class="brand-content">
+            <div class="login-visual-overlay"></div>
 
 
-                <!-- LOGO -->
+            <a
+                href="index.html"
+                class="login-brand"
+            >
 
-                <a
-                    href="index.html"
-                    class="brand-logo"
-                >
+                <span class="login-brand-mark">
+                    SM
+                </span>
 
-                    <span class="brand-logo-symbol">
-                        SM
-                    </span>
+                <span class="login-brand-text">
 
-                    <span class="brand-logo-text">
+                    Suas Memórias
 
-                        Suas Memórias
+                    <small>
+                        FOTOGRAFIA & STORY MAKER
+                    </small>
 
-                        <small>
-                            FOTOGRAFIA & STORIES
-                        </small>
+                </span>
 
-                    </span>
-
-                </a>
+            </a>
 
 
-                <!-- TEXTO PRINCIPAL -->
+            <div class="login-visual-content">
 
-                <div class="brand-message">
+                <span>
+                    ÁREA EXCLUSIVA
+                </span>
 
-                    <span class="eyebrow">
-                        CADA MOMENTO MERECE SER LEMBRADO
-                    </span>
+                <h1>
+                    Suas memórias,
+                    <em>sempre com você.</em>
+                </h1>
 
+                <p>
 
-                    <h1>
+                    Entre na sua área exclusiva para
+                    acompanhar e acessar os registros
+                    do seu evento.
 
-                        Suas histórias.
-
-                        <br>
-
-                        Para sempre.
-
-                    </h1>
-
-
-                    <p>
-
-                        Um espaço exclusivo para você
-                        guardar, reviver e compartilhar
-                        os momentos que realmente importam.
-
-                    </p>
-
-                </div>
-
-
-                <!-- FRASE -->
-
-                <div class="brand-quote">
-
-                    <span>
-                        “
-                    </span>
-
-                    <p>
-                        Fotografamos momentos.
-                        Você guarda memórias.
-                    </p>
-
-                </div>
-
-
-                <!-- REUNIÃO -->
-
-                <div class="brand-meeting">
-
-                    <div class="meeting-icon">
-                        ✦
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            Vamos conversar?
-                        </strong>
-
-                        <span>
-                            Reuniões online ou presenciais.
-                        </span>
-
-                    </div>
-
-                </div>
-
+                </p>
 
             </div>
 
 
-            <!-- RODAPÉ ESQUERDO -->
-
-            <div class="brand-footer">
+            <div class="login-visual-footer">
 
                 <span>
-                    © 2026 Suas Memórias Aqui
-                </span>
-
-                <span>
-                    Fotografia & Story Maker
+                    Momentos passam. Memórias ficam.
                 </span>
 
             </div>
-
 
         </section>
 
 
         <!-- =================================================
-             LADO DIREITO
+             ÁREA DE LOGIN
         ================================================== -->
 
         <section class="login-panel">
 
 
-            <div class="login-card">
+            <div class="login-container">
 
 
-                <!-- CABEÇALHO -->
+                <div class="login-mobile-brand">
+
+                    <a
+                        href="index.html"
+                        class="login-brand-dark"
+                    >
+
+                        <span class="login-brand-mark">
+                            SM
+                        </span>
+
+                        <span class="login-brand-text">
+
+                            Suas Memórias
+
+                            <small>
+                                FOTOGRAFIA & STORY MAKER
+                            </small>
+
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- =================================================
+                     CABEÇALHO
+                ================================================== -->
 
                 <div class="login-heading">
 
                     <span class="login-eyebrow">
-                        ÁREA EXCLUSIVA
+                        BEM-VINDO(A) DE VOLTA
                     </span>
 
-
                     <h2>
-                        Bem-vindo(a)
+                        Acesse sua conta
                     </h2>
-
 
                     <p>
                         Entre para acessar suas memórias.
@@ -238,37 +196,44 @@
 
 
                 <!-- =================================================
+                     MENSAGEM
+                ================================================== -->
+
+                <div
+                    class="auth-message"
+                    id="authMessage"
+                    role="alert"
+                ></div>
+
+
+                <!-- =================================================
                      LOGIN
                 ================================================== -->
 
                 <form
                     id="loginForm"
-                    class="login-form"
+                    class="auth-form"
                     novalidate
                 >
 
 
-                    <!-- EMAIL -->
+                    <!-- E-MAIL -->
 
-                    <div class="form-field">
+                    <div class="form-group">
 
-                        <label
-                            for="email"
-                        >
+                        <label for="loginEmail">
                             E-mail
                         </label>
 
-
                         <div class="input-wrapper">
 
-                            <span class="input-icon">
-                                @
-                            </span>
-
+                            <i
+                                class="fa-regular fa-envelope"
+                            ></i>
 
                             <input
                                 type="email"
-                                id="email"
+                                id="loginEmail"
                                 name="email"
                                 placeholder="seuemail@email.com"
                                 autocomplete="email"
@@ -277,27 +242,23 @@
 
                         </div>
 
-
-                        <small
-                            id="emailError"
+                        <span
                             class="field-error"
-                        ></small>
+                            id="loginEmailError"
+                        ></span>
 
                     </div>
 
 
                     <!-- SENHA -->
 
-                    <div class="form-field">
+                    <div class="form-group">
 
-                        <div class="password-label">
+                        <div class="label-row">
 
-                            <label
-                                for="password"
-                            >
+                            <label for="loginPassword">
                                 Senha
                             </label>
-
 
                             <button
                                 type="button"
@@ -312,71 +273,79 @@
 
                         <div class="input-wrapper">
 
-                            <span class="input-icon">
-                                •••
-                            </span>
-
+                            <i
+                                class="fa-solid fa-lock"
+                            ></i>
 
                             <input
                                 type="password"
-                                id="password"
+                                id="loginPassword"
                                 name="password"
                                 placeholder="Digite sua senha"
                                 autocomplete="current-password"
                                 required
                             >
 
-
                             <button
                                 type="button"
+                                class="password-toggle"
                                 id="togglePassword"
-                                class="toggle-password"
                                 aria-label="Mostrar senha"
                             >
-                                ◉
+
+                                <i
+                                    class="fa-regular fa-eye"
+                                ></i>
+
                             </button>
 
                         </div>
 
-
-                        <small
-                            id="passwordError"
+                        <span
                             class="field-error"
-                        ></small>
+                            id="loginPasswordError"
+                        ></span>
 
                     </div>
 
 
-                    <!-- MENSAGEM -->
+                    <!-- LEMBRAR -->
 
-                    <div
-                        id="loginMessage"
-                        class="login-message"
-                        role="alert"
-                        aria-live="polite"
-                    ></div>
+                    <div class="remember-row">
+
+                        <label class="checkbox-label">
+
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                            >
+
+                            <span class="custom-checkbox"></span>
+
+                            <span>
+                                Lembrar de mim
+                            </span>
+
+                        </label>
+
+                    </div>
 
 
                     <!-- BOTÃO -->
 
                     <button
                         type="submit"
-                        id="loginButton"
                         class="login-button"
+                        id="loginButton"
                     >
 
-                        <span
-                            id="loginButtonText"
-                        >
+                        <span id="loginButtonText">
                             Entrar na minha conta
                         </span>
 
-
-                        <span
-                            id="loginSpinner"
-                            class="button-spinner"
-                            aria-hidden="true"
-                        ></span>
+                        <i
+                            class="fa-solid fa-arrow-right"
+                        ></i>
 
                     </button>
 
@@ -385,18 +354,14 @@
 
 
                 <!-- =================================================
-                     DIVISOR
+                     SEPARADOR
                 ================================================== -->
 
                 <div class="login-divider">
 
-                    <span></span>
-
-                    <small>
+                    <span>
                         ou continue com
-                    </small>
-
-                    <span></span>
+                    </span>
 
                 </div>
 
@@ -407,37 +372,13 @@
 
                 <button
                     type="button"
-                    id="googleLogin"
                     class="google-button"
+                    id="googleLogin"
                 >
 
                     <span class="google-icon">
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-
-                            <path
-                                d="M21.35 12.27c0-.72-.06-1.41-.18-2.07H12v3.92h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.24Z"
-                            />
-
-                            <path
-                                d="M12 21.99c2.63 0 4.83-.87 6.44-2.35l-3.14-2.45c-.87.58-1.98.92-3.3.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.53A9.73 9.73 0 0 0 12 21.99Z"
-                            />
-
-                            <path
-                                d="M6.54 14.08a5.84 5.84 0 0 1 0-3.73V7.82H3.3a9.99 9.99 0 0 0 0 8.79l3.24-2.53Z"
-                            />
-
-                            <path
-                                d="M12 6.32c1.43 0 2.72.49 3.73 1.46l2.8-2.8C16.82 3.39 14.62 2.5 12 2.5a9.73 9.73 0 0 0-8.7 5.32l3.24 2.53C7.31 8.04 9.46 6.32 12 6.32Z"
-                            />
-
-                        </svg>
-
+                        G
                     </span>
-
 
                     <span>
                         Continuar com Google
@@ -447,154 +388,155 @@
 
 
                 <!-- =================================================
-                     NOVO CLIENTE
+                     CRIAR CONTA
                 ================================================== -->
 
-                <div class="login-register">
+                <div class="create-account">
 
                     <span>
-                        Ainda não possui acesso?
+                        Ainda não possui uma conta?
                     </span>
 
-
-                    <a
-                        href="contato.html"
+                    <button
+                        type="button"
+                        id="showRegister"
                     >
-                        Fale conosco
-                    </a>
+                        Criar minha conta
+                    </button>
 
                 </div>
 
 
                 <!-- =================================================
-                     PRIVACIDADE
+                     VOLTAR
                 ================================================== -->
 
-                <div class="login-privacy">
-
-                    <span>
-                        🔒
-                    </span>
-
-                    <p>
-                        Seu acesso é privado e protegido.
-                        Suas fotografias são disponibilizadas
-                        somente para você.
-                    </p>
-
-                </div>
-
-
-            </div>
-
-
-            <!-- =================================================
-                 CONTATO
-            ================================================== -->
-
-            <div class="login-contact">
-
-                <span>
-                    PRECISA DE AJUDA?
-                </span>
-
-
                 <a
-                    href="https://wa.me/5542988620679"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="index.html"
+                    class="back-home"
                 >
-                    Fale com Sarah pelo WhatsApp
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Voltar para o site
+
                 </a>
 
+
             </div>
 
-
         </section>
-
 
     </main>
 
 
     <!-- =====================================================
-         MODAL — RECUPERAR SENHA
+         MODAL — CRIAR CONTA
     ====================================================== -->
 
     <div
-        id="forgotPasswordModal"
-        class="modal"
+        class="auth-modal"
+        id="registerModal"
         aria-hidden="true"
     >
 
-        <div
-            class="modal-overlay"
-            id="forgotModalOverlay"
-        ></div>
+        <div class="modal-backdrop"></div>
 
 
         <div
-            class="modal-card"
+            class="modal-content"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="forgotModalTitle"
+            aria-labelledby="registerTitle"
         >
 
             <button
                 type="button"
-                id="closeForgotModal"
                 class="modal-close"
+                id="closeRegister"
                 aria-label="Fechar"
             >
                 ×
             </button>
 
 
-            <div class="modal-icon">
-                ✦
+            <div class="modal-heading">
+
+                <span class="login-eyebrow">
+                    NOVO CLIENTE
+                </span>
+
+                <h2 id="registerTitle">
+                    Criar sua conta
+                </h2>
+
+                <p>
+                    Crie seu acesso para acompanhar
+                    suas memórias.
+                </p>
+
             </div>
 
 
-            <span class="login-eyebrow">
-                RECUPERAÇÃO DE ACESSO
-            </span>
-
-
-            <h3 id="forgotModalTitle">
-                Esqueceu sua senha?
-            </h3>
-
-
-            <p>
-                Informe o e-mail utilizado no seu
-                cadastro. Enviaremos as instruções
-                para recuperar o acesso.
-            </p>
+            <div
+                class="auth-message"
+                id="registerMessage"
+                role="alert"
+            ></div>
 
 
             <form
-                id="forgotPasswordForm"
+                id="registerForm"
+                class="auth-form"
                 novalidate
             >
 
-                <div class="form-field">
 
-                    <label
-                        for="recoveryEmail"
-                    >
-                        E-mail
+                <div class="form-group">
+
+                    <label for="registerName">
+                        Nome
                     </label>
-
 
                     <div class="input-wrapper">
 
-                        <span class="input-icon">
-                            @
-                        </span>
+                        <i
+                            class="fa-regular fa-user"
+                        ></i>
 
+                        <input
+                            type="text"
+                            id="registerName"
+                            placeholder="Seu nome completo"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+                    <span
+                        class="field-error"
+                        id="registerNameError"
+                    ></span>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="registerEmail">
+                        E-mail
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i
+                            class="fa-regular fa-envelope"
+                        ></i>
 
                         <input
                             type="email"
-                            id="recoveryEmail"
+                            id="registerEmail"
                             placeholder="seuemail@email.com"
                             autocomplete="email"
                             required
@@ -602,24 +544,74 @@
 
                     </div>
 
+                    <span
+                        class="field-error"
+                        id="registerEmailError"
+                    ></span>
+
                 </div>
 
 
-                <div
-                    id="recoveryMessage"
-                    class="login-message"
-                    role="alert"
-                    aria-live="polite"
-                ></div>
+                <div class="form-group">
+
+                    <label for="registerPassword">
+                        Senha
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i
+                            class="fa-solid fa-lock"
+                        ></i>
+
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            placeholder="Mínimo de 6 caracteres"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="toggleRegisterPassword"
+                            aria-label="Mostrar senha"
+                        >
+
+                            <i
+                                class="fa-regular fa-eye"
+                            ></i>
+
+                        </button>
+
+                    </div>
+
+                    <span
+                        class="field-error"
+                        id="registerPasswordError"
+                    ></span>
+
+                </div>
 
 
                 <button
                     type="submit"
-                    id="recoveryButton"
                     class="login-button"
+                    id="registerButton"
                 >
-                    Enviar instruções
+
+                    <span id="registerButtonText">
+                        Criar minha conta
+                    </span>
+
+                    <i
+                        class="fa-solid fa-arrow-right"
+                    ></i>
+
                 </button>
+
 
             </form>
 
