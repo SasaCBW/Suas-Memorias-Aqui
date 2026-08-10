@@ -1,108 +1,138 @@
 ```javascript
 /* =========================================================
    SUAS MEMÓRIAS AQUI
-   CLIENTE.JS
+   JS / CLIENTE.JS
 
-   Área exclusiva dos clientes
-   Firebase Authentication
-   Galeria privada
-   Menu do usuário
-   Lightbox
-   Responsividade
+   Área exclusiva do cliente
 ========================================================= */
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs,
+    orderBy,
+    limit
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+import {
+    getStorage,
+    ref,
+    getDownloadURL
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
+
+import {
+    auth,
+    app
+} from "./firebase.js";
 
 
 /* =========================================================
    FIREBASE
 ========================================================= */
 
-import {
-    auth,
-    db
-} from "./firebase.js";
-
-
-import {
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-
-import {
-    collection,
-    getDocs,
-    query,
-    where,
-    orderBy
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+const db = getFirestore(app);
+const storage = getStorage(app);
 
 
 /* =========================================================
    ELEMENTOS
 ========================================================= */
 
-const userButton =
-    document.getElementById("userButton");
+const pageLoading =
+    document.getElementById("pageLoading");
 
-const userMenu =
-    document.getElementById("userMenu");
+const clientApp =
+    document.getElementById("clientApp");
 
-const logoutButton =
-    document.getElementById("logoutButton");
-
-const mobileLogout =
-    document.getElementById("mobileLogout");
+const sidebar =
+    document.getElementById("sidebar");
 
 const mobileMenuButton =
     document.getElementById("mobileMenuButton");
 
-const mobileNavigation =
-    document.getElementById("mobileNavigation");
+const pageTitle =
+    document.getElementById("pageTitle");
 
 const userName =
     document.getElementById("userName");
 
-const userEmail =
-    document.getElementById("userEmail");
-
-const menuUserName =
-    document.getElementById("menuUserName");
-
-const menuUserEmail =
-    document.getElementById("menuUserEmail");
-
-const heroUserName =
-    document.getElementById("heroUserName");
+const welcomeName =
+    document.getElementById("welcomeName");
 
 const userAvatar =
     document.getElementById("userAvatar");
 
-const menuAvatar =
-    document.getElementById("menuAvatar");
+const accountAvatar =
+    document.getElementById("accountAvatar");
 
-const galleryGrid =
-    document.getElementById("galleryGrid");
+const accountName =
+    document.getElementById("accountName");
 
-const galleryLoading =
-    document.getElementById("galleryLoading");
+const accountEmail =
+    document.getElementById("accountEmail");
 
-const galleryEmpty =
-    document.getElementById("galleryEmpty");
+const profileMenu =
+    document.getElementById("profileMenu");
 
-const photoCount =
-    document.getElementById("photoCount");
+const profileButton =
+    document.getElementById("profileButton");
 
-const videoCount =
-    document.getElementById("videoCount");
+const logoutButton =
+    document.getElementById("logoutButton");
 
-const eventCount =
-    document.getElementById("eventCount");
+const accountLogoutButton =
+    document.getElementById("accountLogoutButton");
 
-const toast =
-    document.getElementById("clientToast");
+const logoutModal =
+    document.getElementById("logoutModal");
 
-const toastMessage =
-    document.getElementById("toastMessage");
+const cancelLogout =
+    document.getElementById("cancelLogout");
+
+const confirmLogout =
+    document.getElementById("confirmLogout");
+
+const photoCountBadge =
+    document.getElementById("photoCountBadge");
+
+const dashboardPhotoCount =
+    document.getElementById("dashboardPhotoCount");
+
+const dashboardVideoCount =
+    document.getElementById("dashboardVideoCount");
+
+const photoGallery =
+    document.getElementById("photoGallery");
+
+const videoGallery =
+    document.getElementById("videoGallery");
+
+const recentPhotos =
+    document.getElementById("recentPhotos");
+
+const downloadAllButton =
+    document.getElementById("downloadAllButton");
+
+const notificationButton =
+    document.getElementById("notificationButton");
+
+const notificationDot =
+    document.getElementById("notificationDot");
+
+const onlineMeetingButton =
+    document.getElementById("onlineMeetingButton");
+
+const presentialMeetingButton =
+    document.getElementById(
+        "presentialMeetingButton"
+    );
 
 
 /* =========================================================
@@ -111,113 +141,268 @@ const toastMessage =
 
 let currentUser = null;
 
-let galleryItems = [];
+let clientPhotos = [];
 
-let filteredItems = [];
+let clientVideos = [];
 
-let currentLightboxIndex = 0;
+let selectedPhotos = [];
 
 
 /* =========================================================
-   UTILITÁRIOS
+   TÍTULOS DAS SEÇÕES
 ========================================================= */
 
+const sectionTitles = {
 
-/**
- * Escapa caracteres HTML para evitar
- * inserção indevida de código.
- */
+    inicio:
+        "Minha área",
 
-function escapeHTML(value) {
+    fotos:
+        "Minhas fotos",
 
-    if (
-        value === null ||
-        value === undefined
-    ) {
-        return "";
+    videos:
+        "Meus vídeos",
+
+    agendamento:
+        "Agendamento",
+
+    contato:
+        "Fale conosco",
+
+    conta:
+        "Minha conta"
+
+};
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        initializeNavigation();
+
+        initializeProfileMenu();
+
+        initializeLogout();
+
+        initializeMeetingButtons();
+
+        initializeNotification();
+
+        initializeDownloadButton();
+
+    }
+);
+
+
+/* =========================================================
+   AUTENTICAÇÃO
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async (user) => {
+
+        if (!user) {
+
+            window.location.href =
+                "cliente-login.html";
+
+            return;
+
+        }
+
+
+        currentUser = user;
+
+
+        try {
+
+            await loadClientData(user);
+
+            await loadClientPhotos(user);
+
+            await loadClientVideos(user);
+
+            await loadRecentPhotos(user);
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao carregar dados:",
+                error
+            );
+
+        }
+
+
+        showApplication();
+
+    }
+);
+
+
+/* =========================================================
+   MOSTRAR APLICAÇÃO
+========================================================= */
+
+function showApplication() {
+
+    if (clientApp) {
+
+        clientApp.style.visibility =
+            "visible";
+
     }
 
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+    if (pageLoading) {
+
+        pageLoading.classList.add(
+            "hidden"
+        );
+
+    }
+
 }
 
 
-/**
- * Mostra uma pequena mensagem na tela.
- */
+/* =========================================================
+   DADOS DO CLIENTE
+========================================================= */
 
-function showToast(message) {
+async function loadClientData(user) {
 
-    if (!toast || !toastMessage) {
-        return;
-    }
+    const displayName =
+        user.displayName ||
+        user.email?.split("@")[0] ||
+        "Cliente";
 
-    toastMessage.textContent =
-        message;
 
-    toast.classList.add("show");
+    const firstName =
+        displayName
+            .trim()
+            .split(" ")[0];
 
-    clearTimeout(
-        showToast.timeout
+
+    setText(
+        userName,
+        displayName
     );
 
-    showToast.timeout =
-        setTimeout(() => {
 
-            toast.classList.remove("show");
-
-        }, 3500);
-}
+    setText(
+        welcomeName,
+        firstName
+    );
 
 
-/**
- * Obtém o primeiro nome do usuário.
- */
+    setText(
+        accountName,
+        displayName
+    );
 
-function getFirstName(name) {
 
-    if (!name) {
-        return "Cliente";
+    setText(
+        accountEmail,
+        user.email || "—"
+    );
+
+
+    setAvatar(
+        userAvatar,
+        displayName,
+        user.photoURL
+    );
+
+
+    setAvatar(
+        accountAvatar,
+        displayName,
+        user.photoURL
+    );
+
+
+    /*
+     * Tentamos buscar informações adicionais
+     * do cliente no Firestore.
+     */
+
+    try {
+
+        const clientsRef =
+            collection(
+                db,
+                "clientes"
+            );
+
+
+        const clientQuery =
+            query(
+                clientsRef,
+                where(
+                    "uid",
+                    "==",
+                    user.uid
+                ),
+                limit(1)
+            );
+
+
+        const snapshot =
+            await getDocs(
+                clientQuery
+            );
+
+
+        if (!snapshot.empty) {
+
+            const client =
+                snapshot.docs[0].data();
+
+
+            if (client.nome) {
+
+                setText(
+                    userName,
+                    client.nome
+                );
+
+
+                setText(
+                    welcomeName,
+                    client.nome
+                        .trim()
+                        .split(" ")[0]
+                );
+
+
+                setText(
+                    accountName,
+                    client.nome
+                );
+
+            }
+
+        }
+
+    } catch (error) {
+
+        /*
+         * Se a coleção ainda não existir,
+         * mantemos os dados do Firebase Auth.
+         */
+
+        console.info(
+            "Coleção de clientes ainda não configurada."
+        );
+
     }
 
-    return name
-        .trim()
-        .split(/\s+/)[0];
-}
-
-
-/**
- * Cria iniciais do usuário.
- */
-
-function getInitials(name) {
-
-    if (!name) {
-        return "SM";
-    }
-
-    const parts =
-        name
-            .trim()
-            .split(/\s+/)
-            .filter(Boolean);
-
-    if (parts.length === 1) {
-
-        return parts[0]
-            .substring(0, 2)
-            .toUpperCase();
-
-    }
-
-    return (
-        parts[0][0] +
-        parts[parts.length - 1][0]
-    ).toUpperCase();
 }
 
 
@@ -225,248 +410,210 @@ function getInitials(name) {
    AVATAR
 ========================================================= */
 
-function createFallbackAvatar(element, name) {
+function setAvatar(
+    element,
+    name,
+    photoURL
+) {
 
     if (!element) {
         return;
     }
 
-    element.innerHTML = `
-        <span
-            style="
-                font-family: 'DM Sans', sans-serif;
-                font-size: 10px;
-                font-weight: 700;
-            "
-        >
-            ${escapeHTML(getInitials(name))}
-        </span>
-    `;
-}
-
-
-/**
- * Atualiza avatar do usuário.
- */
-
-function updateAvatar(element, photoURL, name) {
-
-    if (!element) {
-        return;
-    }
 
     if (photoURL) {
 
         element.innerHTML = "";
 
         const image =
-            document.createElement("img");
+            document.createElement(
+                "img"
+            );
 
-        image.src = photoURL;
+
+        image.src =
+            photoURL;
+
 
         image.alt =
-            `Foto de ${name || "cliente"}`;
+            name;
 
-        image.loading = "lazy";
 
-        image.onerror = () => {
-
-            createFallbackAvatar(
-                element,
-                name
-            );
-
-        };
-
-        element.appendChild(image);
-
-    } else {
-
-        createFallbackAvatar(
-            element,
-            name
+        element.appendChild(
+            image
         );
-    }
-}
 
 
-/* =========================================================
-   DADOS DO USUÁRIO
-========================================================= */
-
-function updateUserInterface(user) {
-
-    if (!user) {
         return;
-    }
 
-    const name =
-        user.displayName ||
-        "Cliente";
-
-    const email =
-        user.email ||
-        "Conta do cliente";
-
-    const firstName =
-        getFirstName(name);
-
-
-    /* HEADER */
-
-    if (userName) {
-        userName.textContent =
-            name;
-    }
-
-    if (userEmail) {
-        userEmail.textContent =
-            email;
     }
 
 
-    /* MENU */
-
-    if (menuUserName) {
-        menuUserName.textContent =
-            name;
-    }
-
-    if (menuUserEmail) {
-        menuUserEmail.textContent =
-            email;
-    }
-
-
-    /* HERO */
-
-    if (heroUserName) {
-        heroUserName.textContent =
-            firstName;
-    }
-
-
-    /* AVATARES */
-
-    updateAvatar(
-        userAvatar,
-        user.photoURL,
+    const firstLetter =
         name
-    );
+            .trim()
+            .charAt(0)
+            .toUpperCase();
 
-    updateAvatar(
-        menuAvatar,
-        user.photoURL,
-        name
-    );
+
+    element.textContent =
+        firstLetter || "C";
+
 }
 
 
 /* =========================================================
-   PROTEÇÃO DA PÁGINA
+   NAVEGAÇÃO
 ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    async (user) => {
+function initializeNavigation() {
 
-        /*
-         * Se não estiver logado,
-         * volta para o login.
-         */
+    const navigationItems =
+        document.querySelectorAll(
+            "[data-section]"
+        );
 
-        if (!user) {
 
-            window.location.replace(
-                "login.html"
+    navigationItems.forEach(
+        (item) => {
+
+            item.addEventListener(
+                "click",
+                () => {
+
+                    const section =
+                        item.dataset.section;
+
+
+                    if (!section) {
+                        return;
+                    }
+
+
+                    navigateToSection(
+                        section
+                    );
+
+
+                    closeMobileMenu();
+
+                }
             );
 
-            return;
         }
+    );
 
-
-        /*
-         * Usuário autenticado.
-         */
-
-        currentUser =
-            user;
-
-
-        updateUserInterface(
-            user
-        );
-
-
-        /*
-         * Carrega as memórias
-         * daquele usuário.
-         */
-
-        await loadClientGallery(
-            user
-        );
-
-    }
-);
+}
 
 
 /* =========================================================
-   MENU DO USUÁRIO
+   IR PARA SEÇÃO
 ========================================================= */
 
-if (userButton) {
+function navigateToSection(
+    sectionName
+) {
 
-    userButton.addEventListener(
-        "click",
-        (event) => {
+    const sections =
+        document.querySelectorAll(
+            ".content-section"
+        );
 
-            event.stopPropagation();
 
-            const isOpen =
-                userMenu.classList.contains(
-                    "open"
+    sections.forEach(
+        (section) => {
+
+            section.classList.remove(
+                "active-section"
+            );
+
+        }
+    );
+
+
+    const target =
+        document.getElementById(
+            `section-${sectionName}`
+        );
+
+
+    if (!target) {
+
+        console.warn(
+            `Seção não encontrada: ${sectionName}`
+        );
+
+        return;
+
+    }
+
+
+    target.classList.add(
+        "active-section"
+    );
+
+
+    if (pageTitle) {
+
+        pageTitle.textContent =
+            sectionTitles[
+                sectionName
+            ] ||
+            "Minha área";
+
+    }
+
+
+    updateActiveNavigation(
+        sectionName
+    );
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   NAVEGAÇÃO ATIVA
+========================================================= */
+
+function updateActiveNavigation(
+    sectionName
+) {
+
+    const navItems =
+        document.querySelectorAll(
+            ".sidebar-nav .nav-item"
+        );
+
+
+    navItems.forEach(
+        (item) => {
+
+            item.classList.remove(
+                "active"
+            );
+
+
+            if (
+                item.dataset.section ===
+                sectionName
+            ) {
+
+                item.classList.add(
+                    "active"
                 );
 
-            userMenu.classList.toggle(
-                "open"
-            );
-
-            userButton.setAttribute(
-                "aria-expanded",
-                String(!isOpen)
-            );
+            }
 
         }
     );
+
 }
-
-
-/* Fecha menu ao clicar fora */
-
-document.addEventListener(
-    "click",
-    (event) => {
-
-        if (
-            userMenu &&
-            userButton &&
-            !userMenu.contains(event.target) &&
-            !userButton.contains(event.target)
-        ) {
-
-            userMenu.classList.remove(
-                "open"
-            );
-
-            userButton.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-        }
-
-    }
-);
 
 
 /* =========================================================
@@ -479,97 +626,99 @@ if (mobileMenuButton) {
         "click",
         () => {
 
-            const isOpen =
-                mobileNavigation.classList.contains(
-                    "open"
-                );
+            sidebar.classList.toggle(
+                "mobile-open"
+            );
 
-            mobileNavigation.classList.toggle(
+        }
+    );
+
+}
+
+
+function closeMobileMenu() {
+
+    if (sidebar) {
+
+        sidebar.classList.remove(
+            "mobile-open"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MENU DO PERFIL
+========================================================= */
+
+function initializeProfileMenu() {
+
+    if (!profileButton) {
+        return;
+    }
+
+
+    profileButton.addEventListener(
+        "click",
+        (event) => {
+
+            event.stopPropagation();
+
+            profileMenu.classList.toggle(
                 "open"
             );
 
-            mobileMenuButton.setAttribute(
-                "aria-expanded",
-                String(!isOpen)
-            );
+        }
+    );
 
 
-            const icon =
-                mobileMenuButton.querySelector(
-                    "i"
+    document.addEventListener(
+        "click",
+        (event) => {
+
+            if (
+                profileMenu &&
+                !profileMenu.contains(event.target)
+            ) {
+
+                profileMenu.classList.remove(
+                    "open"
                 );
 
-            if (!icon) {
-                return;
-            }
-
-            if (!isOpen) {
-
-                icon.classList.remove(
-                    "fa-bars"
-                );
-
-                icon.classList.add(
-                    "fa-xmark"
-                );
-
-            } else {
-
-                icon.classList.remove(
-                    "fa-xmark"
-                );
-
-                icon.classList.add(
-                    "fa-bars"
-                );
             }
 
         }
     );
-}
 
 
-/* Fecha menu mobile ao clicar em link */
+    document
+        .querySelectorAll(
+            ".profile-dropdown [data-section]"
+        )
+        .forEach(
+            (item) => {
 
-if (mobileNavigation) {
+                item.addEventListener(
+                    "click",
+                    () => {
 
-    mobileNavigation
-        .querySelectorAll("a")
-        .forEach((link) => {
-
-            link.addEventListener(
-                "click",
-                () => {
-
-                    mobileNavigation.classList.remove(
-                        "open"
-                    );
-
-                    mobileMenuButton.setAttribute(
-                        "aria-expanded",
-                        "false"
-                    );
-
-                    const icon =
-                        mobileMenuButton.querySelector(
-                            "i"
+                        navigateToSection(
+                            item.dataset.section
                         );
 
-                    if (icon) {
 
-                        icon.classList.remove(
-                            "fa-xmark"
+                        profileMenu.classList.remove(
+                            "open"
                         );
 
-                        icon.classList.add(
-                            "fa-bars"
-                        );
                     }
+                );
 
-                }
-            );
+            }
+        );
 
-        });
 }
 
 
@@ -577,23 +726,126 @@ if (mobileNavigation) {
    LOGOUT
 ========================================================= */
 
-async function logout() {
+function initializeLogout() {
+
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
+            "click",
+            openLogoutModal
+        );
+
+    }
+
+
+    if (accountLogoutButton) {
+
+        accountLogoutButton.addEventListener(
+            "click",
+            openLogoutModal
+        );
+
+    }
+
+
+    if (cancelLogout) {
+
+        cancelLogout.addEventListener(
+            "click",
+            closeLogoutModal
+        );
+
+    }
+
+
+    if (confirmLogout) {
+
+        confirmLogout.addEventListener(
+            "click",
+            logoutUser
+        );
+
+    }
+
+
+    if (logoutModal) {
+
+        logoutModal.addEventListener(
+            "click",
+            (event) => {
+
+                if (
+                    event.target ===
+                    logoutModal
+                ) {
+
+                    closeLogoutModal();
+
+                }
+
+            }
+        );
+
+    }
+
+}
+
+
+function openLogoutModal() {
+
+    if (profileMenu) {
+
+        profileMenu.classList.remove(
+            "open"
+        );
+
+    }
+
+
+    if (logoutModal) {
+
+        logoutModal.classList.add(
+            "show"
+        );
+
+    }
+
+}
+
+
+function closeLogoutModal() {
+
+    if (logoutModal) {
+
+        logoutModal.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+async function logoutUser() {
 
     try {
 
+        if (confirmLogout) {
+
+            confirmLogout.disabled =
+                true;
+
+            confirmLogout.textContent =
+                "Saindo...";
+
+        }
+
+
         await signOut(auth);
 
-        showToast(
-            "Você saiu da sua conta."
-        );
 
-        setTimeout(() => {
-
-            window.location.replace(
-                "login.html"
-            );
-
-        }, 500);
+        window.location.href =
+            "cliente-login.html";
 
     } catch (error) {
 
@@ -602,205 +854,122 @@ async function logout() {
             error
         );
 
-        showToast(
-            "Não foi possível sair da conta."
+
+        if (confirmLogout) {
+
+            confirmLogout.disabled =
+                false;
+
+            confirmLogout.textContent =
+                "Sair";
+
+        }
+
+
+        alert(
+            "Não foi possível sair da conta. Tente novamente."
         );
+
     }
-}
 
-
-if (logoutButton) {
-
-    logoutButton.addEventListener(
-        "click",
-        logout
-    );
-}
-
-
-if (mobileLogout) {
-
-    mobileLogout.addEventListener(
-        "click",
-        logout
-    );
 }
 
 
 /* =========================================================
-   GALERIA DO CLIENTE
+   FOTOS DO CLIENTE
 ========================================================= */
 
+async function loadClientPhotos(user) {
 
-/**
- * Busca fotografias e vídeos
- * do cliente no Firestore.
- *
- * Estrutura esperada:
- *
- * collection: gallery
- *
- * documento:
- *
- * {
- *   clientId: "UID",
- *   type: "photo",
- *   url: "...",
- *   title: "...",
- *   description: "...",
- *   eventName: "...",
- *   createdAt: ...
- * }
- */
-
-async function loadClientGallery(user) {
-
-    showGalleryLoading();
+    clientPhotos = [];
 
 
     try {
 
-        const galleryRef =
+        const photosRef =
             collection(
                 db,
-                "gallery"
+                "fotos"
             );
 
 
-        const galleryQuery =
+        /*
+         * Cada foto deve possuir:
+         *
+         * uidCliente
+         * url
+         * titulo
+         * createdAt
+         *
+         */
+
+
+        const photosQuery =
             query(
-                galleryRef,
+                photosRef,
                 where(
-                    "clientId",
+                    "uidCliente",
                     "==",
                     user.uid
-                ),
-                orderBy(
-                    "createdAt",
-                    "desc"
                 )
             );
 
 
         const snapshot =
             await getDocs(
-                galleryQuery
+                photosQuery
             );
 
 
-        galleryItems =
-            snapshot.docs.map(
-                (document) => ({
+        snapshot.forEach(
+            (doc) => {
 
-                    id:
-                        document.id,
+                clientPhotos.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
 
-                    ...document.data()
-
-                })
-            );
-
-
-        filteredItems =
-            [...galleryItems];
+            }
+        );
 
 
-        updateGalleryCounters();
+        clientPhotos.sort(
+            (a, b) => {
 
-        renderGallery();
+                const dateA =
+                    getDateValue(
+                        a.createdAt
+                    );
 
+
+                const dateB =
+                    getDateValue(
+                        b.createdAt
+                    );
+
+
+                return dateB - dateA;
+
+            }
+        );
+
+
+        updatePhotoCounters();
+
+        renderPhotoGallery();
 
     } catch (error) {
 
         console.error(
-            "Erro ao carregar galeria:",
+            "Erro ao carregar fotos:",
             error
         );
 
 
-        /*
-         * Caso a coleção ainda não tenha
-         * sido criada, mostramos a galeria
-         * vazia em vez de quebrar o site.
-         */
-
-        galleryItems = [];
-
-        filteredItems = [];
-
-        updateGalleryCounters();
-
-        showGalleryEmpty();
-
-        /*
-         * Não mostramos erro técnico
-         * para o cliente.
-         */
+        updatePhotoCounters();
 
     }
 
-}
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-function showGalleryLoading() {
-
-    if (galleryLoading) {
-
-        galleryLoading.style.display =
-            "flex";
-    }
-
-    if (galleryEmpty) {
-
-        galleryEmpty.classList.remove(
-            "show"
-        );
-    }
-
-    if (galleryGrid) {
-
-        galleryGrid.innerHTML =
-            "";
-    }
-}
-
-
-function hideGalleryLoading() {
-
-    if (galleryLoading) {
-
-        galleryLoading.style.display =
-            "none";
-    }
-}
-
-
-/* =========================================================
-   GALERIA VAZIA
-========================================================= */
-
-function showGalleryEmpty() {
-
-    hideGalleryLoading();
-
-
-    if (galleryGrid) {
-
-        galleryGrid.innerHTML =
-            "";
-    }
-
-
-    if (galleryEmpty) {
-
-        galleryEmpty.classList.add(
-            "show"
-        );
-    }
 }
 
 
@@ -808,110 +977,80 @@ function showGalleryEmpty() {
    CONTADORES
 ========================================================= */
 
-function updateGalleryCounters() {
+function updatePhotoCounters() {
 
-    const photos =
-        galleryItems.filter(
-            (item) =>
-                item.type === "photo" ||
-                item.type === "image"
-        ).length;
+    const total =
+        clientPhotos.length;
 
 
-    const videos =
-        galleryItems.filter(
-            (item) =>
-                item.type === "video"
-        ).length;
+    setText(
+        photoCountBadge,
+        total
+    );
 
 
-    const events =
-        new Set(
-            galleryItems
-                .map(
-                    (item) =>
-                        item.eventName
-                )
-                .filter(Boolean)
-        ).size;
-
-
-    if (photoCount) {
-
-        photoCount.textContent =
-            photos;
-    }
-
-
-    if (videoCount) {
-
-        videoCount.textContent =
-            videos;
-    }
-
-
-    if (eventCount) {
-
-        eventCount.textContent =
-            events;
-    }
+    setText(
+        dashboardPhotoCount,
+        total
+    );
 
 }
 
 
 /* =========================================================
-   RENDER GALERIA
+   GALERIA DE FOTOS
 ========================================================= */
 
-function renderGallery() {
+function renderPhotoGallery() {
 
-    hideGalleryLoading();
-
-
-    if (!galleryItems.length) {
-
-        showGalleryEmpty();
-
+    if (!photoGallery) {
         return;
     }
 
 
-    if (!filteredItems.length) {
+    if (
+        clientPhotos.length === 0
+    ) {
 
-        showGalleryEmpty();
+        photoGallery.innerHTML = `
+            <div class="empty-state large">
+
+                <div class="empty-icon">
+                    <i class="fa-regular fa-images"></i>
+                </div>
+
+                <h4>
+                    Sua galeria está sendo preparada
+                </h4>
+
+                <p>
+                    Assim que suas fotografias
+                    forem disponibilizadas pela
+                    equipe, elas aparecerão aqui.
+                </p>
+
+            </div>
+        `;
 
         return;
+
     }
 
 
-    if (galleryEmpty) {
-
-        galleryEmpty.classList.remove(
-            "show"
-        );
-    }
+    photoGallery.innerHTML = "";
 
 
-    if (!galleryGrid) {
-        return;
-    }
+    clientPhotos.forEach(
+        (photo) => {
 
-
-    galleryGrid.innerHTML =
-        "";
-
-
-    filteredItems.forEach(
-        (item, index) => {
-
-            const element =
-                createGalleryItem(
-                    item,
-                    index
+            const card =
+                createPhotoCard(
+                    photo
                 );
 
-            galleryGrid.appendChild(
-                element
+
+            photoGallery.appendChild(
+                card
             );
 
         }
@@ -920,77 +1059,18 @@ function renderGallery() {
 }
 
 
-/* =========================================================
-   CRIAR ITEM DA GALERIA
-========================================================= */
-
-function createGalleryItem(
-    item,
-    index
+function createPhotoCard(
+    photo
 ) {
 
-    const article =
+    const card =
         document.createElement(
             "article"
         );
 
 
-    article.className =
-        "gallery-item";
-
-
-    article.dataset.index =
-        index;
-
-
-    const type =
-        item.type || "photo";
-
-
-    const title =
-        item.title ||
-        item.eventName ||
-        "Sua memória";
-
-
-    const description =
-        item.description ||
-        "Registro especial";
-
-
-    const url =
-        item.url ||
-        item.imageUrl;
-
-
-    /*
-     * Se não houver URL,
-     * não criamos imagem quebrada.
-     */
-
-    if (!url) {
-
-        article.innerHTML = `
-            <div
-                style="
-                    width:100%;
-                    height:100%;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    color:#9b958c;
-                    background:#ebe7df;
-                "
-            >
-                <i
-                    class="fa-regular fa-image"
-                    style="font-size:28px;"
-                ></i>
-            </div>
-        `;
-
-        return article;
-    }
+    card.className =
+        "photo-card";
 
 
     const image =
@@ -1000,55 +1080,25 @@ function createGalleryItem(
 
 
     image.src =
-        url;
+        photo.url ||
+        photo.imageUrl ||
+        "";
+
 
     image.alt =
-        title;
+        photo.titulo ||
+        photo.title ||
+        "Fotografia do cliente";
+
 
     image.loading =
         "lazy";
 
 
-    image.onerror =
-        () => {
-
-            image.style.display =
-                "none";
-
-        };
-
-
-    article.appendChild(
+    card.appendChild(
         image
     );
 
-
-    /*
-     * Ícone de vídeo.
-     */
-
-    if (type === "video") {
-
-        const videoIcon =
-            document.createElement(
-                "span"
-            );
-
-        videoIcon.className =
-            "gallery-video-icon";
-
-        videoIcon.innerHTML =
-            '<i class="fa-solid fa-play"></i>';
-
-        article.appendChild(
-            videoIcon
-        );
-    }
-
-
-    /*
-     * Overlay.
-     */
 
     const overlay =
         document.createElement(
@@ -1057,431 +1107,976 @@ function createGalleryItem(
 
 
     overlay.className =
-        "gallery-item-overlay";
+        "photo-card-overlay";
 
 
-    overlay.innerHTML = `
-        <strong>
-            ${escapeHTML(title)}
-        </strong>
-
-        <span>
-            ${escapeHTML(description)}
-        </span>
-    `;
+    const download =
+        document.createElement(
+            "button"
+        );
 
 
-    article.appendChild(
-        overlay
-    );
+    download.type =
+        "button";
 
 
-    /*
-     * Clique.
-     */
+    download.title =
+        "Baixar foto";
 
-    article.addEventListener(
+
+    download.innerHTML =
+        '<i class="fa-solid fa-download"></i>';
+
+
+    download.addEventListener(
         "click",
-        () => {
+        (event) => {
 
-            openLightbox(
-                index
+            event.stopPropagation();
+
+            downloadPhoto(
+                photo
             );
 
         }
     );
 
 
-    return article;
+    overlay.appendChild(
+        download
+    );
+
+
+    card.appendChild(
+        overlay
+    );
+
+
+    card.addEventListener(
+        "click",
+        () => {
+
+            openPhoto(
+                photo
+            );
+
+        }
+    );
+
+
+    return card;
+
 }
 
 
 /* =========================================================
-   FILTROS
+   FOTO RECENTE
 ========================================================= */
 
-const filterButtons =
-    document.querySelectorAll(
-        ".filter-button"
+async function loadRecentPhotos(
+    user
+) {
+
+    if (!recentPhotos) {
+        return;
+    }
+
+
+    /*
+     * Usamos os dados já carregados
+     * para evitar consultas desnecessárias.
+     */
+
+    const recent =
+        clientPhotos.slice(
+            0,
+            4
+        );
+
+
+    if (recent.length === 0) {
+
+        recentPhotos.innerHTML = `
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    <i class="fa-regular fa-images"></i>
+                </div>
+
+                <h4>
+                    Suas fotos aparecerão aqui
+                </h4>
+
+                <p>
+                    Quando nossa equipe
+                    disponibilizar suas
+                    fotografias, elas serão
+                    exibidas neste espaço.
+                </p>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    recentPhotos.innerHTML = "";
+
+
+    recent.forEach(
+        (photo) => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "photo-card";
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                photo.url ||
+                photo.imageUrl ||
+                "";
+
+
+            image.alt =
+                photo.titulo ||
+                "Fotografia";
+
+
+            image.loading =
+                "lazy";
+
+
+            card.appendChild(
+                image
+            );
+
+
+            card.addEventListener(
+                "click",
+                () => {
+
+                    openPhoto(
+                        photo
+                    );
+
+                }
+            );
+
+
+            recentPhotos.appendChild(
+                card
+            );
+
+        }
     );
 
+}
 
-filterButtons.forEach(
-    (button) => {
 
-        button.addEventListener(
+/* =========================================================
+   ABRIR FOTO
+========================================================= */
+
+function openPhoto(
+    photo
+) {
+
+    const url =
+        photo.url ||
+        photo.imageUrl;
+
+
+    if (!url) {
+
+        alert(
+            "Esta fotografia ainda não possui um arquivo disponível."
+        );
+
+        return;
+
+    }
+
+
+    const newWindow =
+        window.open(
+            "",
+            "_blank"
+        );
+
+
+    if (!newWindow) {
+
+        alert(
+            "Permita janelas pop-up para visualizar a fotografia."
+        );
+
+        return;
+
+    }
+
+
+    newWindow.document.write(`
+        <!DOCTYPE html>
+
+        <html lang="pt-BR">
+
+        <head>
+
+            <meta charset="UTF-8">
+
+            <title>
+                Sua memória
+            </title>
+
+            <style>
+
+                * {
+                    box-sizing: border-box;
+                }
+
+                body {
+                    margin: 0;
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                    background: #181715;
+                }
+
+                img {
+                    max-width: 100%;
+                    max-height: 95vh;
+                    object-fit: contain;
+                }
+
+            </style>
+
+        </head>
+
+        <body>
+
+            <img
+                src="${escapeAttribute(url)}"
+                alt="Fotografia"
+            >
+
+        </body>
+
+        </html>
+    `);
+
+
+    newWindow.document.close();
+
+}
+
+
+/* =========================================================
+   DOWNLOAD
+========================================================= */
+
+async function downloadPhoto(
+    photo
+) {
+
+    const url =
+        photo.url ||
+        photo.imageUrl;
+
+
+    if (!url) {
+
+        alert(
+            "Arquivo indisponível."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(url);
+
+
+        if (!response.ok) {
+            throw new Error(
+                "Falha no download."
+            );
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        const blobUrl =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.href =
+            blobUrl;
+
+
+        link.download =
+            getFileName(
+                photo,
+                "foto.jpg"
+            );
+
+
+        document.body.appendChild(
+            link
+        );
+
+
+        link.click();
+
+
+        link.remove();
+
+
+        URL.revokeObjectURL(
+            blobUrl
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao baixar foto:",
+            error
+        );
+
+
+        /*
+         * Fallback caso o navegador
+         * bloqueie o download direto.
+         */
+
+        window.open(
+            url,
+            "_blank"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DOWNLOAD DAS SELECIONADAS
+========================================================= */
+
+function initializeDownloadButton() {
+
+    if (!downloadAllButton) {
+        return;
+    }
+
+
+    downloadAllButton.addEventListener(
+        "click",
+        async () => {
+
+            if (
+                clientPhotos.length === 0
+            ) {
+
+                alert(
+                    "Você ainda não possui fotos disponíveis."
+                );
+
+                return;
+
+            }
+
+
+            /*
+             * Por enquanto baixamos todas
+             * as fotos disponíveis.
+             *
+             * O sistema de seleção poderá
+             * ser ativado posteriormente.
+             */
+
+            for (
+                const photo
+                of clientPhotos
+            ) {
+
+                await downloadPhoto(
+                    photo
+                );
+
+
+                await wait(350);
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   VÍDEOS
+========================================================= */
+
+async function loadClientVideos(
+    user
+) {
+
+    clientVideos = [];
+
+
+    try {
+
+        const videosRef =
+            collection(
+                db,
+                "videos"
+            );
+
+
+        const videosQuery =
+            query(
+                videosRef,
+                where(
+                    "uidCliente",
+                    "==",
+                    user.uid
+                )
+            );
+
+
+        const snapshot =
+            await getDocs(
+                videosQuery
+            );
+
+
+        snapshot.forEach(
+            (doc) => {
+
+                clientVideos.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+
+            }
+        );
+
+
+        clientVideos.sort(
+            (a, b) => {
+
+                return (
+                    getDateValue(
+                        b.createdAt
+                    ) -
+                    getDateValue(
+                        a.createdAt
+                    )
+                );
+
+            }
+        );
+
+
+        updateVideoCounter();
+
+        renderVideoGallery();
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar vídeos:",
+            error
+        );
+
+
+        updateVideoCounter();
+
+    }
+
+}
+
+
+/* =========================================================
+   CONTADOR DE VÍDEOS
+========================================================= */
+
+function updateVideoCounter() {
+
+    setText(
+        dashboardVideoCount,
+        clientVideos.length
+    );
+
+}
+
+
+/* =========================================================
+   GALERIA DE VÍDEOS
+========================================================= */
+
+function renderVideoGallery() {
+
+    if (!videoGallery) {
+        return;
+    }
+
+
+    if (
+        clientVideos.length === 0
+    ) {
+
+        videoGallery.innerHTML = `
+            <div class="empty-state large">
+
+                <div class="empty-icon">
+                    <i class="fa-solid fa-film"></i>
+                </div>
+
+                <h4>
+                    Nenhum vídeo disponível ainda
+                </h4>
+
+                <p>
+                    Seus vídeos aparecerão
+                    automaticamente aqui quando
+                    forem publicados.
+                </p>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    videoGallery.innerHTML = "";
+
+
+    clientVideos.forEach(
+        (video) => {
+
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+
+            card.className =
+                "video-card";
+
+
+            const videoElement =
+                document.createElement(
+                    "video"
+                );
+
+
+            videoElement.controls =
+                true;
+
+
+            videoElement.preload =
+                "metadata";
+
+
+            videoElement.src =
+                video.url ||
+                video.videoUrl ||
+                "";
+
+
+            card.appendChild(
+                videoElement
+            );
+
+
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+
+            info.className =
+                "video-info";
+
+
+            info.innerHTML = `
+                <span>
+                    SUAS MEMÓRIAS
+                </span>
+
+                <h4>
+                    ${escapeHTML(
+                        video.titulo ||
+                        video.title ||
+                        "Vídeo especial"
+                    )}
+                </h4>
+            `;
+
+
+            card.appendChild(
+                info
+            );
+
+
+            videoGallery.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   AGENDAMENTO
+========================================================= */
+
+function initializeMeetingButtons() {
+
+    if (onlineMeetingButton) {
+
+        onlineMeetingButton.addEventListener(
             "click",
             () => {
 
-                filterButtons.forEach(
-                    (item) => {
-
-                        item.classList.remove(
-                            "active"
-                        );
-
-                    }
+                requestMeeting(
+                    "Online"
                 );
-
-
-                button.classList.add(
-                    "active"
-                );
-
-
-                const filter =
-                    button.dataset.filter;
-
-
-                if (filter === "all") {
-
-                    filteredItems =
-                        [...galleryItems];
-
-                } else {
-
-                    filteredItems =
-                        galleryItems.filter(
-                            (item) => {
-
-                                if (
-                                    filter === "photo"
-                                ) {
-
-                                    return (
-                                        item.type === "photo" ||
-                                        item.type === "image"
-                                    );
-
-                                }
-
-                                if (
-                                    filter === "video"
-                                ) {
-
-                                    return (
-                                        item.type === "video"
-                                    );
-
-                                }
-
-                                return true;
-
-                            }
-                        );
-                }
-
-
-                renderGallery();
 
             }
         );
 
     }
-);
+
+
+    if (presentialMeetingButton) {
+
+        presentialMeetingButton.addEventListener(
+            "click",
+            () => {
+
+                requestMeeting(
+                    "Presencial"
+                );
+
+            }
+        );
+
+    }
+
+}
 
 
 /* =========================================================
-   LIGHTBOX
+   SOLICITAR REUNIÃO
 ========================================================= */
 
-const lightbox =
-    document.getElementById(
-        "lightbox"
-    );
+function requestMeeting(
+    type
+) {
 
-const lightboxImage =
-    document.getElementById(
-        "lightboxImage"
-    );
-
-const lightboxTitle =
-    document.getElementById(
-        "lightboxTitle"
-    );
-
-const lightboxDescription =
-    document.getElementById(
-        "lightboxDescription"
-    );
-
-const lightboxClose =
-    document.getElementById(
-        "lightboxClose"
-    );
-
-const lightboxBackdrop =
-    document.getElementById(
-        "lightboxBackdrop"
-    );
-
-const lightboxPrev =
-    document.getElementById(
-        "lightboxPrev"
-    );
-
-const lightboxNext =
-    document.getElementById(
-        "lightboxNext"
-    );
+    const name =
+        currentUser?.displayName ||
+        currentUser?.email ||
+        "Cliente";
 
 
-function openLightbox(index) {
-
-    if (!filteredItems.length) {
-        return;
-    }
+    const message =
+        `Olá! Sou ${name} e gostaria de solicitar uma reunião ${type.toLowerCase()} com a LS.fotostory.`;
 
 
-    currentLightboxIndex =
-        index;
-
-
-    updateLightbox();
-
-
-    if (lightbox) {
-
-        lightbox.classList.add(
-            "open"
-        );
-
-        lightbox.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-    }
-
-
-    document.body.classList.add(
-        "no-scroll"
-    );
-}
-
-
-function closeLightbox() {
-
-    if (lightbox) {
-
-        lightbox.classList.remove(
-            "open"
-        );
-
-        lightbox.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-    }
-
-
-    document.body.classList.remove(
-        "no-scroll"
-    );
-}
-
-
-function updateLightbox() {
-
-    const item =
-        filteredItems[
-            currentLightboxIndex
-        ];
-
-
-    if (!item) {
-        return;
-    }
+    const whatsappNumber =
+        "5542988620679";
 
 
     const url =
-        item.url ||
-        item.imageUrl;
+        `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
 
-    if (lightboxImage) {
-
-        lightboxImage.src =
-            url || "";
-
-        lightboxImage.alt =
-            item.title ||
-            "Memória do cliente";
-    }
-
-
-    if (lightboxTitle) {
-
-        lightboxTitle.textContent =
-            item.title ||
-            item.eventName ||
-            "Sua memória";
-    }
-
-
-    if (lightboxDescription) {
-
-        lightboxDescription.textContent =
-            item.description ||
-            "";
-    }
+    window.open(
+        url,
+        "_blank"
+    );
 
 }
 
 
 /* =========================================================
-   NAVEGAÇÃO LIGHTBOX
+   NOTIFICAÇÕES
 ========================================================= */
 
-function showPrevious() {
+function initializeNotification() {
 
-    if (!filteredItems.length) {
+    if (!notificationButton) {
         return;
     }
 
 
-    currentLightboxIndex--;
-
-    if (
-        currentLightboxIndex < 0
-    ) {
-
-        currentLightboxIndex =
-            filteredItems.length - 1;
-    }
-
-
-    updateLightbox();
-}
-
-
-function showNext() {
-
-    if (!filteredItems.length) {
-        return;
-    }
-
-
-    currentLightboxIndex++;
-
-    if (
-        currentLightboxIndex >=
-        filteredItems.length
-    ) {
-
-        currentLightboxIndex =
-            0;
-    }
-
-
-    updateLightbox();
-}
-
-
-if (lightboxClose) {
-
-    lightboxClose.addEventListener(
+    notificationButton.addEventListener(
         "click",
-        closeLightbox
+        () => {
+
+            notificationDot?.classList.add(
+                "hidden"
+            );
+
+
+            alert(
+                "Você não possui novas notificações."
+            );
+
+        }
     );
-}
 
-
-if (lightboxBackdrop) {
-
-    lightboxBackdrop.addEventListener(
-        "click",
-        closeLightbox
-    );
-}
-
-
-if (lightboxPrev) {
-
-    lightboxPrev.addEventListener(
-        "click",
-        showPrevious
-    );
-}
-
-
-if (lightboxNext) {
-
-    lightboxNext.addEventListener(
-        "click",
-        showNext
-    );
 }
 
 
 /* =========================================================
-   TECLADO
+   FIREBASE STORAGE
 ========================================================= */
 
-document.addEventListener(
-    "keydown",
-    (event) => {
+async function getStorageFileUrl(
+    path
+) {
 
-        if (
-            !lightbox ||
-            !lightbox.classList.contains(
-                "open"
-            )
-        ) {
-            return;
-        }
+    try {
 
-
-        if (
-            event.key === "Escape"
-        ) {
-
-            closeLightbox();
-
-        }
+        const fileRef =
+            ref(
+                storage,
+                path
+            );
 
 
-        if (
-            event.key === "ArrowLeft"
-        ) {
+        return await getDownloadURL(
+            fileRef
+        );
 
-            showPrevious();
+    } catch (error) {
 
-        }
+        console.error(
+            "Erro ao obter arquivo:",
+            error
+        );
 
 
-        if (
-            event.key === "ArrowRight"
-        ) {
-
-            showNext();
-
-        }
+        return null;
 
     }
-);
+
+}
 
 
 /* =========================================================
-   FECHAR MENU AO REDIRECIONAR
+   UTILITÁRIOS
 ========================================================= */
 
-window.addEventListener(
-    "beforeunload",
-    () => {
+function setText(
+    element,
+    value
+) {
 
-        document.body.classList.remove(
-            "no-scroll"
+    if (element) {
+
+        element.textContent =
+            value ?? "";
+
+    }
+
+}
+
+
+function getDateValue(
+    value
+) {
+
+    if (!value) {
+        return 0;
+    }
+
+
+    if (
+        typeof value.toMillis ===
+        "function"
+    ) {
+
+        return value.toMillis();
+
+    }
+
+
+    if (
+        value.seconds !== undefined
+    ) {
+
+        return (
+            value.seconds * 1000
         );
 
     }
-);
+
+
+    const date =
+        new Date(value);
+
+
+    return Number.isNaN(
+        date.getTime()
+    )
+        ? 0
+        : date.getTime();
+
+}
+
+
+function getFileName(
+    item,
+    fallback
+) {
+
+    const original =
+        item.nomeArquivo ||
+        item.fileName ||
+        item.titulo ||
+        item.title;
+
+
+    if (!original) {
+
+        return fallback;
+
+    }
+
+
+    return String(original)
+        .replace(
+            /[^a-zA-Z0-9À-ÿ._-]/g,
+            "_"
+        );
+
+}
+
+
+function wait(
+    milliseconds
+) {
+
+    return new Promise(
+        (resolve) => {
+
+            setTimeout(
+                resolve,
+                milliseconds
+            );
+
+        }
+    );
+
+}
+
+
+function escapeHTML(
+    value
+) {
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+function escapeAttribute(
+    value
+) {
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        );
+
+}
 
 
 /* =========================================================
-   CONSOLE
+   EXPORTAÇÕES
 ========================================================= */
 
-console.log(
-    "Suas Memórias Aqui — área do cliente carregada."
-);
+export {
+
+    navigateToSection,
+
+    loadClientPhotos,
+
+    loadClientVideos,
+
+    requestMeeting
+
+};
 ```
