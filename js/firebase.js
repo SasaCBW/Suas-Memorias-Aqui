@@ -7,21 +7,36 @@
 
 
 /* =========================================================
-   IMPORTAÇÕES DO FIREBASE
+   FIREBASE APP
 ========================================================= */
 
 import {
     initializeApp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
+
+/* =========================================================
+   FIREBASE AUTHENTICATION
+========================================================= */
+
 import {
     getAuth,
     GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
+
+/* =========================================================
+   FIRESTORE
+========================================================= */
+
 import {
     getFirestore
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
 
 import {
     getStorage
@@ -29,7 +44,7 @@ import {
 
 
 /* =========================================================
-   CONFIGURAÇÃO DO SEU PROJETO FIREBASE
+   CONFIGURAÇÃO DO SEU PROJETO
 ========================================================= */
 
 const firebaseConfig = {
@@ -59,31 +74,31 @@ const firebaseConfig = {
 
 
 /* =========================================================
-   INICIALIZA O FIREBASE
+   INICIALIZAR FIREBASE
 ========================================================= */
 
 const app =
-    initializeApp(firebaseConfig);
+    initializeApp(
+        firebaseConfig
+    );
 
 
 /* =========================================================
-   FIREBASE AUTHENTICATION
+   AUTH
 ========================================================= */
 
 const auth =
-    getAuth(app);
+    getAuth(
+        app
+    );
 
 
 /* =========================================================
-   GOOGLE AUTHENTICATION
+   GOOGLE
 ========================================================= */
 
 const googleProvider =
     new GoogleAuthProvider();
-
-googleProvider.setCustomParameters({
-    prompt: "select_account"
-});
 
 
 /* =========================================================
@@ -91,32 +106,42 @@ googleProvider.setCustomParameters({
 ========================================================= */
 
 const db =
-    getFirestore(app);
+    getFirestore(
+        app
+    );
 
 
 /* =========================================================
-   FIREBASE STORAGE
+   STORAGE
 ========================================================= */
 
 const storage =
-    getStorage(app);
+    getStorage(
+        app
+    );
 
 
 /* =========================================================
-   EXPORTA TUDO
+   EXPORTAR
 ========================================================= */
 
 export {
+
     app,
+
     auth,
-    googleProvider,
+
     db,
-    storage
+
+    storage,
+
+    googleProvider
+
 };
 
 
 /* =========================================================
-   CONFIRMAÇÃO
+   TESTE
 ========================================================= */
 
 console.log(
