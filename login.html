@@ -1,0 +1,445 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Área do cliente — Suas Memórias Aqui">
+
+    <title>Área do Cliente | Suas Memórias Aqui</title>
+
+    <!-- GOOGLE FONTS -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- CSS -->
+
+    <link rel="stylesheet"
+          href="css/login.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         LADO VISUAL
+    ====================================================== -->
+
+    <section class="login-visual">
+
+        <div class="visual-overlay"></div>
+
+        <div class="visual-content">
+
+            <a href="index.html"
+               class="visual-logo">
+
+                <span class="visual-logo-icon">
+                    SM
+                </span>
+
+                <span>
+                    Suas Memórias
+                    <small>Aqui</small>
+                </span>
+
+            </a>
+
+
+            <div class="visual-message">
+
+                <span class="visual-label">
+                    ÁREA EXCLUSIVA DO CLIENTE
+                </span>
+
+                <h1>
+                    Suas memórias
+                    <br>
+                    <span>em um só lugar.</span>
+                </h1>
+
+                <p>
+                    Acesse suas fotos, vídeos e conteúdos
+                    exclusivos através da sua área de cliente.
+                </p>
+
+            </div>
+
+
+            <div class="visual-footer">
+
+                <span>
+                    Fotografia
+                </span>
+
+                <i></i>
+
+                <span>
+                    Story Maker
+                </span>
+
+                <i></i>
+
+                <span>
+                    Eventos
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ÁREA DE LOGIN
+    ====================================================== -->
+
+    <main class="login-area">
+
+        <div class="login-container">
+
+
+            <!-- VOLTAR -->
+
+            <a href="index.html"
+               class="back-link">
+
+                <span>←</span>
+
+                Voltar para o site
+
+            </a>
+
+
+            <!-- CABEÇALHO -->
+
+            <div class="login-header">
+
+                <span class="mobile-logo">
+                    SM
+                </span>
+
+                <span class="login-label">
+                    ÁREA DO CLIENTE
+                </span>
+
+                <h2>
+                    Bem-vindo(a)
+                </h2>
+
+                <p>
+                    Entre na sua conta para acessar
+                    suas memórias.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 FORMULÁRIO
+            ================================================== -->
+
+            <form id="loginForm"
+                  class="login-form">
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        E-mail
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="seu@email.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- SENHA -->
+
+                <div class="form-group">
+
+                    <div class="password-label">
+
+                        <label for="password">
+                            Senha
+                        </label>
+
+                        <a href="#"
+                           id="forgotPassword">
+                            Esqueci minha senha
+                        </a>
+
+                    </div>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Digite sua senha"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            id="togglePassword"
+                            aria-label="Mostrar senha">
+
+                            👁
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MENSAGEM DE ERRO -->
+
+                <div
+                    id="loginError"
+                    class="form-message error"
+                    role="alert">
+                </div>
+
+
+                <!-- BOTÃO LOGIN -->
+
+                <button
+                    type="submit"
+                    class="login-button"
+                    id="loginButton">
+
+                    <span class="button-text">
+                        Entrar na minha área
+                    </span>
+
+                    <span
+                        class="button-loader"
+                        id="buttonLoader">
+                    </span>
+
+                </button>
+
+
+            </form>
+
+
+            <!-- =================================================
+                 DIVISOR
+            ================================================== -->
+
+            <div class="divider">
+
+                <span>
+                    ou continue com
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 GOOGLE
+            ================================================== -->
+
+            <button
+                type="button"
+                class="google-button"
+                id="googleLogin">
+
+                <span class="google-icon">
+                    G
+                </span>
+
+                <span>
+                    Continuar com Google
+                </span>
+
+            </button>
+
+
+            <!-- =================================================
+                 CADASTRO
+            ================================================== -->
+
+            <div class="register-area">
+
+                <p>
+                    Ainda não possui uma conta?
+                </p>
+
+                <button
+                    type="button"
+                    id="createAccount">
+
+                    Solicitar acesso
+
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 SEGURANÇA
+            ================================================== -->
+
+            <div class="security-info">
+
+                <span>
+                    🔐
+                </span>
+
+                <p>
+                    Seus dados e conteúdos são protegidos
+                    e acessíveis somente através da sua conta.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 CONTATO
+            ================================================== -->
+
+            <div class="login-contact">
+
+                <p>
+                    Precisa de ajuda?
+                </p>
+
+                <a href="contato.html">
+                    Fale com a Suas Memórias Aqui
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         MODAL — SOLICITAR ACESSO
+    ====================================================== -->
+
+    <div
+        class="modal"
+        id="accessModal"
+        aria-hidden="true">
+
+        <div class="modal-overlay"
+             id="modalOverlay">
+        </div>
+
+        <div class="modal-content">
+
+            <button
+                type="button"
+                class="modal-close"
+                id="closeModal"
+                aria-label="Fechar">
+
+                ×
+
+            </button>
+
+
+            <div class="modal-icon">
+                ✨
+            </div>
+
+            <span class="login-label">
+                ACESSO DO CLIENTE
+            </span>
+
+            <h3>
+                Solicite seu acesso
+            </h3>
+
+            <p>
+                Para acessar sua área exclusiva,
+                entre em contato conosco e solicite
+                seu cadastro.
+            </p>
+
+
+            <a
+                href="https://wa.me/5542988620679?text=Olá!%20Gostaria%20de%20solicitar%20meu%20acesso%20à%20área%20do%20cliente."
+                target="_blank"
+                rel="noopener noreferrer"
+                class="modal-button">
+
+                Solicitar pelo WhatsApp
+
+            </a>
+
+
+            <a
+                href="contato.html"
+                class="modal-secondary">
+
+                Outras formas de contato
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="js/login.js"></script>
+
+</body>
+
+</html>
+```
