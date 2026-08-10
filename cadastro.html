@@ -1,0 +1,875 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Crie sua conta no Suas Memórias Aqui e tenha acesso às suas fotografias e memórias."
+    >
+
+    <meta
+        name="theme-color"
+        content="#292724"
+    >
+
+    <title>
+        Criar conta | Suas Memórias Aqui
+    </title>
+
+
+    <!-- FONTES -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ÍCONES -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- CSS -->
+
+    <link
+        rel="stylesheet"
+        href="css/login.css"
+    >
+
+    <style>
+
+        .register-page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1.08fr 0.92fr;
+            background: #f8f7f4;
+        }
+
+        .register-visual {
+            position: relative;
+            min-height: 100vh;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .register-image {
+            position: absolute;
+            inset: 0;
+            background-image:
+                url("https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=2200&q=90");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .register-overlay {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(25,23,21,.82),
+                    rgba(25,23,21,.35),
+                    rgba(25,23,21,.72)
+                );
+        }
+
+        .register-visual-content {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 55px 60px 42px;
+        }
+
+        .register-brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .register-mark {
+            width: 43px;
+            height: 43px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,.6);
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: 12px;
+        }
+
+        .register-brand strong {
+            display: block;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .register-brand small {
+            display: block;
+            margin-top: 5px;
+            color: rgba(255,255,255,.58);
+            font-size: 6.5px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .register-message {
+            max-width: 580px;
+            margin: auto 0;
+            padding: 70px 0;
+        }
+
+        .register-message span {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 23px;
+            color: rgba(255,255,255,.68);
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .register-message span::before {
+            content: "";
+            width: 32px;
+            height: 1px;
+            background: #c2a77a;
+        }
+
+        .register-message h1 {
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: clamp(42px, 5vw, 68px);
+            font-weight: 400;
+            line-height: 1.04;
+            letter-spacing: -1.5px;
+        }
+
+        .register-message h1 em {
+            display: block;
+            color: #d6bd94;
+            font-style: normal;
+        }
+
+        .register-message p {
+            max-width: 500px;
+            margin-top: 25px;
+            color: rgba(255,255,255,.66);
+            font-size: 13px;
+            line-height: 1.85;
+            font-weight: 300;
+        }
+
+        .register-panel {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .register-container {
+            width: min(100% - 90px, 475px);
+            padding: 50px 0;
+        }
+
+        .register-heading {
+            margin-bottom: 28px;
+        }
+
+        .register-eyebrow {
+            display: block;
+            margin-bottom: 13px;
+            color: #9b7d4e;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 2.6px;
+        }
+
+        .register-heading h2 {
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: clamp(36px, 4vw, 48px);
+            font-weight: 500;
+            line-height: 1.05;
+            color: #292724;
+        }
+
+        .register-heading p {
+            margin-top: 13px;
+            color: #8a857d;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .register-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .register-group label {
+            color: #4c4842;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .register-input {
+            position: relative;
+        }
+
+        .register-input i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a59f96;
+            font-size: 11px;
+        }
+
+        .register-input input {
+            width: 100%;
+            height: 51px;
+            padding: 0 16px 0 44px;
+            border: 1px solid #e3dfd7;
+            outline: none;
+            background: #fff;
+            color: #292724;
+            font-size: 11px;
+        }
+
+        .register-input input:focus {
+            border-color: #b79b70;
+            box-shadow: 0 0 0 3px rgba(155,125,78,.08);
+        }
+
+        .register-input input::placeholder {
+            color: #b4afa8;
+        }
+
+        .password-wrapper input {
+            padding-right: 45px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            width: 42px;
+            height: 42px;
+            border: 0;
+            background: transparent;
+            color: #a29c94;
+        }
+
+        .password-toggle:hover {
+            color: #292724;
+        }
+
+        .password-strength {
+            display: none;
+            margin-top: 3px;
+        }
+
+        .password-strength.show {
+            display: block;
+        }
+
+        .strength-bar {
+            width: 100%;
+            height: 3px;
+            background: #e7e2da;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            width: 0;
+            height: 100%;
+            transition: width .25s ease;
+        }
+
+        .strength-text {
+            display: block;
+            margin-top: 5px;
+            color: #928b82;
+            font-size: 8px;
+        }
+
+        .register-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            color: #7d776f;
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .register-check input {
+            margin-top: 2px;
+            accent-color: #292724;
+        }
+
+        .register-check a {
+            color: #9b7d4e;
+            font-weight: 700;
+        }
+
+        .register-button {
+            width: 100%;
+            min-height: 53px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border: 1px solid #292724;
+            background: #292724;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: .2s ease;
+        }
+
+        .register-button:hover {
+            background: #403b35;
+            transform: translateY(-1px);
+        }
+
+        .register-button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .register-google {
+            width: 100%;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 11px;
+            margin-top: 18px;
+            border: 1px solid #e3dfd7;
+            background: #fff;
+            color: #4c4842;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .register-google:hover {
+            background: #fcfbf9;
+            border-color: #cbc4b9;
+        }
+
+        .register-google-icon {
+            color: #4285f4;
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .register-divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 24px 0 0;
+            color: #aaa49c;
+            font-size: 8px;
+            white-space: nowrap;
+        }
+
+        .register-divider::before,
+        .register-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e3dfd7;
+        }
+
+        .register-login {
+            margin-top: 25px;
+            text-align: center;
+            color: #89837b;
+            font-size: 9px;
+        }
+
+        .register-login a {
+            color: #9b7d4e;
+            font-weight: 700;
+        }
+
+        .register-message-box {
+            display: none;
+            align-items: center;
+            gap: 9px;
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .register-message-box.show {
+            display: flex;
+        }
+
+        .register-message-box.error {
+            background: #fff5f4;
+            border: 1px solid #ead2d0;
+            color: #a6534f;
+        }
+
+        .register-message-box.success {
+            background: #f4faf2;
+            border: 1px solid #d5e4d1;
+            color: #63815e;
+        }
+
+        .register-footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #aaa49c;
+            font-size: 7px;
+        }
+
+        @media (max-width: 800px) {
+
+            .register-page {
+                grid-template-columns: 1fr;
+            }
+
+            .register-visual {
+                display: none;
+            }
+
+            .register-panel {
+                min-height: 100vh;
+                align-items: flex-start;
+            }
+
+            .register-container {
+                width: min(100% - 40px, 500px);
+                margin: auto;
+                padding: 35px 0;
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .register-container {
+                width: calc(100% - 30px);
+            }
+
+            .register-heading h2 {
+                font-size: 37px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<main class="register-page">
+
+
+    <!-- =====================================================
+         VISUAL
+    ====================================================== -->
+
+    <section class="register-visual">
+
+        <div class="register-image"></div>
+
+        <div class="register-overlay"></div>
+
+
+        <div class="register-visual-content">
+
+            <div class="register-brand">
+
+                <div class="register-mark">
+                    SM
+                </div>
+
+                <div>
+
+                    <strong>
+                        SUAS MEMÓRIAS
+                    </strong>
+
+                    <small>
+                        FOTOGRAFIA &amp; STORY MAKER
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="register-message">
+
+                <span>
+                    UM ESPAÇO SÓ SEU
+                </span>
+
+                <h1>
+                    Guarde seus
+                    <em>momentos especiais.</em>
+                </h1>
+
+                <p>
+                    Crie sua conta e tenha um espaço
+                    exclusivo para acessar suas
+                    fotografias, vídeos e experiências
+                    registradas pela nossa equipe.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CADASTRO
+    ====================================================== -->
+
+    <section class="register-panel">
+
+        <div class="register-container">
+
+
+            <div class="register-heading">
+
+                <span class="register-eyebrow">
+                    NOVO CLIENTE
+                </span>
+
+                <h2>
+                    Criar conta
+                </h2>
+
+                <p>
+                    Preencha seus dados para criar
+                    seu acesso exclusivo.
+                </p>
+
+            </div>
+
+
+            <!-- MENSAGEM -->
+
+            <div
+                id="registerMessage"
+                class="register-message-box"
+                role="alert"
+            >
+
+                <i
+                    id="registerMessageIcon"
+                    class="fa-solid fa-circle-exclamation"
+                ></i>
+
+                <span id="registerMessageText">
+                    Mensagem
+                </span>
+
+            </div>
+
+
+            <!-- FORM -->
+
+            <form
+                id="registerForm"
+                class="register-form"
+                novalidate
+            >
+
+
+                <!-- NOME -->
+
+                <div class="register-group">
+
+                    <label for="name">
+                        Nome completo
+                    </label>
+
+                    <div class="register-input">
+
+                        <i class="fa-regular fa-user"></i>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Seu nome completo"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="register-group">
+
+                    <label for="email">
+                        E-mail
+                    </label>
+
+                    <div class="register-input">
+
+                        <i class="fa-regular fa-envelope"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="seuemail@exemplo.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- SENHA -->
+
+                <div class="register-group">
+
+                    <label for="password">
+                        Senha
+                    </label>
+
+                    <div class="register-input password-wrapper">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Crie uma senha"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="password-toggle"
+                            aria-label="Mostrar senha"
+                        >
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="passwordStrength"
+                        class="password-strength"
+                    >
+
+                        <div class="strength-bar">
+
+                            <div
+                                id="strengthFill"
+                                class="strength-fill"
+                            ></div>
+
+                        </div>
+
+                        <span
+                            id="strengthText"
+                            class="strength-text"
+                        >
+                            Digite uma senha.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIRMAR SENHA -->
+
+                <div class="register-group">
+
+                    <label for="confirmPassword">
+                        Confirmar senha
+                    </label>
+
+                    <div class="register-input">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Digite a senha novamente"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- TERMOS -->
+
+                <label class="register-check">
+
+                    <input
+                        type="checkbox"
+                        id="terms"
+                        required
+                    >
+
+                    <span>
+                        Li e concordo com os termos de uso
+                        e a política de privacidade da
+                        Suas Memórias Aqui.
+                    </span>
+
+                </label>
+
+
+                <!-- BOTÃO -->
+
+                <button
+                    type="submit"
+                    id="registerButton"
+                    class="register-button"
+                >
+
+                    <span id="registerButtonText">
+                        Criar minha conta
+                    </span>
+
+                    <i
+                        id="registerButtonIcon"
+                        class="fa-solid fa-arrow-right"
+                    ></i>
+
+                </button>
+
+
+            </form>
+
+
+            <!-- GOOGLE -->
+
+            <div class="register-divider">
+
+                <span>
+                    ou
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="googleRegisterButton"
+                class="register-google"
+            >
+
+                <span class="register-google-icon">
+                    G
+                </span>
+
+                Continuar com Google
+
+            </button>
+
+
+            <!-- LOGIN -->
+
+            <div class="register-login">
+
+                Já possui uma conta?
+
+                <a href="login.html">
+                    Entrar
+                </a>
+
+            </div>
+
+
+            <!-- RODAPÉ -->
+
+            <div class="register-footer">
+
+                © 2026 Suas Memórias Aqui —
+                Fotografia &amp; Story Maker
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- JAVASCRIPT -->
+
+<script
+    type="module"
+    src="js/cadastro.js"
+></script>
+
+
+</body>
+
+</html>
+```
