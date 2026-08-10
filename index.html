@@ -1,82 +1,174 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <meta name="description"
-          content="Suas Memórias Aqui — Fotografia, Story Maker e cobertura de eventos. Transformamos momentos especiais em memórias inesquecíveis.">
+    <meta
+        name="theme-color"
+        content="#20201e"
+    >
 
-    <meta name="keywords"
-          content="fotografia, fotógrafo, story maker, eventos, festas, fotos, vídeos">
+    <meta
+        name="description"
+        content="Suas Memórias Aqui — Fotografia e Story Maker para transformar momentos em histórias inesquecíveis."
+    >
 
-    <meta name="author"
-          content="Suas Memórias Aqui">
+    <meta
+        name="author"
+        content="Suas Memórias Aqui"
+    >
 
-    <title>Suas Memórias Aqui | Fotografia & Story Maker</title>
+    <title>
+        Suas Memórias Aqui | Fotografia & Story Maker
+    </title>
 
-    <!-- FAVICON -->
-    <link rel="icon" href="assets/favicon.png">
 
-    <!-- GOOGLE FONTS -->
+    <!-- =====================================================
+         FONTES
+    ====================================================== -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
-          rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+
+    <!-- =====================================================
+         ÍCONES
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
 </head>
+
 
 <body>
 
-    <!-- ============================= -->
-    <!-- HEADER -->
-    <!-- ============================= -->
 
-    <header class="header">
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-        <div class="container header-content">
+    <header
+        class="main-header"
+        id="mainHeader"
+    >
 
-            <a href="index.html" class="logo">
+        <a
+            href="#inicio"
+            class="brand"
+        >
 
-                <span class="logo-icon">SM</span>
+            <span class="brand-mark">
+                SM
+            </span>
 
-                <span class="logo-text">
-                    Suas Memórias
-                    <small>Aqui</small>
+            <span class="brand-name">
+
+                Suas Memórias
+
+                <small>
+                    FOTOGRAFIA & STORY MAKER
+                </small>
+
+            </span>
+
+        </a>
+
+
+        <!-- MENU DESKTOP -->
+
+        <nav
+            class="main-nav"
+            id="mainNav"
+        >
+
+            <a
+                href="#inicio"
+                class="nav-link active"
+            >
+                Início
+            </a>
+
+            <a
+                href="#servicos"
+                class="nav-link"
+            >
+                Serviços
+            </a>
+
+            <a
+                href="#experiencia"
+                class="nav-link"
+            >
+                Experiência
+            </a>
+
+            <a
+                href="#contato"
+                class="nav-link"
+            >
+                Contato
+            </a>
+
+        </nav>
+
+
+        <div class="header-actions">
+
+            <a
+                href="login.html"
+                class="client-login"
+            >
+
+                <span>
+                    Área do cliente
                 </span>
+
+                <i class="fa-solid fa-arrow-right"></i>
 
             </a>
 
-            <nav class="nav">
 
-                <a href="#inicio">Início</a>
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                type="button"
+                aria-label="Abrir menu"
+            >
 
-                <a href="#servicos">Serviços</a>
-
-                <a href="#experiencias">Experiências</a>
-
-                <a href="contato.html">Contato</a>
-
-                <a href="login.html" class="nav-login">
-                    Área do Cliente
-                </a>
-
-            </nav>
-
-            <button class="menu-button"
-                    id="menuButton"
-                    aria-label="Abrir menu">
-
-                ☰
+                <span></span>
+                <span></span>
+                <span></span>
 
             </button>
 
@@ -85,146 +177,232 @@
     </header>
 
 
-    <!-- ============================= -->
-    <!-- MENU MOBILE -->
-    <!-- ============================= -->
+    <!-- =====================================================
+         MENU MOBILE
+    ====================================================== -->
 
-    <div class="mobile-menu" id="mobileMenu">
+    <div
+        class="mobile-menu"
+        id="mobileMenu"
+    >
 
-        <a href="#inicio">Início</a>
+        <button
+            class="mobile-close"
+            id="mobileClose"
+            type="button"
+            aria-label="Fechar menu"
+        >
+            ×
+        </button>
 
-        <a href="#servicos">Serviços</a>
 
-        <a href="#experiencias">Experiências</a>
+        <nav>
 
-        <a href="contato.html">Contato</a>
+            <a href="#inicio">
+                Início
+            </a>
 
-        <a href="login.html">
-            Área do Cliente
-        </a>
+            <a href="#servicos">
+                Serviços
+            </a>
+
+            <a href="#experiencia">
+                Experiência
+            </a>
+
+            <a href="#contato">
+                Contato
+            </a>
+
+            <a
+                href="login.html"
+                class="mobile-client-link"
+            >
+                Área do cliente →
+            </a>
+
+        </nav>
 
     </div>
 
 
-    <!-- ============================= -->
-    <!-- HERO -->
-    <!-- ============================= -->
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
 
     <main>
 
-        <section class="hero" id="inicio">
+        <section
+            class="hero"
+            id="inicio"
+        >
 
-            <div class="hero-overlay"></div>
 
-            <div class="container hero-content">
+            <div class="hero-background">
 
-                <span class="hero-label">
-                    FOTOGRAFIA • STORY MAKER • EVENTOS
+                <div class="hero-image"></div>
+
+                <div class="hero-overlay"></div>
+
+            </div>
+
+
+            <div class="hero-content">
+
+                <span class="hero-eyebrow">
+                    FOTOGRAFIA • STORY MAKER • EXPERIÊNCIAS
                 </span>
 
+
                 <h1>
+
                     Momentos passam.
-                    <br>
-                    <span>Memórias permanecem.</span>
+                    <span>
+                        Memórias ficam.
+                    </span>
+
                 </h1>
 
+
                 <p>
-                    Registramos histórias, sentimentos e momentos
-                    especiais para que você possa revivê-los
-                    sempre que quiser.
+
+                    Registramos aquilo que realmente importa
+                    para que você possa reviver cada detalhe,
+                    cada sorriso e cada história.
+
                 </p>
+
 
                 <div class="hero-buttons">
 
-                    <a href="login.html"
-                       class="button button-primary">
+                    <a
+                        href="contato.html"
+                        class="button button-primary"
+                    >
 
-                        Acessar minha área
+                        Vamos conversar
+
+                        <i class="fa-solid fa-arrow-right"></i>
 
                     </a>
 
-                    <a href="contato.html"
-                       class="button button-secondary">
 
-                        Fale conosco
+                    <a
+                        href="login.html"
+                        class="button button-outline"
+                    >
+
+                        Área exclusiva
 
                     </a>
 
                 </div>
 
-            </div>
 
-        </section>
+                <div class="hero-note">
 
+                    <span class="hero-line"></span>
 
-        <!-- ============================= -->
-        <!-- INTRODUÇÃO -->
-        <!-- ============================= -->
-
-        <section class="about">
-
-            <div class="container about-grid">
-
-                <div class="about-text">
-
-                    <span class="section-label">
-                        SOBRE NÓS
+                    <span>
+                        Atendimento online ou presencial
                     </span>
 
-                    <h2>
-                        Cada história merece
-                        ser lembrada.
-                    </h2>
-
-                    <p>
-                        A <strong>Suas Memórias Aqui</strong> nasceu
-                        com o propósito de transformar momentos
-                        importantes em registros que realmente
-                        tenham significado.
-                    </p>
-
-                    <p>
-                        Trabalhamos com fotografia e Story Maker
-                        para eventos, celebrações, festas,
-                        experiências e momentos especiais.
-                    </p>
-
-                    <p>
-                        Nosso trabalho vai além de simplesmente
-                        registrar uma imagem. Queremos capturar
-                        aquilo que você sentiu naquele momento.
-                    </p>
-
-                    <a href="contato.html"
-                       class="text-link">
-
-                        Conheça nosso trabalho
-                        <span>→</span>
-
-                    </a>
-
                 </div>
 
+            </div>
 
-                <div class="about-card">
 
-                    <div class="about-card-content">
+            <div class="hero-scroll">
 
-                        <span class="quote-mark">
-                            “
-                        </span>
+                <span>
+                    SCROLL
+                </span>
 
-                        <p>
-                            O melhor da fotografia é poder
-                            voltar no tempo através de uma
-                            lembrança.
-                        </p>
+                <div></div>
 
-                        <span class="quote-author">
-                            Suas Memórias Aqui
-                        </span>
+            </div>
 
-                    </div>
+
+        </section>
+
+
+        <!-- =================================================
+             INTRODUÇÃO
+        ================================================== -->
+
+        <section
+            class="intro-section"
+            id="experiencia"
+        >
+
+            <div class="intro-label">
+
+                <span>
+                    01
+                </span>
+
+                <span>
+                    SOBRE NÓS
+                </span>
+
+            </div>
+
+
+            <div class="intro-content">
+
+                <span class="section-eyebrow">
+                    MAIS DO QUE FOTOGRAFIA
+                </span>
+
+
+                <h2>
+
+                    A sua história,
+                    <em>do seu jeito.</em>
+
+                </h2>
+
+
+                <p class="intro-main-text">
+
+                    A <strong>Suas Memórias Aqui</strong> nasceu
+                    para transformar momentos especiais em
+                    lembranças que permanecem.
+
+                </p>
+
+
+                <p>
+
+                    Trabalhamos com fotografia e Story Maker
+                    para registrar eventos, celebrações e
+                    experiências de maneira natural, elegante
+                    e verdadeira.
+
+                </p>
+
+
+                <a
+                    href="contato.html"
+                    class="text-link"
+                >
+
+                    Conheça nosso atendimento
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+
+            <div class="intro-decoration">
+
+                <div class="decoration-circle">
+
+                    <span>
+                        SM
+                    </span>
 
                 </div>
 
@@ -233,466 +411,589 @@
         </section>
 
 
-        <!-- ============================= -->
-        <!-- SERVIÇOS -->
-        <!-- ============================= -->
+        <!-- =================================================
+             SERVIÇOS
+        ================================================== -->
 
-        <section class="services"
-                 id="servicos">
+        <section
+            class="services-section"
+            id="servicos"
+        >
 
-            <div class="container">
+            <div class="section-header">
 
-                <div class="section-header">
+                <div>
 
-                    <span class="section-label">
+                    <span class="section-eyebrow">
                         O QUE FAZEMOS
                     </span>
 
                     <h2>
-                        Experiências pensadas
-                        para cada momento
+                        Nossos serviços
                     </h2>
 
+                </div>
+
+
+                <p>
+
+                    Criamos experiências pensadas para
+                    que você aproveite o momento enquanto
+                    cuidamos de registrar cada detalhe.
+
+                </p>
+
+            </div>
+
+
+            <div class="services-grid">
+
+
+                <!-- SERVIÇO 01 -->
+
+                <article class="service-card">
+
+                    <span class="service-number">
+                        01
+                    </span>
+
+
+                    <div class="service-icon">
+
+                        <i class="fa-solid fa-camera"></i>
+
+                    </div>
+
+
+                    <h3>
+                        Fotografia
+                    </h3>
+
+
                     <p>
-                        Escolha a experiência que combina
-                        com a sua ocasião.
+
+                        Registros profissionais para eventos,
+                        comemorações, ensaios e momentos que
+                        merecem ser guardados.
+
                     </p>
 
-                </div>
+
+                    <a href="contato.html">
+
+                        Saiba mais
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </article>
 
 
-                <div class="services-grid">
+                <!-- SERVIÇO 02 -->
+
+                <article class="service-card featured-service">
+
+                    <span class="service-number">
+                        02
+                    </span>
 
 
-                    <!-- SERVIÇO 1 -->
+                    <div class="service-icon">
 
-                    <article class="service-card">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
 
-                        <div class="service-icon">
-                            📸
-                        </div>
-
-                        <h3>
-                            Fotografia
-                        </h3>
-
-                        <p>
-                            Registros profissionais para
-                            festas, eventos e momentos
-                            especiais.
-                        </p>
-
-                        <a href="contato.html">
-                            Saiba mais →
-                        </a>
-
-                    </article>
+                    </div>
 
 
-                    <!-- SERVIÇO 2 -->
-
-                    <article class="service-card">
-
-                        <div class="service-icon">
-                            🎬
-                        </div>
-
-                        <h3>
-                            Story Maker
-                        </h3>
-
-                        <p>
-                            Conteúdo dinâmico para redes
-                            sociais, eventos e marcas.
-                        </p>
-
-                        <a href="contato.html">
-                            Saiba mais →
-                        </a>
-
-                    </article>
+                    <h3>
+                        Story Maker
+                    </h3>
 
 
-                    <!-- SERVIÇO 3 -->
+                    <p>
 
-                    <article class="service-card">
+                        Conteúdo produzido em tempo real
+                        para que seu evento seja registrado
+                        e compartilhado enquanto acontece.
 
-                        <div class="service-icon">
-                            🎉
-                        </div>
-
-                        <h3>
-                            Eventos
-                        </h3>
-
-                        <p>
-                            Cobertura completa para
-                            aniversários, festas e
-                            celebrações.
-                        </p>
-
-                        <a href="agendamento.html">
-                            Solicitar orçamento →
-                        </a>
-
-                    </article>
+                    </p>
 
 
-                    <!-- SERVIÇO 4 -->
+                    <a href="contato.html">
 
-                    <article class="service-card">
+                        Saiba mais
 
-                        <div class="service-icon">
-                            ✨
-                        </div>
+                        <i class="fa-solid fa-arrow-right"></i>
 
-                        <h3>
-                            Momentos Especiais
-                        </h3>
+                    </a>
 
-                        <p>
-                            Ensaios, experiências e registros
-                            personalizados.
-                        </p>
+                </article>
 
-                        <a href="contato.html">
-                            Saiba mais →
-                        </a>
 
-                    </article>
+                <!-- SERVIÇO 03 -->
 
-                </div>
+                <article class="service-card">
+
+                    <span class="service-number">
+                        03
+                    </span>
+
+
+                    <div class="service-icon">
+
+                        <i class="fa-solid fa-film"></i>
+
+                    </div>
+
+
+                    <h3>
+                        Foto & Vídeo
+                    </h3>
+
+
+                    <p>
+
+                        Uma cobertura completa combinando
+                        fotografia e vídeo para contar sua
+                        história de diferentes perspectivas.
+
+                    </p>
+
+
+                    <a href="contato.html">
+
+                        Saiba mais
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </article>
+
 
             </div>
 
         </section>
 
 
-        <!-- ============================= -->
-        <!-- EXPERIÊNCIAS -->
-        <!-- ============================= -->
+        <!-- =================================================
+             EXPERIÊNCIA
+        ================================================== -->
 
-        <section class="experiences"
-                 id="experiencias">
+        <section class="experience-section">
 
-            <div class="container">
 
-                <div class="section-header">
+            <div class="experience-image">
 
-                    <span class="section-label">
-                        EXPERIÊNCIAS
+                <div class="experience-overlay"></div>
+
+                <div class="experience-caption">
+
+                    <span>
+                        CADA DETALHE IMPORTA
                     </span>
 
-                    <h2>
-                        Histórias que merecem
-                        ser registradas
-                    </h2>
-
-                </div>
-
-
-                <div class="experience-grid">
-
-
-                    <a href="galeria.html"
-                       class="experience-card experience-eventos">
-
-                        <div class="experience-overlay"></div>
-
-                        <div class="experience-content">
-
-                            <span>
-                                EVENTOS
-                            </span>
-
-                            <h3>
-                                Celebrações
-                            </h3>
-
-                            <p>
-                                Festas, aniversários,
-                                formaturas e muito mais.
-                            </p>
-
-                        </div>
-
-                    </a>
-
-
-                    <a href="galeria.html"
-                       class="experience-card experience-food">
-
-                        <div class="experience-overlay"></div>
-
-                        <div class="experience-content">
-
-                            <span>
-                                GASTRONOMIA
-                            </span>
-
-                            <h3>
-                                Sabores
-                            </h3>
-
-                            <p>
-                                Imagens que despertam
-                                todos os sentidos.
-                            </p>
-
-                        </div>
-
-                    </a>
-
-
-                    <a href="galeria.html"
-                       class="experience-card experience-nature">
-
-                        <div class="experience-overlay"></div>
-
-                        <div class="experience-content">
-
-                            <span>
-                                MOMENTOS
-                            </span>
-
-                            <h3>
-                                Paisagens
-                            </h3>
-
-                            <p>
-                                Lugares e experiências
-                                transformados em memória.
-                            </p>
-
-                        </div>
-
-                    </a>
-
-
-                    <a href="videos.html"
-                       class="experience-card experience-video">
-
-                        <div class="experience-overlay"></div>
-
-                        <div class="experience-content">
-
-                            <span>
-                                STORY MAKER
-                            </span>
-
-                            <h3>
-                                Histórias em movimento
-                            </h3>
-
-                            <p>
-                                Vídeos e conteúdos para
-                                guardar e compartilhar.
-                            </p>
-
-                        </div>
-
-                    </a>
+                    <strong>
+                        Histórias reais.
+                    </strong>
 
                 </div>
 
             </div>
 
-        </section>
+
+            <div class="experience-content">
+
+                <span class="section-eyebrow">
+                    NOSSA FORMA DE TRABALHAR
+                </span>
 
 
-        <!-- ============================= -->
-        <!-- ÁREA DO CLIENTE -->
-        <!-- ============================= -->
+                <h2>
 
-        <section class="client-area">
-
-            <div class="container client-area-content">
-
-                <div>
-
-                    <span class="section-label">
-                        ÁREA EXCLUSIVA
+                    Você vive o momento.
+                    <span>
+                        Nós cuidamos do resto.
                     </span>
 
-                    <h2>
-                        Suas fotos.
-                        <br>
-                        Suas memórias.
-                        <br>
-                        Seu espaço.
-                    </h2>
-
-                    <p>
-                        Depois do seu evento, suas fotos e
-                        conteúdos podem ficar disponíveis
-                        exclusivamente para você em nossa
-                        área de cliente.
-                    </p>
-
-                    <a href="login.html"
-                       class="button button-primary">
-
-                        Entrar na minha área
-
-                    </a>
-
-                </div>
+                </h2>
 
 
-                <div class="client-features">
+                <p>
 
-                    <div class="client-feature">
+                    Nossa proposta é simples: fazer com que
+                    você aproveite seu evento sem precisar
+                    se preocupar com o registro.
 
-                        <span>🔐</span>
+                </p>
 
-                        <div>
-                            <strong>
-                                Acesso protegido
-                            </strong>
 
-                            <p>
-                                Seus conteúdos ficam
-                                disponíveis somente para
-                                clientes autorizados.
-                            </p>
-                        </div>
+                <div class="experience-list">
+
+                    <div>
+
+                        <span>
+                            01
+                        </span>
+
+                        <p>
+
+                            Planejamento personalizado
+                            antes do evento.
+
+                        </p>
 
                     </div>
 
 
-                    <div class="client-feature">
+                    <div>
 
-                        <span>📸</span>
+                        <span>
+                            02
+                        </span>
 
-                        <div>
-                            <strong>
-                                Suas fotos
-                            </strong>
+                        <p>
 
-                            <p>
-                                Visualize sua galeria
-                                personalizada.
-                            </p>
-                        </div>
+                            Registro espontâneo,
+                            profissional e atento aos detalhes.
+
+                        </p>
 
                     </div>
 
 
-                    <div class="client-feature">
+                    <div>
 
-                        <span>⬇️</span>
+                        <span>
+                            03
+                        </span>
 
-                        <div>
-                            <strong>
-                                Download
-                            </strong>
+                        <p>
 
-                            <p>
-                                Baixe suas fotos e
-                                conteúdos quando quiser.
-                            </p>
-                        </div>
+                            Entrega organizada para você
+                            guardar suas memórias.
+
+                        </p>
 
                     </div>
 
                 </div>
 
-            </div>
 
-        </section>
+                <a
+                    href="contato.html"
+                    class="button button-dark"
+                >
 
+                    Planejar meu evento
 
-        <!-- ============================= -->
-        <!-- REUNIÃO -->
-        <!-- ============================= -->
-
-        <section class="meeting">
-
-            <div class="container meeting-content">
-
-                <div>
-
-                    <span class="section-label">
-                        VAMOS CONVERSAR?
-                    </span>
-
-                    <h2>
-                        Seu momento começa
-                        com uma conversa.
-                    </h2>
-
-                    <p>
-                        Podemos conversar sobre seu evento,
-                        suas ideias e tudo o que você deseja
-                        registrar.
-                    </p>
-
-                    <p>
-                        A reunião pode acontecer de forma
-                        <strong>online ou presencial</strong>,
-                        conforme for melhor para você.
-                    </p>
-
-                </div>
-
-
-                <div class="meeting-actions">
-
-                    <a href="agendamento.html"
-                       class="button button-primary">
-
-                        Agendar reunião
-
-                    </a>
-
-                    <a href="contato.html"
-                       class="button button-outline">
-
-                        Falar conosco
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ============================= -->
-        <!-- INSTAGRAM / CONTATO -->
-        <!-- ============================= -->
-
-        <section class="instagram">
-
-            <div class="container instagram-content">
-
-                <div>
-
-                    <span class="section-label">
-                        ACOMPANHE NOSSO TRABALHO
-                    </span>
-
-                    <h2>
-                        @ls.fotostory
-                    </h2>
-
-                    <p>
-                        Acompanhe nossos registros,
-                        bastidores e novos trabalhos
-                        através do Instagram.
-                    </p>
-
-                </div>
-
-                <a href="https://www.instagram.com/ls.fotostory/"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   class="button button-dark">
-
-                    Ver Instagram
+                    <i class="fa-solid fa-arrow-right"></i>
 
                 </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             GALERIA VISUAL
+        ================================================== -->
+
+        <section class="visual-section">
+
+
+            <div class="section-header visual-header">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        INSPIRAÇÕES
+                    </span>
+
+                    <h2>
+                        Momentos que contam histórias.
+                    </h2>
+
+                </div>
+
+                <p>
+
+                    Alguns dos universos que podemos
+                    registrar para você.
+
+                </p>
+
+            </div>
+
+
+            <div class="visual-grid">
+
+
+                <div class="visual-card visual-large">
+
+                    <div
+                        class="visual-bg visual-party"
+                    ></div>
+
+                    <div class="visual-label">
+                        <span>
+                            EVENTOS
+                        </span>
+
+                        <strong>
+                            Celebrações
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="visual-card">
+
+                    <div
+                        class="visual-bg visual-food"
+                    ></div>
+
+                    <div class="visual-label">
+                        <span>
+                            EXPERIÊNCIAS
+                        </span>
+
+                        <strong>
+                            Detalhes
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="visual-card">
+
+                    <div
+                        class="visual-bg visual-landscape"
+                    ></div>
+
+                    <div class="visual-label">
+                        <span>
+                            MOMENTOS
+                        </span>
+
+                        <strong>
+                            Paisagens
+                        </strong>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ÁREA DO CLIENTE
+        ================================================== -->
+
+        <section class="client-section">
+
+
+            <div class="client-content">
+
+                <span class="section-eyebrow">
+                    ÁREA EXCLUSIVA
+                </span>
+
+
+                <h2>
+
+                    Suas fotos.
+                    <span>
+                        Seu espaço.
+                    </span>
+
+                </h2>
+
+
+                <p>
+
+                    Depois do seu evento, você terá acesso
+                    à sua área exclusiva para acompanhar
+                    e visualizar suas memórias.
+
+                </p>
+
+
+                <a
+                    href="login.html"
+                    class="button button-light"
+                >
+
+                    Acessar minha área
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+
+            <div class="client-decoration">
+
+                <div class="client-card">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <strong>
+                        Área privada
+                    </strong>
+
+                    <span>
+                        Acesso exclusivo para clientes
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CONTATO
+        ================================================== -->
+
+        <section
+            class="contact-section"
+            id="contato"
+        >
+
+
+            <div class="contact-intro">
+
+                <span class="section-eyebrow">
+                    VAMOS CONVERSAR
+                </span>
+
+
+                <h2>
+
+                    Seu próximo momento
+                    <em>começa aqui.</em>
+
+                </h2>
+
+
+                <p>
+
+                    Quer conversar sobre seu evento?
+                    Podemos marcar uma reunião online
+                    ou presencial para entender tudo
+                    que você precisa.
+
+                </p>
+
+            </div>
+
+
+            <div class="contact-options">
+
+
+                <a
+                    href="https://wa.me/5542988620679"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="contact-option"
+                >
+
+                    <span class="contact-icon">
+
+                        <i class="fa-brands fa-whatsapp"></i>
+
+                    </span>
+
+
+                    <span>
+
+                        <small>
+                            WHATSAPP
+                        </small>
+
+                        <strong>
+                            (42) 98862-0679
+                        </strong>
+
+                    </span>
+
+
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+                </a>
+
+
+                <a
+                    href="https://www.instagram.com/ls.fotostory/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="contact-option"
+                >
+
+                    <span class="contact-icon">
+
+                        <i class="fa-brands fa-instagram"></i>
+
+                    </span>
+
+
+                    <span>
+
+                        <small>
+                            INSTAGRAM
+                        </small>
+
+                        <strong>
+                            @ls.fotostory
+                        </strong>
+
+                    </span>
+
+
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+                </a>
+
+
+                <a
+                    href="contato.html"
+                    class="contact-option"
+                >
+
+                    <span class="contact-icon">
+
+                        <i class="fa-regular fa-calendar"></i>
+
+                    </span>
+
+
+                    <span>
+
+                        <small>
+                            REUNIÃO
+                        </small>
+
+                        <strong>
+                            Online ou presencial
+                        </strong>
+
+                    </span>
+
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
 
             </div>
 
@@ -702,143 +1003,91 @@
     </main>
 
 
-    <!-- ============================= -->
-    <!-- FOOTER -->
-    <!-- ============================= -->
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
 
-    <footer class="footer">
-
-        <div class="container footer-grid">
+    <footer class="main-footer">
 
 
-            <div class="footer-brand">
+        <div class="footer-brand">
 
-                <a href="index.html"
-                   class="logo footer-logo">
+            <a
+                href="#inicio"
+                class="brand"
+            >
 
-                    <span class="logo-icon">
-                        SM
-                    </span>
+                <span class="brand-mark">
+                    SM
+                </span>
 
-                    <span class="logo-text">
-                        Suas Memórias
-                        <small>Aqui</small>
-                    </span>
+                <span class="brand-name">
 
-                </a>
+                    Suas Memórias
 
-                <p>
-                    Transformando momentos em
-                    memórias que permanecem.
-                </p>
+                    <small>
+                        FOTOGRAFIA & STORY MAKER
+                    </small>
 
-            </div>
+                </span>
 
-
-            <div class="footer-column">
-
-                <h4>
-                    Navegação
-                </h4>
-
-                <a href="#inicio">
-                    Início
-                </a>
-
-                <a href="#servicos">
-                    Serviços
-                </a>
-
-                <a href="#experiencias">
-                    Experiências
-                </a>
-
-                <a href="login.html">
-                    Área do Cliente
-                </a>
-
-            </div>
-
-
-            <div class="footer-column">
-
-                <h4>
-                    Serviços
-                </h4>
-
-                <a href="galeria.html">
-                    Fotografia
-                </a>
-
-                <a href="videos.html">
-                    Story Maker
-                </a>
-
-                <a href="agendamento.html">
-                    Eventos
-                </a>
-
-                <a href="agendamento.html">
-                    Orçamento
-                </a>
-
-            </div>
-
-
-            <div class="footer-column">
-
-                <h4>
-                    Contato
-                </h4>
-
-                <a href="https://wa.me/5542988620679"
-                   target="_blank"
-                   rel="noopener noreferrer">
-
-                    WhatsApp
-
-                </a>
-
-                <a href="https://www.instagram.com/ls.fotostory/"
-                   target="_blank"
-                   rel="noopener noreferrer">
-
-                    Instagram
-
-                </a>
-
-                <a href="contato.html">
-                    Fale conosco
-                </a>
-
-            </div>
+            </a>
 
         </div>
 
 
-        <div class="footer-bottom">
+        <div class="footer-center">
 
-            <div class="container">
+            <p>
+                Momentos passam. Memórias ficam.
+            </p>
 
-                <p>
-                    © 2026 Suas Memórias Aqui.
-                    Todos os direitos reservados.
-                </p>
-
-                <p>
-                    Fotografia • Story Maker • Eventos
-                </p>
-
-            </div>
+            <span>
+                © 2026 Suas Memórias Aqui
+            </span>
 
         </div>
+
+
+        <div class="footer-social">
+
+            <a
+                href="https://www.instagram.com/ls.fotostory/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+            >
+
+                <i class="fa-brands fa-instagram"></i>
+
+            </a>
+
+
+            <a
+                href="https://wa.me/5542988620679"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+            >
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+            </a>
+
+        </div>
+
 
     </footer>
 
 
-    <!-- JAVASCRIPT -->
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
     <script src="js/script.js"></script>
+
 
 </body>
 
 </html>
+```
