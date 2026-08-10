@@ -2,12 +2,11 @@
 /* =========================================================
    SUAS MEMÓRIAS AQUI
    CLIENTE.JS
-   Área exclusiva do cliente
+   Área privada do cliente
 ========================================================= */
 
 import {
-    auth,
-    db
+    auth
 } from "./firebase.js";
 
 import {
@@ -15,107 +14,114 @@ import {
     signOut
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-import {
-    collection,
-    query,
-    where,
-    getDocs,
-    orderBy
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
 
 /* =========================================================
    ELEMENTOS
 ========================================================= */
 
-const clientNameHeader =
-    document.getElementById(
-        "clientNameHeader"
+const pageLoader =
+    document.getElementById("pageLoader");
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const mobileOverlay =
+    document.getElementById("mobileOverlay");
+
+const menuButton =
+    document.getElementById("menuButton");
+
+const logoutButton =
+    document.getElementById("logoutButton");
+
+const logoutModal =
+    document.getElementById("logoutModal");
+
+const cancelLogout =
+    document.getElementById("cancelLogout");
+
+const confirmLogout =
+    document.getElementById("confirmLogout");
+
+const pageTitle =
+    document.getElementById("pageTitle");
+
+const userName =
+    document.getElementById("userName");
+
+const userEmail =
+    document.getElementById("userEmail");
+
+const userAvatar =
+    document.getElementById("userAvatar");
+
+const welcomeName =
+    document.getElementById("welcomeName");
+
+const navLinks =
+    document.querySelectorAll(
+        ".nav-link[data-section]"
     );
 
-const clientEmailHeader =
-    document.getElementById(
-        "clientEmailHeader"
+const sectionLinks =
+    document.querySelectorAll(
+        "[data-section-link]"
     );
 
-const clientFirstName =
-    document.getElementById(
-        "clientFirstName"
-    );
-
-const clientAvatar =
-    document.getElementById(
-        "clientAvatar"
-    );
-
-const clientGalleryGrid =
-    document.getElementById(
-        "clientGalleryGrid"
-    );
-
-const galleryLoading =
-    document.getElementById(
-        "galleryLoading"
-    );
-
-const noGalleries =
-    document.getElementById(
-        "noGalleries"
+const pageSections =
+    document.querySelectorAll(
+        ".page-section"
     );
 
 const galleryCount =
-    document.getElementById(
-        "galleryCount"
-    );
+    document.getElementById("galleryCount");
 
-const clientLogout =
-    document.getElementById(
-        "clientLogout"
-    );
+const videoCount =
+    document.getElementById("videoCount");
 
-const logoutModal =
-    document.getElementById(
-        "logoutModal"
-    );
-
-const cancelLogout =
-    document.getElementById(
-        "cancelLogout"
-    );
-
-const confirmLogout =
-    document.getElementById(
-        "confirmLogout"
-    );
-
-const logoutModalOverlay =
-    document.getElementById(
-        "logoutModalOverlay"
-    );
+const eventCount =
+    document.getElementById("eventCount");
 
 
 /* =========================================================
-   ESTADO
+   NOMES DAS SEÇÕES
 ========================================================= */
 
-let currentUser =
-    null;
+const sectionTitles = {
+
+    inicio:
+        "Minhas memórias",
+
+    galerias:
+        "Minhas galerias",
+
+    videos:
+        "Meus vídeos",
+
+    eventos:
+        "Meus eventos"
+
+};
 
 
 /* =========================================================
-   AUTENTICAÇÃO
+   VERIFICAÇÃO DE AUTENTICAÇÃO
 ========================================================= */
+
+let currentUser = null;
+
 
 onAuthStateChanged(
     auth,
-    async (user) => {
-
-        /*
-         * Se não estiver logado,
-         * volta para o login.
-         */
+    user => {
 
         if (!user) {
+
+            /*
+             * Se não estiver logado,
+             * não permitimos acesso
+             * à área do cliente.
+             */
 
             window.location.replace(
                 "login.html"
@@ -130,31 +136,19 @@ onAuthStateChanged(
             user;
 
 
-        /*
-         * Mostra informações
-         * básicas do usuário.
-         */
-
         carregarDadosUsuario(
             user
         );
 
 
-        /*
-         * Busca as galerias
-         * vinculadas ao usuário.
-         */
-
-        await carregarGalerias(
-            user
-        );
+        esconderLoader();
 
     }
 );
 
 
 /* =========================================================
-   DADOS DO USUÁRIO
+   CARREGAR DADOS DO USUÁRIO
 ========================================================= */
 
 function carregarDadosUsuario(
@@ -167,68 +161,45 @@ function carregarDadosUsuario(
         );
 
 
-    const primeiroNome =
-        nome
-            .trim()
-            .split(" ")[0];
+    const email =
+        user.email ||
+        "Conta Google";
 
 
-    const inicial =
-        primeiroNome
-            ? primeiroNome
-                .charAt(0)
-                .toUpperCase()
-            : "C";
+    const iniciais =
+        obterIniciais(
+            nome
+        );
 
 
-    if (clientNameHeader) {
+    if (userName) {
 
-        clientNameHeader.textContent =
+        userName.textContent =
             nome;
 
     }
 
 
-    if (clientFirstName) {
+    if (welcomeName) {
 
-        clientFirstName.textContent =
-            primeiroNome ||
-            "cliente";
-
-    }
-
-
-    if (clientEmailHeader) {
-
-        clientEmailHeader.textContent =
-            user.email ||
-            "";
+        welcomeName.textContent =
+            nome;
 
     }
 
 
-    if (clientAvatar) {
+    if (userEmail) {
 
-        /*
-         * Se o Google fornecer uma foto,
-         * podemos utilizá-la.
-         */
+        userEmail.textContent =
+            email;
 
-        if (user.photoURL) {
+    }
 
-            clientAvatar.innerHTML = `
-                <img
-                    src="${escaparHTML(user.photoURL)}"
-                    alt="Foto do cliente"
-                >
-            `;
 
-        } else {
+    if (userAvatar) {
 
-            clientAvatar.textContent =
-                inicial;
-
-        }
+        userAvatar.textContent =
+            iniciais;
 
     }
 
@@ -243,9 +214,13 @@ function obterNomeUsuario(
     user
 ) {
 
-    if (user.displayName) {
+    if (
+        user.displayName &&
+        user.displayName.trim()
+    ) {
 
-        return user.displayName;
+        return
+            user.displayName.trim();
 
     }
 
@@ -253,7 +228,9 @@ function obterNomeUsuario(
     if (user.email) {
 
         const parteEmail =
-            user.email.split("@")[0];
+            user.email
+                .split("@")[0]
+                .replace(/[._-]+/g, " ");
 
 
         return formatarNome(
@@ -277,18 +254,25 @@ function formatarNome(
 ) {
 
     return nome
-        .replace(/[._-]+/g, " ")
-        .replace(/\s+/g, " ")
         .trim()
-        .split(" ")
+        .split(/\s+/)
         .map(
-            palavra =>
-                palavra
-                    .charAt(0)
-                    .toUpperCase() +
-                palavra
-                    .slice(1)
-                    .toLowerCase()
+            palavra => {
+
+                if (!palavra) {
+                    return "";
+                }
+
+                return (
+                    palavra
+                        .charAt(0)
+                        .toUpperCase() +
+                    palavra
+                        .slice(1)
+                        .toLowerCase()
+                );
+
+            }
         )
         .join(" ");
 
@@ -296,664 +280,383 @@ function formatarNome(
 
 
 /* =========================================================
-   CARREGAR GALERIAS
+   INICIAIS
 ========================================================= */
 
-async function carregarGalerias(
-    user
+function obterIniciais(
+    nome
 ) {
 
-    mostrarLoading(
-        true
+    const palavras =
+        nome
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+    if (
+        palavras.length === 1
+    ) {
+
+        return palavras[0]
+            .substring(0, 2)
+            .toUpperCase();
+
+    }
+
+
+    return (
+        palavras[0].charAt(0) +
+        palavras[
+            palavras.length - 1
+        ].charAt(0)
+    ).toUpperCase();
+
+}
+
+
+/* =========================================================
+   ESCONDER LOADER
+========================================================= */
+
+function esconderLoader() {
+
+    if (!pageLoader) {
+        return;
+    }
+
+
+    setTimeout(
+        () => {
+
+            pageLoader.classList.add(
+                "hidden"
+            );
+
+        },
+        350
     );
 
-
-    esconderGalerias();
-
-
-    try {
-
-        /*
-         * A coleção utilizada será:
-         *
-         * galerias
-         *
-         * Cada documento deverá possuir:
-         *
-         * clienteId
-         * titulo
-         * descricao
-         * data
-         * capa
-         * quantidadeFotos
-         */
-
-        const galeriasRef =
-            collection(
-                db,
-                "galerias"
-            );
-
-
-        const consulta =
-            query(
-                galeriasRef,
-                where(
-                    "clienteId",
-                    "==",
-                    user.uid
-                ),
-                orderBy(
-                    "data",
-                    "desc"
-                )
-            );
-
-
-        const resultado =
-            await getDocs(
-                consulta
-            );
-
-
-        const galerias =
-            [];
-
-
-        resultado.forEach(
-            documento => {
-
-                galerias.push({
-                    id:
-                        documento.id,
-
-                    ...documento.data()
-                });
-
-            }
-        );
-
-
-        mostrarLoading(
-            false
-        );
-
-
-        atualizarQuantidade(
-            galerias.length
-        );
-
-
-        if (
-            galerias.length ===
-            0
-        ) {
-
-            mostrarSemGalerias();
-
-            return;
-
-        }
-
-
-        renderizarGalerias(
-            galerias
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao carregar galerias:",
-            error
-        );
-
-
-        mostrarLoading(
-            false
-        );
-
-
-        /*
-         * Se a consulta falhar por causa
-         * do índice do Firestore, mostramos
-         * uma mensagem amigável.
-         */
-
-        mostrarErroGalerias(
-            error
-        );
-
-    }
-
 }
 
 
 /* =========================================================
-   RENDERIZAR GALERIAS
+   NAVEGAÇÃO ENTRE SEÇÕES
 ========================================================= */
 
-function renderizarGalerias(
-    galerias
+function abrirSecao(
+    sectionId
 ) {
 
-    if (!clientGalleryGrid) {
-        return;
-    }
-
-
-    clientGalleryGrid.innerHTML =
-        "";
-
-
-    galerias.forEach(
-        galeria => {
-
-            const card =
-                criarCardGaleria(
-                    galeria
-                );
-
-
-            clientGalleryGrid.appendChild(
-                card
-            );
-
-        }
-    );
-
-
-    clientGalleryGrid.style.display =
-        "grid";
-
-}
-
-
-/* =========================================================
-   CRIAR CARD
-========================================================= */
-
-function criarCardGaleria(
-    galeria
-) {
-
-    const article =
-        document.createElement(
-            "article"
-        );
-
-
-    article.className =
-        "gallery-card";
-
-
-    const capa =
-        galeria.capa ||
-        galeria.cover ||
-        "";
-
-
-    const titulo =
-        galeria.titulo ||
-        galeria.title ||
-        "Minha galeria";
-
-
-    const descricao =
-        galeria.descricao ||
-        galeria.description ||
-        "Suas memórias estão esperando por você.";
-
-
-    const quantidade =
-        galeria.quantidadeFotos ??
-        galeria.photoCount ??
-        galeria.fotos ??
-        0;
-
-
-    const data =
-        formatarData(
-            galeria.data
-        );
-
-
-    article.innerHTML = `
-
-        <div class="gallery-cover">
-
-            ${
-                capa
-                    ? `
-                        <img
-                            src="${escaparHTML(capa)}"
-                            alt="Capa da galeria ${escaparHTML(titulo)}"
-                            loading="lazy"
-                        >
-                    `
-                    : `
-                        <div class="gallery-cover-placeholder">
-
-                            <span>
-                                ✦
-                            </span>
-
-                            <small>
-                                SUAS MEMÓRIAS
-                            </small>
-
-                        </div>
-                    `
-            }
-
-
-            ${
-                data
-                    ? `
-                        <div class="gallery-date">
-                            ${escaparHTML(data)}
-                        </div>
-                    `
-                    : ""
-            }
-
-        </div>
-
-
-        <div class="gallery-card-content">
-
-            <span>
-                GALERIA EXCLUSIVA
-            </span>
-
-            <h3>
-                ${escaparHTML(titulo)}
-            </h3>
-
-            <p>
-                ${escaparHTML(descricao)}
-            </p>
-
-
-            <div class="gallery-card-bottom">
-
-                <span class="gallery-photo-count">
-                    ${escaparHTML(
-                        quantidade.toString()
-                    )}
-                    ${
-                        Number(quantidade) === 1
-                            ? "foto"
-                            : "fotos"
-                    }
-                </span>
-
-
-                <a
-                    href="galeria.html?id=${encodeURIComponent(
-                        galeria.id
-                    )}"
-                    class="gallery-open-button"
-                >
-
-                    Abrir galeria
-
-                    <strong>
-                        →
-                    </strong>
-
-                </a>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    return article;
-
-}
-
-
-/* =========================================================
-   DATA
-========================================================= */
-
-function formatarData(
-    valor
-) {
-
-    if (!valor) {
-        return "";
-    }
-
-
-    try {
-
-        /*
-         * Timestamp do Firestore
-         */
-
-        if (
-            typeof valor.toDate ===
-            "function"
-        ) {
-
-            return valor
-                .toDate()
-                .toLocaleDateString(
-                    "pt-BR"
-                );
-
-        }
-
-
-        /*
-         * Date normal
-         */
-
-        if (
-            valor instanceof Date
-        ) {
-
-            return valor.toLocaleDateString(
-                "pt-BR"
-            );
-
-        }
-
-
-        /*
-         * String ou número
-         */
-
-        const data =
-            new Date(
-                valor
-            );
-
-
-        if (
-            Number.isNaN(
-                data.getTime()
-            )
-        ) {
-
-            return "";
-
-        }
-
-
-        return data.toLocaleDateString(
-            "pt-BR"
-        );
-
-
-    } catch {
-
-        return "";
-
-    }
-
-}
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-function mostrarLoading(
-    mostrar
-) {
-
-    if (!galleryLoading) {
-        return;
-    }
-
-
-    galleryLoading.style.display =
-        mostrar
-            ? "flex"
-            : "none";
-
-}
-
-
-/* =========================================================
-   ESCONDER GALERIAS
-========================================================= */
-
-function esconderGalerias() {
-
-    if (
-        clientGalleryGrid
-    ) {
-
-        clientGalleryGrid.style.display =
-            "none";
-
-    }
-
-
-    if (
-        noGalleries
-    ) {
-
-        noGalleries.hidden =
-            true;
-
-    }
-
-}
-
-
-/* =========================================================
-   SEM GALERIAS
-========================================================= */
-
-function mostrarSemGalerias() {
-
-    if (
-        clientGalleryGrid
-    ) {
-
-        clientGalleryGrid.innerHTML =
-            "";
-
-        clientGalleryGrid.style.display =
-            "none";
-
-    }
-
-
-    if (
-        noGalleries
-    ) {
-
-        noGalleries.hidden =
-            false;
-
-    }
-
-}
-
-
-/* =========================================================
-   ERRO NAS GALERIAS
-========================================================= */
-
-function mostrarErroGalerias(
-    error
-) {
-
-    if (!clientGalleryGrid) {
-        return;
-    }
-
-
-    clientGalleryGrid.style.display =
-        "block";
-
-
-    clientGalleryGrid.innerHTML = `
-
-        <div
-            style="
-                padding:50px 25px;
-                border:1px solid #e7e2d9;
-                background:#fff;
-                text-align:center;
-            "
-        >
-
-            <div
-                style="
-                    font-size:28px;
-                    color:#967344;
-                "
-            >
-                ✦
-            </div>
-
-
-            <h3
-                style="
-                    margin-top:15px;
-                    font-family:'Playfair Display',serif;
-                    font-size:23px;
-                    font-weight:500;
-                    color:#292929;
-                "
-            >
-                Não conseguimos carregar
-                suas galerias.
-            </h3>
-
-
-            <p
-                style="
-                    max-width:470px;
-                    margin:10px auto 0;
-                    color:#96928c;
-                    font-size:9px;
-                    line-height:1.8;
-                "
-            >
-                Verifique sua conexão com a internet
-                e tente novamente.
-            </p>
-
-
-            <button
-                id="retryGalleries"
-                type="button"
-                style="
-                    margin-top:20px;
-                    min-height:40px;
-                    padding:0 18px;
-                    border:0;
-                    background:#292929;
-                    color:#fff;
-                    cursor:pointer;
-                    font-size:8px;
-                    font-weight:800;
-                "
-            >
-                TENTAR NOVAMENTE
-            </button>
-
-        </div>
-
-    `;
-
-
-    const retry =
+    const target =
         document.getElementById(
-            "retryGalleries"
+            sectionId
         );
 
 
-    if (retry) {
+    if (!target) {
+        return;
+    }
 
-        retry.addEventListener(
-            "click",
-            () => {
 
-                if (currentUser) {
+    /*
+     * Esconde todas as seções
+     */
 
-                    carregarGalerias(
-                        currentUser
-                    );
+    pageSections.forEach(
+        section => {
 
-                }
+            section.classList.remove(
+                "active-section"
+            );
 
-            }
+        }
+    );
+
+
+    /*
+     * Mostra a seção escolhida
+     */
+
+    target.classList.add(
+        "active-section"
+    );
+
+
+    /*
+     * Atualiza título
+     */
+
+    if (pageTitle) {
+
+        pageTitle.textContent =
+            sectionTitles[
+                sectionId
+            ] ||
+            "Minhas memórias";
+
+    }
+
+
+    /*
+     * Atualiza menu
+     */
+
+    navLinks.forEach(
+        link => {
+
+            const linkSection =
+                link.dataset.section;
+
+
+            link.classList.toggle(
+                "active",
+                linkSection ===
+                sectionId
+            );
+
+        }
+    );
+
+
+    /*
+     * Atualiza URL
+     */
+
+    if (
+        history.pushState
+    ) {
+
+        history.pushState(
+            null,
+            "",
+            `#${sectionId}`
         );
 
     }
 
 
     /*
-     * Ajuda durante o desenvolvimento.
+     * Fecha menu no celular
      */
 
-    if (
-        error?.code ===
-        "failed-precondition"
-    ) {
+    fecharMenuMobile();
 
-        console.warn(
-            "O Firestore pode estar solicitando a criação de um índice para esta consulta."
+
+    /*
+     * Volta para o topo
+     */
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   LINKS DO MENU
+========================================================= */
+
+navLinks.forEach(
+    link => {
+
+        link.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+
+                const section =
+                    link.dataset.section;
+
+
+                abrirSecao(
+                    section
+                );
+
+            }
         );
 
     }
-
-}
+);
 
 
 /* =========================================================
-   CONTADOR
+   LINKS INTERNOS
 ========================================================= */
 
-function atualizarQuantidade(
-    quantidade
-) {
+sectionLinks.forEach(
+    link => {
 
-    if (!galleryCount) {
+        link.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+
+                const section =
+                    link.dataset.sectionLink;
+
+
+                abrirSecao(
+                    section
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   ABRIR SEÇÃO PELA URL
+========================================================= */
+
+function carregarSecaoInicial() {
+
+    const hash =
+        window.location.hash
+            .replace("#", "");
+
+
+    if (
+        hash &&
+        document.getElementById(hash)
+    ) {
+
+        abrirSecao(
+            hash
+        );
+
         return;
+
     }
 
 
-    galleryCount.textContent =
-        `${quantidade} ${
-            quantidade === 1
-                ? "galeria"
-                : "galerias"
-        }`;
+    abrirSecao(
+        "inicio"
+    );
 
 }
 
 
+window.addEventListener(
+    "load",
+    carregarSecaoInicial
+);
+
+
 /* =========================================================
-   LOGOUT
+   BOTÃO MENU MOBILE
 ========================================================= */
 
-if (clientLogout) {
+if (menuButton) {
 
-    clientLogout.addEventListener(
+    menuButton.addEventListener(
         "click",
-        abrirModalLogout
+        abrirMenuMobile
+    );
+
+}
+
+
+function abrirMenuMobile() {
+
+    sidebar?.classList.add(
+        "open"
+    );
+
+    mobileOverlay?.classList.add(
+        "open"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+function fecharMenuMobile() {
+
+    sidebar?.classList.remove(
+        "open"
+    );
+
+    mobileOverlay?.classList.remove(
+        "open"
+    );
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+if (mobileOverlay) {
+
+    mobileOverlay.addEventListener(
+        "click",
+        fecharMenuMobile
     );
 
 }
 
 
 /* =========================================================
-   ABRIR MODAL
+   ESC FECHA MENU
 ========================================================= */
 
-function abrirModalLogout() {
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            fecharMenuMobile();
+
+
+            if (
+                logoutModal?.classList.contains(
+                    "open"
+                )
+            ) {
+
+                fecharLogoutModal();
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   BOTÃO LOGOUT
+========================================================= */
+
+if (logoutButton) {
+
+    logoutButton.addEventListener(
+        "click",
+        abrirLogoutModal
+    );
+
+}
+
+
+/* =========================================================
+   ABRIR MODAL LOGOUT
+========================================================= */
+
+function abrirLogoutModal() {
 
     if (!logoutModal) {
         return;
@@ -965,12 +668,6 @@ function abrirModalLogout() {
     );
 
 
-    logoutModal.setAttribute(
-        "aria-hidden",
-        "false"
-    );
-
-
     document.body.style.overflow =
         "hidden";
 
@@ -978,10 +675,10 @@ function abrirModalLogout() {
 
 
 /* =========================================================
-   FECHAR MODAL
+   FECHAR MODAL LOGOUT
 ========================================================= */
 
-function fecharModalLogout() {
+function fecharLogoutModal() {
 
     if (!logoutModal) {
         return;
@@ -993,37 +690,37 @@ function fecharModalLogout() {
     );
 
 
-    logoutModal.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-
     document.body.style.overflow =
         "";
 
 }
 
 
-/* =========================================================
-   CANCELAR LOGOUT
-========================================================= */
-
 if (cancelLogout) {
 
     cancelLogout.addEventListener(
         "click",
-        fecharModalLogout
+        fecharLogoutModal
     );
 
 }
 
 
-if (logoutModalOverlay) {
+/* =========================================================
+   CLICAR FORA DO MODAL
+========================================================= */
 
-    logoutModalOverlay.addEventListener(
+if (logoutModal) {
+
+    const overlay =
+        logoutModal.querySelector(
+            ".modal-overlay"
+        );
+
+
+    overlay?.addEventListener(
         "click",
-        fecharModalLogout
+        fecharLogoutModal
     );
 
 }
@@ -1074,6 +771,10 @@ if (confirmLogout) {
                 confirmLogout.textContent =
                     "Sair da conta";
 
+                alert(
+                    "Não foi possível sair da conta. Tente novamente."
+                );
+
             }
 
         }
@@ -1083,19 +784,19 @@ if (confirmLogout) {
 
 
 /* =========================================================
-   ESC
+   FECHAR MODAL AO REDIMENSIONAR
 ========================================================= */
 
-document.addEventListener(
-    "keydown",
-    (event) => {
+window.addEventListener(
+    "resize",
+    () => {
 
         if (
-            event.key ===
-            "Escape"
+            window.innerWidth >
+            800
         ) {
 
-            fecharModalLogout();
+            fecharMenuMobile();
 
         }
 
@@ -1104,53 +805,81 @@ document.addEventListener(
 
 
 /* =========================================================
-   PROTEÇÃO CONTRA HTML
+   CONTADORES
 ========================================================= */
 
-function escaparHTML(
-    valor
+function atualizarContadores(
+    dados = {}
 ) {
 
-    if (
-        valor === null ||
-        valor === undefined
-    ) {
+    if (galleryCount) {
 
-        return "";
+        galleryCount.textContent =
+            dados.galerias ?? 0;
 
     }
 
 
-    return String(valor)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    if (videoCount) {
+
+        videoCount.textContent =
+            dados.videos ?? 0;
+
+    }
+
+
+    if (eventCount) {
+
+        eventCount.textContent =
+            dados.eventos ?? 0;
+
+    }
 
 }
 
 
+/*
+ * Por enquanto começamos em zero.
+ *
+ * Na próxima etapa vamos buscar esses
+ * dados no Firestore.
+ */
+
+atualizarContadores({
+    galerias: 0,
+    videos: 0,
+    eventos: 0
+});
+
+
 /* =========================================================
-   FINAL
+   PREVENIR ACESSO COM TECLA VOLTAR
+========================================================= */
+
+window.addEventListener(
+    "pageshow",
+    event => {
+
+        if (
+            event.persisted &&
+            !auth.currentUser
+        ) {
+
+            window.location.replace(
+                "login.html"
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   LOG
 ========================================================= */
 
 console.log(
-    "Suas Memórias Aqui — Área do cliente carregada."
+    "Suas Memórias Aqui — Área do cliente inicializada."
 );
 ```
