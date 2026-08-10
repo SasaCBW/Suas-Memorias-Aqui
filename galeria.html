@@ -1,0 +1,531 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="robots"
+        content="noindex, nofollow"
+    >
+
+    <meta
+        name="description"
+        content="Galeria privada — Suas Memórias Aqui"
+    >
+
+    <title>
+        Minha Galeria | Suas Memórias Aqui
+    </title>
+
+
+    <!-- =====================================================
+         FONTES
+    ====================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/galeria.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="gallery-header">
+
+        <div class="gallery-header-inner">
+
+
+            <!-- VOLTAR -->
+
+            <a
+                href="cliente.html"
+                class="back-button"
+            >
+
+                <span>
+                    ←
+                </span>
+
+                Minhas galerias
+
+            </a>
+
+
+            <!-- LOGO -->
+
+            <a
+                href="cliente.html"
+                class="gallery-logo"
+            >
+
+                <span class="gallery-logo-symbol">
+                    SM
+                </span>
+
+                <span class="gallery-logo-name">
+
+                    Suas Memórias
+
+                    <small>
+                        FOTOGRAFIA & STORIES
+                    </small>
+
+                </span>
+
+            </a>
+
+
+            <!-- CONTA -->
+
+            <div class="gallery-user">
+
+                <div
+                    id="galleryAvatar"
+                    class="gallery-avatar"
+                >
+                    C
+                </div>
+
+                <span
+                    id="galleryUserName"
+                >
+                    Cliente
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTEÚDO
+    ====================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             LOADING
+        ================================================== -->
+
+        <section
+            id="galleryLoading"
+            class="gallery-loading"
+        >
+
+            <div class="gallery-spinner"></div>
+
+            <p>
+                Abrindo suas memórias...
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             GALERIA
+        ================================================== -->
+
+        <section
+            id="galleryContent"
+            class="gallery-content"
+            hidden
+        >
+
+
+            <!-- =============================================
+                 CABEÇALHO DA GALERIA
+            ============================================== -->
+
+            <div class="gallery-introduction">
+
+
+                <div class="gallery-introduction-text">
+
+                    <span>
+                        GALERIA PRIVADA
+                    </span>
+
+                    <h1
+                        id="galleryTitle"
+                    >
+                        Minha galeria
+                    </h1>
+
+                    <p
+                        id="galleryDescription"
+                    >
+                        Suas memórias especiais.
+                    </p>
+
+
+                    <div class="gallery-meta">
+
+                        <span>
+
+                            <strong
+                                id="galleryPhotoCount"
+                            >
+                                0
+                            </strong>
+
+                            fotografias
+
+                        </span>
+
+
+                        <span
+                            id="galleryDate"
+                        >
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="gallery-introduction-mark">
+
+                    <span>
+                        ✦
+                    </span>
+
+                    <small>
+                        MEMÓRIAS
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =============================================
+                 AÇÕES
+            ============================================== -->
+
+            <div class="gallery-toolbar">
+
+
+                <div class="gallery-filter">
+
+                    <button
+                        type="button"
+                        class="gallery-filter-button active"
+                        data-filter="all"
+                    >
+                        Todas
+                    </button>
+
+                    <button
+                        type="button"
+                        class="gallery-filter-button"
+                        data-filter="foto"
+                    >
+                        Fotos
+                    </button>
+
+                    <button
+                        type="button"
+                        class="gallery-filter-button"
+                        data-filter="video"
+                    >
+                        Vídeos
+                    </button>
+
+                </div>
+
+
+                <div class="gallery-actions">
+
+                    <button
+                        type="button"
+                        id="selectPhotos"
+                        class="gallery-action-button"
+                    >
+                        Selecionar
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="downloadSelected"
+                        class="gallery-action-button primary"
+                        disabled
+                    >
+                        Baixar selecionadas
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =============================================
+                 ÁREA DE FOTOS
+            ============================================== -->
+
+            <div
+                id="mediaGrid"
+                class="media-grid"
+            ></div>
+
+
+            <!-- =============================================
+                 SEM MÍDIA
+            ============================================== -->
+
+            <div
+                id="emptyMedia"
+                class="empty-media"
+                hidden
+            >
+
+                <div>
+                    ✦
+                </div>
+
+                <h2>
+                    Esta galeria ainda está sendo preparada.
+                </h2>
+
+                <p>
+                    Assim que suas fotografias forem
+                    disponibilizadas, elas aparecerão aqui.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             ERRO
+        ================================================== -->
+
+        <section
+            id="galleryError"
+            class="gallery-error"
+            hidden
+        >
+
+            <div class="gallery-error-icon">
+                !
+            </div>
+
+            <h2>
+                Não foi possível abrir esta galeria.
+            </h2>
+
+            <p
+                id="galleryErrorMessage"
+            >
+                Verifique o endereço da galeria e tente novamente.
+            </p>
+
+            <a
+                href="cliente.html"
+                class="gallery-error-button"
+            >
+                Voltar para minhas galerias
+            </a>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         LIGHTBOX
+    ====================================================== -->
+
+    <div
+        id="lightbox"
+        class="lightbox"
+        aria-hidden="true"
+    >
+
+
+        <div
+            class="lightbox-background"
+            id="lightboxBackground"
+        ></div>
+
+
+        <div class="lightbox-content">
+
+
+            <button
+                type="button"
+                id="lightboxClose"
+                class="lightbox-close"
+                aria-label="Fechar"
+            >
+                ×
+            </button>
+
+
+            <button
+                type="button"
+                id="lightboxPrevious"
+                class="lightbox-navigation previous"
+                aria-label="Foto anterior"
+            >
+                ‹
+            </button>
+
+
+            <div
+                id="lightboxMedia"
+                class="lightbox-media"
+            ></div>
+
+
+            <button
+                type="button"
+                id="lightboxNext"
+                class="lightbox-navigation next"
+                aria-label="Próxima foto"
+            >
+                ›
+            </button>
+
+
+            <div class="lightbox-footer">
+
+
+                <div>
+
+                    <strong
+                        id="lightboxTitle"
+                    >
+                        Fotografia
+                    </strong>
+
+                    <span
+                        id="lightboxPosition"
+                    >
+                        1 / 1
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="lightboxDownload"
+                    class="lightbox-download"
+                >
+                    ↓ Baixar fotografia
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SELEÇÃO
+    ====================================================== -->
+
+    <div
+        id="selectionBar"
+        class="selection-bar"
+        aria-hidden="true"
+    >
+
+        <div>
+
+            <strong
+                id="selectedCount"
+            >
+                0
+            </strong>
+
+            <span>
+                selecionadas
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <button
+                type="button"
+                id="cancelSelection"
+                class="selection-cancel"
+            >
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                id="downloadSelectionBottom"
+                class="selection-download"
+            >
+                Baixar
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="js/galeria.js"
+    ></script>
+
+
+</body>
+
+</html>
+```
