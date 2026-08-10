@@ -2,31 +2,27 @@
 /* =========================================================
    SUAS MEMÓRIAS AQUI
    LOGIN.JS
-   Sistema de autenticação dos clientes
+
+   Login por e-mail e senha
+   Login com Google
+   Recuperação de senha
+   Redirecionamento para área do cliente
 ========================================================= */
 
 import {
-    auth,
-    googleProvider,
-    db
+    auth
 } from "./firebase.js";
 
 import {
     signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
     signInWithPopup,
     sendPasswordResetEmail,
-    updateProfile,
     setPersistence,
     browserLocalPersistence,
-    browserSessionPersistence
+    browserSessionPersistence,
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-import {
-    doc,
-    setDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 
 /* =========================================================
@@ -36,11 +32,14 @@ import {
 const loginForm =
     document.getElementById("loginForm");
 
-const loginEmail =
-    document.getElementById("loginEmail");
+const emailInput =
+    document.getElementById("email");
 
-const loginPassword =
-    document.getElementById("loginPassword");
+const passwordInput =
+    document.getElementById("password");
+
+const rememberMe =
+    document.getElementById("rememberMe");
 
 const loginButton =
     document.getElementById("loginButton");
@@ -48,283 +47,171 @@ const loginButton =
 const loginButtonText =
     document.getElementById("loginButtonText");
 
-const googleLogin =
+const buttonLoader =
+    document.getElementById("buttonLoader");
+
+const googleButton =
     document.getElementById("googleLogin");
+
+const passwordToggle =
+    document.getElementById("passwordToggle");
 
 const forgotPassword =
     document.getElementById("forgotPassword");
 
-const togglePassword =
-    document.getElementById("togglePassword");
+const passwordModal =
+    document.getElementById("passwordModal");
 
-const rememberMe =
-    document.getElementById("rememberMe");
-
-const authMessage =
-    document.getElementById("authMessage");
-
-
-/* =========================================================
-   CADASTRO
-========================================================= */
-
-const registerModal =
-    document.getElementById("registerModal");
-
-const showRegister =
-    document.getElementById("showRegister");
-
-const closeRegister =
-    document.getElementById("closeRegister");
-
-const modalBackdrop =
-    document.querySelector(".modal-backdrop");
-
-const registerForm =
-    document.getElementById("registerForm");
-
-const registerName =
-    document.getElementById("registerName");
-
-const registerEmail =
-    document.getElementById("registerEmail");
-
-const registerPassword =
-    document.getElementById("registerPassword");
-
-const registerButton =
-    document.getElementById("registerButton");
-
-const registerButtonText =
-    document.getElementById("registerButtonText");
-
-const toggleRegisterPassword =
+const passwordModalBackdrop =
     document.getElementById(
-        "toggleRegisterPassword"
+        "passwordModalBackdrop"
     );
 
-const registerMessage =
+const modalClose =
     document.getElementById(
-        "registerMessage"
+        "modalClose"
+    );
+
+const resetPasswordForm =
+    document.getElementById(
+        "resetPasswordForm"
+    );
+
+const resetEmail =
+    document.getElementById(
+        "resetEmail"
+    );
+
+const resetButton =
+    document.getElementById(
+        "resetButton"
+    );
+
+const resetMessage =
+    document.getElementById(
+        "resetMessage"
+    );
+
+const loginAlert =
+    document.getElementById(
+        "loginAlert"
+    );
+
+const loginAlertText =
+    document.getElementById(
+        "loginAlertText"
+    );
+
+const emailError =
+    document.getElementById(
+        "emailError"
+    );
+
+const passwordError =
+    document.getElementById(
+        "passwordError"
     );
 
 
 /* =========================================================
-   FUNÇÕES DE MENSAGEM
+   CONFIGURAÇÃO
 ========================================================= */
 
-function mostrarMensagem(
-    elemento,
-    mensagem,
-    tipo = "error"
-) {
-
-    if (!elemento) {
-        return;
-    }
-
-    elemento.textContent =
-        mensagem;
-
-    elemento.className =
-        `auth-message show ${tipo}`;
-
-}
-
-
-function limparMensagem(elemento) {
-
-    if (!elemento) {
-        return;
-    }
-
-    elemento.textContent = "";
-
-    elemento.className =
-        "auth-message";
-
-}
+const CLIENT_PAGE =
+    "cliente.html";
 
 
 /* =========================================================
-   ERROS DOS CAMPOS
+   VERIFICAR SE JÁ ESTÁ LOGADO
 ========================================================= */
 
-function limparErros() {
+onAuthStateChanged(
+    auth,
+    (user) => {
 
-    document
-        .querySelectorAll(".field-error")
-        .forEach(elemento => {
+        if (user) {
 
-            elemento.textContent = "";
+            /*
+             * Se a pessoa já estiver autenticada,
+             * não precisa passar novamente pelo login.
+             */
 
-        });
-
-
-    document
-        .querySelectorAll(".form-group")
-        .forEach(elemento => {
-
-            elemento.classList.remove(
-                "has-error"
+            window.location.replace(
+                CLIENT_PAGE
             );
 
-        });
+        }
 
-}
+    }
+);
 
 
-function mostrarErroCampo(
-    input,
-    errorId,
-    mensagem
-) {
+/* =========================================================
+   UTILITÁRIOS
+========================================================= */
 
-    if (!input) {
+function showAlert(message) {
+
+    if (!loginAlert) {
         return;
     }
 
 
-    const grupo =
-        input.closest(
-            ".form-group"
-        );
+    loginAlertText.textContent =
+        message;
 
 
-    const erro =
-        document.getElementById(
-            errorId
-        );
-
-
-    if (grupo) {
-
-        grupo.classList.add(
-            "has-error"
-        );
-
-    }
-
-
-    if (erro) {
-
-        erro.textContent =
-            mensagem;
-
-    }
-
-}
-
-
-/* =========================================================
-   BOTÃO — CARREGANDO
-========================================================= */
-
-function alterarEstadoBotao(
-    botao,
-    textoElemento,
-    carregando,
-    textoNormal
-) {
-
-    if (!botao) {
-        return;
-    }
-
-
-    botao.disabled =
-        carregando;
-
-
-    if (textoElemento) {
-
-        textoElemento.textContent =
-            carregando
-                ? "Aguarde..."
-                : textoNormal;
-
-    }
-
-}
-
-
-/* =========================================================
-   TRADUÇÃO DOS ERROS DO FIREBASE
-========================================================= */
-
-function traduzirErroFirebase(
-    erro
-) {
-
-    const codigo =
-        erro?.code || "";
-
-
-    const mensagens = {
-
-        "auth/invalid-email":
-            "Digite um e-mail válido.",
-
-        "auth/user-not-found":
-            "Não encontramos uma conta com este e-mail.",
-
-        "auth/wrong-password":
-            "E-mail ou senha incorretos.",
-
-        "auth/invalid-credential":
-            "E-mail ou senha incorretos.",
-
-        "auth/email-already-in-use":
-            "Este e-mail já possui uma conta.",
-
-        "auth/weak-password":
-            "A senha precisa ter pelo menos 6 caracteres.",
-
-        "auth/popup-closed-by-user":
-            "A janela do Google foi fechada.",
-
-        "auth/popup-blocked":
-            "O navegador bloqueou a janela do Google.",
-
-        "auth/account-exists-with-different-credential":
-            "Este e-mail já está cadastrado usando outro método de login.",
-
-        "auth/too-many-requests":
-            "Muitas tentativas. Aguarde alguns minutos e tente novamente.",
-
-        "auth/network-request-failed":
-            "Não foi possível conectar ao Firebase. Verifique sua internet.",
-
-        "auth/operation-not-allowed":
-            "Este método de login ainda não está ativado no Firebase.",
-
-        "auth/unauthorized-domain":
-            "Este domínio ainda não está autorizado no Firebase.",
-
-        "auth/user-disabled":
-            "Esta conta foi desativada.",
-
-        "auth/requires-recent-login":
-            "Por segurança, faça login novamente."
-
-    };
-
-
-    return (
-        mensagens[codigo] ||
-        "Não foi possível concluir a operação. Tente novamente."
+    loginAlert.classList.add(
+        "show"
     );
 
 }
 
 
-/* =========================================================
-   VALIDAR E-MAIL
-========================================================= */
+function hideAlert() {
 
-function emailValido(
-    email
-) {
+    if (!loginAlert) {
+        return;
+    }
+
+
+    loginAlert.classList.remove(
+        "show"
+    );
+
+}
+
+
+function clearErrors() {
+
+    if (emailError) {
+
+        emailError.textContent =
+            "";
+
+    }
+
+
+    if (passwordError) {
+
+        passwordError.textContent =
+            "";
+
+    }
+
+
+    emailInput?.classList.remove(
+        "input-error"
+    );
+
+    passwordInput?.classList.remove(
+        "input-error"
+    );
+
+}
+
+
+function validateEmail(email) {
 
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         .test(email);
@@ -332,152 +219,347 @@ function emailValido(
 }
 
 
+function setLoginLoading(
+    loading
+) {
+
+    if (!loginButton) {
+        return;
+    }
+
+
+    loginButton.disabled =
+        loading;
+
+
+    if (loading) {
+
+        loginButton.classList.add(
+            "loading"
+        );
+
+        loginButtonText.textContent =
+            "Entrando...";
+
+    } else {
+
+        loginButton.classList.remove(
+            "loading"
+        );
+
+        loginButtonText.textContent =
+            "Entrar na minha área";
+
+    }
+
+}
+
+
 /* =========================================================
-   LOGIN
+   ERROS DO FIREBASE
+========================================================= */
+
+function getFirebaseErrorMessage(
+    error
+) {
+
+    const code =
+        error?.code || "";
+
+
+    switch (code) {
+
+        case "auth/invalid-email":
+
+            return "O e-mail informado não é válido.";
+
+
+        case "auth/user-disabled":
+
+            return "Esta conta foi desativada. Entre em contato conosco.";
+
+
+        case "auth/user-not-found":
+
+            return "Não encontramos uma conta com este e-mail.";
+
+
+        case "auth/wrong-password":
+
+            return "A senha informada está incorreta.";
+
+
+        case "auth/invalid-credential":
+
+            return "E-mail ou senha incorretos. Verifique seus dados e tente novamente.";
+
+
+        case "auth/too-many-requests":
+
+            return "Muitas tentativas foram realizadas. Aguarde alguns minutos e tente novamente.";
+
+
+        case "auth/network-request-failed":
+
+            return "Não foi possível conectar ao servidor. Verifique sua internet.";
+
+
+        case "auth/popup-closed-by-user":
+
+            return "A janela do Google foi fechada antes da conclusão do login.";
+
+
+        case "auth/popup-blocked":
+
+            return "O navegador bloqueou a janela do Google. Permita pop-ups para este site.";
+
+
+        case "auth/cancelled-popup-request":
+
+            return "A solicitação de login foi cancelada.";
+
+
+        case "auth/account-exists-with-different-credential":
+
+            return "Este e-mail já possui uma conta usando outro método de login.";
+
+
+        case "auth/operation-not-allowed":
+
+            return "Este método de login ainda não foi ativado no Firebase.";
+
+
+        case "auth/unauthorized-domain":
+
+            return "Este domínio ainda não está autorizado no Firebase Authentication.";
+
+
+        default:
+
+            console.error(
+                "Firebase Auth Error:",
+                error
+            );
+
+            return "Não foi possível realizar o login. Tente novamente.";
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGIN COM E-MAIL E SENHA
 ========================================================= */
 
 if (loginForm) {
 
     loginForm.addEventListener(
         "submit",
-        async event => {
+        async (event) => {
 
             event.preventDefault();
 
 
-            limparErros();
+            hideAlert();
 
-            limparMensagem(
-                authMessage
-            );
+            clearErrors();
 
 
             const email =
-                loginEmail.value
-                    .trim();
+                emailInput
+                    ?.value
+                    .trim() ||
+                "";
 
-            const senha =
-                loginPassword.value;
+
+            const password =
+                passwordInput
+                    ?.value ||
+                "";
 
 
-            let valido = true;
+            let valid =
+                true;
 
+
+            /* -----------------------------------------
+               VALIDAR E-MAIL
+            ----------------------------------------- */
 
             if (!email) {
 
-                mostrarErroCampo(
-                    loginEmail,
-                    "loginEmailError",
-                    "Informe seu e-mail."
-                );
+                if (emailError) {
 
-                valido = false;
+                    emailError.textContent =
+                        "Digite seu e-mail.";
+
+                }
+
+                valid =
+                    false;
 
             } else if (
-                !emailValido(email)
+                !validateEmail(email)
             ) {
 
-                mostrarErroCampo(
-                    loginEmail,
-                    "loginEmailError",
-                    "Digite um e-mail válido."
-                );
+                if (emailError) {
 
-                valido = false;
+                    emailError.textContent =
+                        "Digite um e-mail válido.";
 
-            }
+                }
 
-
-            if (!senha) {
-
-                mostrarErroCampo(
-                    loginPassword,
-                    "loginPasswordError",
-                    "Informe sua senha."
-                );
-
-                valido = false;
+                valid =
+                    false;
 
             }
 
 
-            if (!valido) {
+            /* -----------------------------------------
+               VALIDAR SENHA
+            ----------------------------------------- */
+
+            if (!password) {
+
+                if (passwordError) {
+
+                    passwordError.textContent =
+                        "Digite sua senha.";
+
+                }
+
+                valid =
+                    false;
+
+            }
+
+
+            if (!valid) {
+
                 return;
+
             }
-
-
-            alterarEstadoBotao(
-                loginButton,
-                loginButtonText,
-                true,
-                "Entrar na minha conta"
-            );
 
 
             try {
 
-                const persistencia =
-                    rememberMe?.checked
-                        ? browserLocalPersistence
-                        : browserSessionPersistence;
+                setLoginLoading(
+                    true
+                );
 
+
+                /*
+                 * Se marcou "lembrar",
+                 * mantém a sessão no navegador.
+                 *
+                 * Caso contrário,
+                 * a sessão será temporária.
+                 */
 
                 await setPersistence(
                     auth,
-                    persistencia
+                    rememberMe?.checked
+                        ? browserLocalPersistence
+                        : browserSessionPersistence
                 );
 
+
+                /*
+                 * Login Firebase
+                 */
 
                 await signInWithEmailAndPassword(
                     auth,
                     email,
-                    senha
+                    password
                 );
 
 
-                mostrarMensagem(
-                    authMessage,
-                    "Login realizado com sucesso. Entrando...",
-                    "success"
-                );
+                /*
+                 * O onAuthStateChanged
+                 * fará o redirecionamento.
+                 */
 
-
-                setTimeout(
-                    () => {
-
-                        window.location.href =
-                            "cliente.html";
-
-                    },
-                    700
-                );
-
-
-            } catch (erro) {
+            } catch (error) {
 
                 console.error(
                     "Erro no login:",
-                    erro
+                    error
                 );
 
 
-                mostrarMensagem(
-                    authMessage,
-                    traduzirErroFirebase(
-                        erro
-                    ),
-                    "error"
+                showAlert(
+                    getFirebaseErrorMessage(
+                        error
+                    )
                 );
 
 
-                alterarEstadoBotao(
-                    loginButton,
-                    loginButtonText,
-                    false,
-                    "Entrar na minha conta"
+                setLoginLoading(
+                    false
                 );
 
             }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   MOSTRAR / ESCONDER SENHA
+========================================================= */
+
+if (passwordToggle) {
+
+    passwordToggle.addEventListener(
+        "click",
+        () => {
+
+            if (
+                !passwordInput
+            ) {
+
+                return;
+
+            }
+
+
+            const showing =
+                passwordInput.type ===
+                "text";
+
+
+            passwordInput.type =
+                showing
+                    ? "password"
+                    : "text";
+
+
+            const icon =
+                passwordToggle.querySelector(
+                    "i"
+                );
+
+
+            if (icon) {
+
+                icon.className =
+                    showing
+                        ? "fa-regular fa-eye"
+                        : "fa-regular fa-eye-slash";
+
+            }
+
+
+            passwordToggle.setAttribute(
+                "aria-label",
+                showing
+                    ? "Mostrar senha"
+                    : "Ocultar senha"
+            );
 
         }
     );
@@ -489,91 +571,79 @@ if (loginForm) {
    LOGIN COM GOOGLE
 ========================================================= */
 
-if (googleLogin) {
+if (googleButton) {
 
-    googleLogin.addEventListener(
+    googleButton.addEventListener(
         "click",
         async () => {
 
-            limparMensagem(
-                authMessage
-            );
-
-
-            googleLogin.disabled =
-                true;
-
-
-            const textoOriginal =
-                googleLogin.innerHTML;
-
-
-            googleLogin.innerHTML = `
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                <span>Conectando...</span>
-            `;
-
-
             try {
 
-                const resultado =
-                    await signInWithPopup(
-                        auth,
-                        googleProvider
-                    );
+                hideAlert();
+
+                googleButton.disabled =
+                    true;
 
 
-                const usuario =
-                    resultado.user;
-
-
-                await salvarDadosCliente(
-                    usuario,
-                    "google"
+                googleButton.classList.add(
+                    "loading"
                 );
 
 
-                mostrarMensagem(
-                    authMessage,
-                    "Login com Google realizado. Entrando...",
-                    "success"
+                const provider =
+                    new GoogleAuthProvider();
+
+
+                /*
+                 * Permite selecionar
+                 * outra conta Google.
+                 */
+
+                provider.setCustomParameters({
+                    prompt: "select_account"
+                });
+
+
+                /*
+                 * Login Google
+                 */
+
+                await signInWithPopup(
+                    auth,
+                    provider
                 );
 
 
-                setTimeout(
-                    () => {
+                /*
+                 * O Firebase atualizará
+                 * o estado de autenticação.
+                 *
+                 * O onAuthStateChanged
+                 * redirecionará o cliente.
+                 */
 
-                        window.location.href =
-                            "cliente.html";
-
-                    },
-                    700
-                );
-
-
-            } catch (erro) {
+            } catch (error) {
 
                 console.error(
-                    "Erro no Google:",
-                    erro
+                    "Erro no Google Login:",
+                    error
                 );
 
 
-                mostrarMensagem(
-                    authMessage,
-                    traduzirErroFirebase(
-                        erro
-                    ),
-                    "error"
+                showAlert(
+                    getFirebaseErrorMessage(
+                        error
+                    )
                 );
 
 
-                googleLogin.disabled =
+                googleButton.disabled =
                     false;
 
 
-                googleLogin.innerHTML =
-                    textoOriginal;
+                googleButton.classList.remove(
+                    "loading"
+                );
 
             }
 
@@ -584,99 +654,39 @@ if (googleLogin) {
 
 
 /* =========================================================
-   ESQUECI MINHA SENHA
+   ABRIR MODAL DE RECUPERAÇÃO
 ========================================================= */
 
 if (forgotPassword) {
 
     forgotPassword.addEventListener(
         "click",
-        async () => {
+        (event) => {
 
-            limparMensagem(
-                authMessage
-            );
+            event.preventDefault();
 
 
-            limparErros();
+            const currentEmail =
+                emailInput
+                    ?.value
+                    .trim() ||
+                "";
 
 
-            const email =
-                loginEmail.value
-                    .trim();
+            if (
+                resetEmail &&
+                validateEmail(
+                    currentEmail
+                )
+            ) {
 
-
-            if (!email) {
-
-                mostrarErroCampo(
-                    loginEmail,
-                    "loginEmailError",
-                    "Digite seu e-mail para recuperar a senha."
-                );
-
-                loginEmail.focus();
-
-                return;
+                resetEmail.value =
+                    currentEmail;
 
             }
 
 
-            if (!emailValido(email)) {
-
-                mostrarErroCampo(
-                    loginEmail,
-                    "loginEmailError",
-                    "Digite um e-mail válido."
-                );
-
-                loginEmail.focus();
-
-                return;
-
-            }
-
-
-            forgotPassword.disabled =
-                true;
-
-
-            try {
-
-                await sendPasswordResetEmail(
-                    auth,
-                    email
-                );
-
-
-                mostrarMensagem(
-                    authMessage,
-                    "Enviamos um link para redefinir sua senha. Verifique seu e-mail.",
-                    "success"
-                );
-
-
-            } catch (erro) {
-
-                console.error(
-                    "Erro ao recuperar senha:",
-                    erro
-                );
-
-
-                mostrarMensagem(
-                    authMessage,
-                    traduzirErroFirebase(
-                        erro
-                    ),
-                    "error"
-                );
-
-            } finally {
-
-                forgotPassword.disabled =
-                    false;
-
-            }
+            openPasswordModal();
 
         }
     );
@@ -685,165 +695,93 @@ if (forgotPassword) {
 
 
 /* =========================================================
-   MOSTRAR / OCULTAR SENHA
+   ABRIR MODAL
 ========================================================= */
 
-function configurarToggleSenha(
-    botao,
-    input
-) {
+function openPasswordModal() {
 
-    if (!botao || !input) {
+    if (!passwordModal) {
         return;
     }
 
 
-    botao.addEventListener(
-        "click",
-        () => {
-
-            const mostrando =
-                input.type === "text";
-
-
-            input.type =
-                mostrando
-                    ? "password"
-                    : "text";
-
-
-            const icone =
-                botao.querySelector(
-                    "i"
-                );
-
-
-            if (icone) {
-
-                icone.className =
-                    mostrando
-                        ? "fa-regular fa-eye"
-                        : "fa-regular fa-eye-slash";
-
-            }
-
-
-            botao.setAttribute(
-                "aria-label",
-                mostrando
-                    ? "Mostrar senha"
-                    : "Ocultar senha"
-            );
-
-        }
-    );
-
-}
-
-
-configurarToggleSenha(
-    togglePassword,
-    loginPassword
-);
-
-
-configurarToggleSenha(
-    toggleRegisterPassword,
-    registerPassword
-);
-
-
-/* =========================================================
-   MODAL DE CADASTRO
-========================================================= */
-
-function abrirCadastro() {
-
-    if (!registerModal) {
-        return;
-    }
-
-
-    limparMensagem(
-        registerMessage
-    );
-
-
-    limparErros();
-
-
-    registerModal.classList.add(
+    passwordModal.classList.add(
         "open"
     );
 
 
-    registerModal.setAttribute(
+    passwordModal.setAttribute(
         "aria-hidden",
         "false"
     );
 
 
+    document.body.style.overflow =
+        "hidden";
+
+
     setTimeout(
         () => {
 
-            if (registerName) {
-
-                registerName.focus();
-
-            }
+            resetEmail?.focus();
 
         },
-        200
+        150
     );
 
 }
 
 
-function fecharCadastro() {
+/* =========================================================
+   FECHAR MODAL
+========================================================= */
 
-    if (!registerModal) {
+function closePasswordModal() {
+
+    if (!passwordModal) {
         return;
     }
 
 
-    registerModal.classList.remove(
+    passwordModal.classList.remove(
         "open"
     );
 
 
-    registerModal.setAttribute(
+    passwordModal.setAttribute(
         "aria-hidden",
         "true"
     );
 
+
+    document.body.style.overflow =
+        "";
+
+
+    clearResetMessage();
+
 }
 
 
-if (showRegister) {
+/* =========================================================
+   EVENTOS DO MODAL
+========================================================= */
 
-    showRegister.addEventListener(
+if (modalClose) {
+
+    modalClose.addEventListener(
         "click",
-        abrirCadastro
+        closePasswordModal
     );
 
 }
 
 
-if (closeRegister) {
+if (passwordModalBackdrop) {
 
-    closeRegister.addEventListener(
+    passwordModalBackdrop.addEventListener(
         "click",
-        fecharCadastro
-    );
-
-}
-
-
-if (modalBackdrop) {
-
-    modalBackdrop.addEventListener(
-        "click",
-        fecharCadastro
+        closePasswordModal
     );
 
 }
@@ -855,14 +793,16 @@ if (modalBackdrop) {
 
 document.addEventListener(
     "keydown",
-    event => {
+    (event) => {
 
         if (
             event.key === "Escape" &&
-            registerModal?.classList.contains("open")
+            passwordModal?.classList.contains(
+                "open"
+            )
         ) {
 
-            fecharCadastro();
+            closePasswordModal();
 
         }
 
@@ -871,255 +811,98 @@ document.addEventListener(
 
 
 /* =========================================================
-   CRIAR CONTA
+   MENSAGEM DE RESET
 ========================================================= */
 
-if (registerForm) {
-
-    registerForm.addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-
-            limparErros();
-
-            limparMensagem(
-                registerMessage
-            );
-
-
-            const nome =
-                registerName.value
-                    .trim();
-
-            const email =
-                registerEmail.value
-                    .trim();
-
-            const senha =
-                registerPassword.value;
-
-
-            let valido = true;
-
-
-            if (!nome) {
-
-                mostrarErroCampo(
-                    registerName,
-                    "registerNameError",
-                    "Informe seu nome."
-                );
-
-                valido = false;
-
-            }
-
-
-            if (!email) {
-
-                mostrarErroCampo(
-                    registerEmail,
-                    "registerEmailError",
-                    "Informe seu e-mail."
-                );
-
-                valido = false;
-
-            } else if (
-                !emailValido(email)
-            ) {
-
-                mostrarErroCampo(
-                    registerEmail,
-                    "registerEmailError",
-                    "Digite um e-mail válido."
-                );
-
-                valido = false;
-
-            }
-
-
-            if (!senha) {
-
-                mostrarErroCampo(
-                    registerPassword,
-                    "registerPasswordError",
-                    "Crie uma senha."
-                );
-
-                valido = false;
-
-            } else if (
-                senha.length < 6
-            ) {
-
-                mostrarErroCampo(
-                    registerPassword,
-                    "registerPasswordError",
-                    "A senha precisa ter pelo menos 6 caracteres."
-                );
-
-                valido = false;
-
-            }
-
-
-            if (!valido) {
-                return;
-            }
-
-
-            alterarEstadoBotao(
-                registerButton,
-                registerButtonText,
-                true,
-                "Criar minha conta"
-            );
-
-
-            try {
-
-                const resultado =
-                    await createUserWithEmailAndPassword(
-                        auth,
-                        email,
-                        senha
-                    );
-
-
-                const usuario =
-                    resultado.user;
-
-
-                await updateProfile(
-                    usuario,
-                    {
-                        displayName:
-                            nome
-                    }
-                );
-
-
-                await salvarDadosCliente(
-                    usuario,
-                    "email"
-                );
-
-
-                mostrarMensagem(
-                    registerMessage,
-                    "Conta criada com sucesso! Entrando...",
-                    "success"
-                );
-
-
-                setTimeout(
-                    () => {
-
-                        window.location.href =
-                            "cliente.html";
-
-                    },
-                    900
-                );
-
-
-            } catch (erro) {
-
-                console.error(
-                    "Erro ao criar conta:",
-                    erro
-                );
-
-
-                mostrarMensagem(
-                    registerMessage,
-                    traduzirErroFirebase(
-                        erro
-                    ),
-                    "error"
-                );
-
-
-                alterarEstadoBotao(
-                    registerButton,
-                    registerButtonText,
-                    false,
-                    "Criar minha conta"
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   SALVAR DADOS DO CLIENTE
-========================================================= */
-
-async function salvarDadosCliente(
-    usuario,
-    metodoLogin
+function showResetMessage(
+    message,
+    type
 ) {
 
-    if (!usuario || !db) {
+    if (!resetMessage) {
         return;
     }
 
 
-    try {
+    resetMessage.textContent =
+        message;
 
-        await setDoc(
-            doc(
-                db,
-                "clientes",
-                usuario.uid
-            ),
-            {
 
-                uid:
-                    usuario.uid,
+    resetMessage.className =
+        `reset-message show ${type}`;
 
-                nome:
-                    usuario.displayName || "",
+}
 
-                email:
-                    usuario.email || "",
 
-                fotoPerfil:
-                    usuario.photoURL || "",
+function clearResetMessage() {
 
-                metodoLogin:
-                    metodoLogin,
+    if (!resetMessage) {
+        return;
+    }
 
-                atualizadoEm:
-                    serverTimestamp()
 
-            },
-            {
-                merge: true
-            }
+    resetMessage.textContent =
+        "";
+
+
+    resetMessage.className =
+        "reset-message";
+
+}
+
+
+/* =========================================================
+   LOADING DO RESET
+========================================================= */
+
+function setResetLoading(
+    loading
+) {
+
+    if (!resetButton) {
+        return;
+    }
+
+
+    resetButton.disabled =
+        loading;
+
+
+    if (loading) {
+
+        resetButton.classList.add(
+            "loading"
         );
 
-    } catch (erro) {
+        const span =
+            resetButton.querySelector(
+                "span"
+            );
 
-        /*
-         * O cadastro/login continua funcionando
-         * mesmo se o Firestore ainda não estiver
-         * configurado.
-         */
+        if (span) {
 
-        console.warn(
-            "Não foi possível salvar os dados no Firestore:",
-            erro
+            span.textContent =
+                "Enviando...";
+
+        }
+
+    } else {
+
+        resetButton.classList.remove(
+            "loading"
         );
+
+        const span =
+            resetButton.querySelector(
+                "span"
+            );
+
+        if (span) {
+
+            span.textContent =
+                "Enviar instruções";
+
+        }
 
     }
 
@@ -1127,50 +910,195 @@ async function salvarDadosCliente(
 
 
 /* =========================================================
-   ENTER NOS CAMPOS
+   RECUPERAR SENHA
 ========================================================= */
 
-[
-    loginEmail,
-    loginPassword,
-    registerName,
-    registerEmail,
-    registerPassword
-]
-    .filter(Boolean)
-    .forEach(
-        campo => {
+if (resetPasswordForm) {
 
-            campo.addEventListener(
-                "input",
-                () => {
+    resetPasswordForm.addEventListener(
+        "submit",
+        async (event) => {
 
-                    const grupo =
-                        campo.closest(
-                            ".form-group"
-                        );
+            event.preventDefault();
 
 
-                    if (grupo) {
+            clearResetMessage();
 
-                        grupo.classList.remove(
-                            "has-error"
-                        );
 
-                    }
+            const email =
+                resetEmail
+                    ?.value
+                    .trim() ||
+                "";
+
+
+            if (!email) {
+
+                showResetMessage(
+                    "Digite seu e-mail.",
+                    "error"
+                );
+
+                resetEmail?.focus();
+
+                return;
+
+            }
+
+
+            if (
+                !validateEmail(
+                    email
+                )
+            ) {
+
+                showResetMessage(
+                    "Digite um e-mail válido.",
+                    "error"
+                );
+
+                resetEmail?.focus();
+
+                return;
+
+            }
+
+
+            try {
+
+                setResetLoading(
+                    true
+                );
+
+
+                await sendPasswordResetEmail(
+                    auth,
+                    email
+                );
+
+
+                showResetMessage(
+                    "Se este e-mail estiver cadastrado, você receberá as instruções para redefinir sua senha.",
+                    "success"
+                );
+
+
+                resetEmail.value =
+                    "";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erro ao recuperar senha:",
+                    error
+                );
+
+
+                /*
+                 * Por segurança,
+                 * não informamos se o e-mail
+                 * existe ou não.
+                 */
+
+                if (
+                    error.code ===
+                    "auth/invalid-email"
+                ) {
+
+                    showResetMessage(
+                        "Digite um e-mail válido.",
+                        "error"
+                    );
+
+                } else {
+
+                    showResetMessage(
+                        "Não foi possível enviar o e-mail de recuperação. Tente novamente.",
+                        "error"
+                    );
 
                 }
-            );
+
+            } finally {
+
+                setResetLoading(
+                    false
+                );
+
+            }
 
         }
     );
 
+}
+
 
 /* =========================================================
-   INFORMAÇÃO NO CONSOLE
+   LIMPAR ERRO AO DIGITAR
+========================================================= */
+
+emailInput?.addEventListener(
+    "input",
+    () => {
+
+        if (emailError) {
+
+            emailError.textContent =
+                "";
+
+        }
+
+        hideAlert();
+
+    }
+);
+
+
+passwordInput?.addEventListener(
+    "input",
+    () => {
+
+        if (passwordError) {
+
+            passwordError.textContent =
+                "";
+
+        }
+
+        hideAlert();
+
+    }
+);
+
+
+/* =========================================================
+   ENTER NO E-MAIL
+========================================================= */
+
+emailInput?.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            event.preventDefault();
+
+            passwordInput?.focus();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CONSOLE
 ========================================================= */
 
 console.log(
-    "Suas Memórias Aqui — autenticação carregada."
+    "Suas Memórias Aqui — Login Firebase carregado."
 );
 ```
