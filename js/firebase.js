@@ -4,12 +4,14 @@
    FIREBASE.JS
 
    Configuração central do Firebase
-   Authentication + Firestore + Storage
+   Authentication
+   Firestore
+   Storage
 ========================================================= */
 
 
 /* =========================================================
-   FIREBASE APP
+   IMPORTS
 ========================================================= */
 
 import {
@@ -17,28 +19,15 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 
 
-/* =========================================================
-   FIREBASE AUTHENTICATION
-========================================================= */
-
 import {
-    getAuth,
-    GoogleAuthProvider
+    getAuth
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
-
-/* =========================================================
-   FIRESTORE
-========================================================= */
 
 import {
     getFirestore
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-
-/* =========================================================
-   FIREBASE STORAGE
-========================================================= */
 
 import {
     getStorage
@@ -46,7 +35,7 @@ import {
 
 
 /* =========================================================
-   CONFIGURAÇÃO DO SEU PROJETO
+   CONFIGURAÇÃO DO SEU PROJETO FIREBASE
 ========================================================= */
 
 const firebaseConfig = {
@@ -86,29 +75,11 @@ const app =
 
 
 /* =========================================================
-   AUTHENTICATION
+   FIREBASE AUTHENTICATION
 ========================================================= */
 
 const auth =
-    getAuth(
-        app
-    );
-
-
-/* =========================================================
-   GOOGLE
-========================================================= */
-
-const googleProvider =
-    new GoogleAuthProvider();
-
-
-googleProvider.setCustomParameters({
-
-    prompt:
-        "select_account"
-
-});
+    getAuth(app);
 
 
 /* =========================================================
@@ -116,9 +87,7 @@ googleProvider.setCustomParameters({
 ========================================================= */
 
 const db =
-    getFirestore(
-        app
-    );
+    getFirestore(app);
 
 
 /* =========================================================
@@ -126,35 +95,26 @@ const db =
 ========================================================= */
 
 const storage =
-    getStorage(
-        app
-    );
+    getStorage(app);
 
 
 /* =========================================================
-   EXPORTAÇÕES
+   EXPORTAR SERVIÇOS
 ========================================================= */
 
 export {
-
     app,
-
     auth,
-
-    googleProvider,
-
     db,
-
     storage
-
 };
 
 
 /* =========================================================
-   TESTE
+   CONFIRMAÇÃO
 ========================================================= */
 
 console.log(
-    "Firebase conectado — Suas Memórias Aqui."
+    "Firebase conectado com sucesso."
 );
 ```
