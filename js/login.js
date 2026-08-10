@@ -1,1501 +1,447 @@
-```css
+```javascript
 /* =========================================================
    SUAS MEMÓRIAS AQUI
-   LOGIN.CSS
-   Design profissional da área de acesso
+   LOGIN.JS
+   Autenticação dos clientes
 ========================================================= */
+
+import {
+    auth
+} from "./firebase.js";
+
+import {
+    signInWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup,
+    sendPasswordResetEmail,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
 /* =========================================================
-   RESET
+   ELEMENTOS
 ========================================================= */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+const loginForm =
+    document.getElementById("loginForm");
 
+const emailInput =
+    document.getElementById("email");
 
-html {
-    scroll-behavior: smooth;
-}
+const passwordInput =
+    document.getElementById("password");
 
+const loginButton =
+    document.getElementById("loginButton");
 
-body {
-    min-height: 100vh;
+const loginButtonText =
+    document.getElementById("loginButtonText");
 
-    font-family:
-        "DM Sans",
-        Arial,
-        sans-serif;
+const loginSpinner =
+    document.getElementById("loginSpinner");
 
-    color: #252522;
+const googleLogin =
+    document.getElementById("googleLogin");
 
-    background:
-        #f4f1eb;
+const togglePassword =
+    document.getElementById("togglePassword");
 
-    overflow-x: hidden;
-}
+const forgotPassword =
+    document.getElementById("forgotPassword");
 
+const forgotPasswordModal =
+    document.getElementById("forgotPasswordModal");
 
-button,
-input {
-    font-family: inherit;
-}
+const forgotModalOverlay =
+    document.getElementById("forgotModalOverlay");
 
+const closeForgotModal =
+    document.getElementById("closeForgotModal");
 
-button {
-    cursor: pointer;
-}
+const forgotPasswordForm =
+    document.getElementById("forgotPasswordForm");
 
+const recoveryEmail =
+    document.getElementById("recoveryEmail");
 
-a {
-    color: inherit;
-    text-decoration: none;
-}
+const recoveryButton =
+    document.getElementById("recoveryButton");
+
+const recoveryMessage =
+    document.getElementById("recoveryMessage");
+
+const loginMessage =
+    document.getElementById("loginMessage");
+
+const emailError =
+    document.getElementById("emailError");
+
+const passwordError =
+    document.getElementById("passwordError");
 
 
 /* =========================================================
-   VARIÁVEIS
+   FIREBASE GOOGLE PROVIDER
 ========================================================= */
 
-:root {
+const googleProvider =
+    new GoogleAuthProvider();
 
-    --black:
-        #20201e;
 
-    --dark:
-        #292925;
-
-    --cream:
-        #f4f1eb;
-
-    --cream-light:
-        #faf9f6;
-
-    --white:
-        #ffffff;
-
-    --gold:
-        #b49a6c;
-
-    --gold-dark:
-        #92794e;
-
-    --text:
-        #252522;
-
-    --muted:
-        #77756f;
-
-    --border:
-        #dfdcd4;
-
-    --error:
-        #b94b4b;
-
-    --success:
-        #46785b;
-
-    --shadow:
-        0 25px 70px
-        rgba(30, 28, 24, 0.12);
-
-}
+googleProvider.setCustomParameters({
+    prompt: "select_account"
+});
 
 
 /* =========================================================
-   FUNDO
+   VERIFICAR SE JÁ ESTÁ LOGADO
 ========================================================= */
 
-.login-background {
-    position: fixed;
+onAuthStateChanged(
+    auth,
+    user => {
 
-    inset: 0;
+        if (!user) {
+            return;
+        }
 
-    z-index: -1;
+        /*
+         * Se o usuário já estiver autenticado,
+         * não precisa fazer login novamente.
+         */
 
-    overflow: hidden;
+        redirecionarCliente();
 
-    background:
-        linear-gradient(
-            120deg,
-            #f6f3ed 0%,
-            #ece7dd 50%,
-            #f8f6f1 100%
-        );
-}
-
-
-.background-shape {
-    position: absolute;
-
-    border-radius: 50%;
-
-    filter:
-        blur(2px);
-
-    pointer-events: none;
-}
-
-
-.shape-one {
-    width: 520px;
-    height: 520px;
-
-    left: -250px;
-    top: -220px;
-
-    background:
-        rgba(180, 154, 108, 0.12);
-}
-
-
-.shape-two {
-    width: 650px;
-    height: 650px;
-
-    right: -350px;
-    bottom: -300px;
-
-    background:
-        rgba(255, 255, 255, 0.72);
-}
-
-
-.background-grain {
-    position: absolute;
-
-    inset: 0;
-
-    opacity: 0.035;
-
-    background-image:
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
-
-    pointer-events: none;
-}
+    }
+);
 
 
 /* =========================================================
-   PÁGINA
+   LOGIN COM E-MAIL E SENHA
 ========================================================= */
 
-.login-page {
+if (loginForm) {
 
-    width: 100%;
+    loginForm.addEventListener(
+        "submit",
+        async event => {
 
-    min-height: 100vh;
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(420px, 1fr)
-        minmax(480px, 620px);
-
-}
+            event.preventDefault();
 
 
-/* =========================================================
-   LADO DA MARCA
-========================================================= */
-
-.login-brand {
-
-    min-height: 100vh;
-
-    padding:
-        55px
-        clamp(45px, 7vw, 110px);
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: space-between;
-
-    color: var(--white);
-
-    background:
-        linear-gradient(
-            145deg,
-            #171715 0%,
-            #272722 48%,
-            #181816 100%
-        );
-
-    position: relative;
-
-    overflow: hidden;
-}
+            limparErros();
 
 
-.login-brand::before {
+            const email =
+                emailInput.value.trim();
 
-    content: "";
-
-    position: absolute;
-
-    width: 700px;
-
-    height: 700px;
-
-    border-radius: 50%;
-
-    right: -400px;
-
-    top: -250px;
-
-    border:
-        1px solid
-        rgba(255,255,255,0.08);
-
-}
+            const password =
+                passwordInput.value;
 
 
-.login-brand::after {
+            /*
+             * Validação
+             */
 
-    content: "";
+            if (!validarEmail(email)) {
 
-    position: absolute;
+                mostrarCampoErro(
+                    emailError,
+                    "Digite um e-mail válido."
+                );
 
-    width: 500px;
+                emailInput.focus();
 
-    height: 500px;
+                return;
 
-    border-radius: 50%;
+            }
 
-    left: -350px;
 
-    bottom: -300px;
+            if (!password) {
 
-    border:
-        1px solid
-        rgba(180,154,108,0.18);
+                mostrarCampoErro(
+                    passwordError,
+                    "Digite sua senha."
+                );
+
+                passwordInput.focus();
+
+                return;
+
+            }
+
+
+            iniciarCarregamento();
+
+
+            try {
+
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+                mostrarMensagem(
+                    "Login realizado com sucesso. Entrando...",
+                    "success"
+                );
+
+
+                /*
+                 * O Firebase já confirmou
+                 * a autenticação.
+                 *
+                 * O redirecionamento também
+                 * será garantido pelo
+                 * onAuthStateChanged.
+                 */
+
+                setTimeout(
+                    redirecionarCliente,
+                    500
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erro no login:",
+                    error
+                );
+
+
+                finalizarCarregamento();
+
+
+                mostrarErroFirebase(
+                    error
+                );
+
+            }
+
+        }
+    );
 
 }
 
 
 /* =========================================================
-   CONTEÚDO DA MARCA
+   LOGIN COM GOOGLE
 ========================================================= */
 
-.brand-content {
+if (googleLogin) {
 
-    position: relative;
+    googleLogin.addEventListener(
+        "click",
+        async () => {
 
-    z-index: 2;
+            limparMensagem();
 
-    max-width: 570px;
+
+            googleLogin.disabled =
+                true;
+
+
+            googleLogin.classList.add(
+                "loading"
+            );
+
+
+            const textoOriginal =
+                googleLogin.innerHTML;
+
+
+            googleLogin.innerHTML = `
+                <span class="button-spinner"></span>
+                <span>Conectando...</span>
+            `;
+
+
+            try {
+
+                await signInWithPopup(
+                    auth,
+                    googleProvider
+                );
+
+
+                mostrarMensagem(
+                    "Login realizado com sucesso. Entrando...",
+                    "success"
+                );
+
+
+                setTimeout(
+                    redirecionarCliente,
+                    500
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erro no login Google:",
+                    error
+                );
+
+
+                /*
+                 * Se o usuário simplesmente
+                 * fechou a janela do Google,
+                 * não mostramos um erro assustador.
+                 */
+
+                if (
+                    error.code ===
+                    "auth/popup-closed-by-user"
+                ) {
+
+                    mostrarMensagem(
+                        "A janela de login foi fechada.",
+                        "error"
+                    );
+
+                } else {
+
+                    mostrarErroFirebase(
+                        error
+                    );
+
+                }
+
+
+                googleLogin.disabled =
+                    false;
+
+
+                googleLogin.classList.remove(
+                    "loading"
+                );
+
+
+                googleLogin.innerHTML =
+                    textoOriginal;
+
+            }
+
+        }
+    );
 
 }
 
 
 /* =========================================================
-   LOGO
+   MOSTRAR / ESCONDER SENHA
 ========================================================= */
 
-.brand-logo {
+if (togglePassword) {
 
-    display: inline-flex;
+    togglePassword.addEventListener(
+        "click",
+        () => {
 
-    align-items: center;
-
-    gap: 14px;
-
-    margin-bottom:
-        clamp(90px, 13vh, 170px);
-
-}
+            const senhaVisivel =
+                passwordInput.type ===
+                "text";
 
 
-.brand-logo-symbol {
-
-    width: 48px;
-
-    height: 48px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border:
-        1px solid
-        rgba(255,255,255,0.55);
-
-    font-family:
-        "Playfair Display",
-        serif;
-
-    font-size: 14px;
-
-    letter-spacing: 1px;
-
-    color: var(--gold);
-
-}
+            passwordInput.type =
+                senhaVisivel
+                    ? "password"
+                    : "text";
 
 
-.brand-logo-text {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 4px;
-
-    font-family:
-        "Playfair Display",
-        Georgia,
-        serif;
-
-    font-size: 20px;
-
-    letter-spacing: 0.2px;
-
-}
+            togglePassword.textContent =
+                senhaVisivel
+                    ? "◉"
+                    : "◉";
 
 
-.brand-logo-text small {
+            togglePassword.setAttribute(
+                "aria-label",
+                senhaVisivel
+                    ? "Mostrar senha"
+                    : "Ocultar senha"
+            );
 
-    font-family:
-        "DM Sans",
-        sans-serif;
-
-    font-size: 8px;
-
-    letter-spacing: 2.5px;
-
-    color:
-        rgba(255,255,255,0.55);
+        }
+    );
 
 }
 
 
 /* =========================================================
-   MENSAGEM
+   ABRIR RECUPERAÇÃO DE SENHA
 ========================================================= */
 
-.eyebrow {
+if (forgotPassword) {
 
-    display: block;
-
-    margin-bottom: 18px;
-
-    font-size: 10px;
-
-    font-weight: 700;
-
-    letter-spacing: 3px;
-
-    color: var(--gold);
+    forgotPassword.addEventListener(
+        "click",
+        abrirModalRecuperacao
+    );
 
 }
 
 
-.brand-message h1 {
+function abrirModalRecuperacao() {
 
-    max-width: 600px;
-
-    font-family:
-        "Playfair Display",
-        Georgia,
-        serif;
-
-    font-size:
-        clamp(48px, 5.5vw, 76px);
-
-    line-height: 1.04;
-
-    font-weight: 500;
-
-    letter-spacing: -2px;
-
-}
-
-
-.brand-message p {
-
-    max-width: 480px;
-
-    margin-top: 28px;
-
-    color:
-        rgba(255,255,255,0.65);
-
-    font-size: 15px;
-
-    line-height: 1.8;
-
-}
-
-
-/* =========================================================
-   FRASE
-========================================================= */
-
-.brand-quote {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: 15px;
-
-    margin-top: 55px;
-
-    padding-left: 18px;
-
-    border-left:
-        1px solid
-        rgba(180,154,108,0.55);
-
-}
-
-
-.brand-quote > span {
-
-    color: var(--gold);
-
-    font-family:
-        Georgia,
-        serif;
-
-    font-size: 36px;
-
-    line-height: 0.7;
-
-}
-
-
-.brand-quote p {
-
-    max-width: 300px;
-
-    color:
-        rgba(255,255,255,0.55);
-
-    font-family:
-        "Playfair Display",
-        serif;
-
-    font-size: 15px;
-
-    font-style: italic;
-
-    line-height: 1.5;
-
-}
-
-
-/* =========================================================
-   REUNIÃO
-========================================================= */
-
-.brand-meeting {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 14px;
-
-    margin-top: 45px;
-
-}
-
-
-.meeting-icon {
-
-    width: 42px;
-
-    height: 42px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border:
-        1px solid
-        rgba(180,154,108,0.45);
-
-    color: var(--gold);
-
-    font-size: 16px;
-
-}
-
-
-.brand-meeting div:last-child {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 4px;
-
-}
-
-
-.brand-meeting strong {
-
-    font-size: 13px;
-
-    font-weight: 600;
-
-}
-
-
-.brand-meeting span {
-
-    color:
-        rgba(255,255,255,0.48);
-
-    font-size: 12px;
-
-}
-
-
-/* =========================================================
-   RODAPÉ DA MARCA
-========================================================= */
-
-.brand-footer {
-
-    position: relative;
-
-    z-index: 2;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    color:
-        rgba(255,255,255,0.32);
-
-    font-size: 10px;
-
-    letter-spacing: 0.5px;
-
-}
-
-
-/* =========================================================
-   PAINEL DE LOGIN
-========================================================= */
-
-.login-panel {
-
-    min-height: 100vh;
-
-    padding:
-        50px
-        clamp(35px, 6vw, 90px);
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background:
-        rgba(250,249,246,0.95);
-
-}
-
-
-/* =========================================================
-   CARTÃO
-========================================================= */
-
-.login-card {
-
-    width: 100%;
-
-    max-width: 450px;
-
-}
-
-
-/* =========================================================
-   CABEÇALHO
-========================================================= */
-
-.login-heading {
-
-    margin-bottom: 35px;
-
-}
-
-
-.login-heading .login-eyebrow {
-
-    display: block;
-
-    margin-bottom: 13px;
-
-    color: var(--gold-dark);
-
-    font-size: 9px;
-
-    font-weight: 800;
-
-    letter-spacing: 2.5px;
-
-}
-
-
-.login-heading h2 {
-
-    font-family:
-        "Playfair Display",
-        Georgia,
-        serif;
-
-    font-size:
-        clamp(36px, 4vw, 48px);
-
-    line-height: 1.1;
-
-    font-weight: 500;
-
-    color: var(--text);
-
-}
-
-
-.login-heading p {
-
-    margin-top: 10px;
-
-    color: var(--muted);
-
-    font-size: 14px;
-
-}
-
-
-/* =========================================================
-   FORMULÁRIO
-========================================================= */
-
-.login-form {
-
-    width: 100%;
-
-}
-
-
-.form-field {
-
-    margin-bottom: 22px;
-
-}
-
-
-.form-field > label,
-.password-label label {
-
-    display: block;
-
-    margin-bottom: 9px;
-
-    color: #46443f;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-}
-
-
-.password-label {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    margin-bottom: 9px;
-
-}
-
-
-.password-label label {
-
-    margin-bottom: 0;
-
-}
-
-
-/* =========================================================
-   INPUT
-========================================================= */
-
-.input-wrapper {
-
-    position: relative;
-
-    display: flex;
-
-    align-items: center;
-
-}
-
-
-.input-wrapper input {
-
-    width: 100%;
-
-    height: 55px;
-
-    padding:
-        0
-        48px;
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius: 2px;
-
-    outline: none;
-
-    background:
-        rgba(255,255,255,0.8);
-
-    color: var(--text);
-
-    font-size: 14px;
-
-    transition:
-        border-color .25s ease,
-        box-shadow .25s ease,
-        background .25s ease;
-
-}
-
-
-.input-wrapper input::placeholder {
-
-    color:
-        #aaa79f;
-
-}
-
-
-.input-wrapper input:hover {
-
-    background:
-        #ffffff;
-
-}
-
-
-.input-wrapper input:focus {
-
-    border-color:
-        var(--gold);
-
-    background:
-        #ffffff;
-
-    box-shadow:
-        0 0 0 4px
-        rgba(180,154,108,0.09);
-
-}
-
-
-/* =========================================================
-   ÍCONE INPUT
-========================================================= */
-
-.input-icon {
-
-    position: absolute;
-
-    left: 17px;
-
-    z-index: 2;
-
-    width: 20px;
-
-    text-align: center;
-
-    color:
-        #9a978f;
-
-    font-size: 13px;
-
-    pointer-events: none;
-
-}
-
-
-.toggle-password {
-
-    position: absolute;
-
-    right: 12px;
-
-    width: 35px;
-
-    height: 35px;
-
-    border: none;
-
-    background: transparent;
-
-    color:
-        #929087;
-
-    font-size: 13px;
-
-    transition:
-        color .2s ease;
-
-}
-
-
-.toggle-password:hover {
-
-    color: var(--gold-dark);
-
-}
-
-
-/* =========================================================
-   ESQUECI SENHA
-========================================================= */
-
-.forgot-password {
-
-    border: none;
-
-    background: transparent;
-
-    color:
-        var(--gold-dark);
-
-    font-size: 11px;
-
-    font-weight: 600;
-
-}
-
-
-.forgot-password:hover {
-
-    text-decoration: underline;
-
-}
-
-
-/* =========================================================
-   ERROS
-========================================================= */
-
-.field-error {
-
-    display: block;
-
-    min-height: 16px;
-
-    margin-top: 6px;
-
-    color:
-        var(--error);
-
-    font-size: 11px;
-
-}
-
-
-/* =========================================================
-   MENSAGEM
-========================================================= */
-
-.login-message {
-
-    display: none;
-
-    padding: 12px 14px;
-
-    margin-bottom: 15px;
-
-    border-radius: 3px;
-
-    font-size: 12px;
-
-    line-height: 1.5;
-
-}
-
-
-.login-message.show {
-
-    display: block;
-
-}
-
-
-.login-message.error {
-
-    color:
-        #914343;
-
-    background:
-        rgba(185,75,75,0.08);
-
-    border:
-        1px solid
-        rgba(185,75,75,0.18);
-
-}
-
-
-.login-message.success {
-
-    color:
-        #37654a;
-
-    background:
-        rgba(70,120,91,0.08);
-
-    border:
-        1px solid
-        rgba(70,120,91,0.18);
-
-}
-
-
-/* =========================================================
-   BOTÃO LOGIN
-========================================================= */
-
-.login-button {
-
-    position: relative;
-
-    width: 100%;
-
-    height: 56px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 10px;
-
-    border:
-        1px solid
-        var(--black);
-
-    border-radius: 2px;
-
-    background:
-        var(--black);
-
-    color:
-        #ffffff;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.5px;
-
-    transition:
-        transform .2s ease,
-        background .2s ease,
-        box-shadow .2s ease;
-
-}
-
-
-.login-button:hover {
-
-    background:
-        #33332e;
-
-    box-shadow:
-        0 12px 25px
-        rgba(32,32,30,0.16);
-
-    transform:
-        translateY(-1px);
-
-}
-
-
-.login-button:active {
-
-    transform:
-        translateY(0);
-
-}
-
-
-.login-button:disabled {
-
-    cursor:
-        not-allowed;
-
-    opacity:
-        0.65;
-
-    transform:
-        none;
-
-}
-
-
-/* =========================================================
-   SPINNER
-========================================================= */
-
-.button-spinner {
-
-    display: none;
-
-    width: 15px;
-
-    height: 15px;
-
-    border:
-        2px solid
-        rgba(255,255,255,0.35);
-
-    border-top-color:
-        #ffffff;
-
-    border-radius: 50%;
-
-    animation:
-        loginSpin .7s linear infinite;
-
-}
-
-
-.login-button.loading
-.button-spinner {
-
-    display: block;
-
-}
-
-
-.login-button.loading
-#loginButtonText {
-
-    display: none;
-
-}
-
-
-@keyframes loginSpin {
-
-    to {
-        transform:
-            rotate(360deg);
+    if (!forgotPasswordModal) {
+        return;
     }
 
-}
 
+    forgotPasswordModal.classList.add(
+        "open"
+    );
 
-/* =========================================================
-   DIVISOR
-========================================================= */
 
-.login-divider {
+    forgotPasswordModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 
-    display: flex;
 
-    align-items: center;
+    recoveryMessage.className =
+        "login-message";
 
-    gap: 14px;
 
-    margin:
-        27px 0;
+    recoveryMessage.textContent =
+        "";
 
-}
 
+    /*
+     * Se o usuário já digitou o e-mail
+     * no login, aproveitamos o valor.
+     */
 
-.login-divider span {
+    if (
+        emailInput &&
+        validarEmail(
+            emailInput.value.trim()
+        )
+    ) {
 
-    flex: 1;
+        recoveryEmail.value =
+            emailInput.value.trim();
 
-    height: 1px;
-
-    background:
-        var(--border);
-
-}
-
-
-.login-divider small {
-
-    color:
-        #a09d95;
-
-    font-size: 10px;
-
-    white-space: nowrap;
-
-}
-
-
-/* =========================================================
-   GOOGLE
-========================================================= */
-
-.google-button {
-
-    width: 100%;
-
-    height: 55px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 12px;
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius: 2px;
-
-    background:
-        #ffffff;
-
-    color:
-        #393834;
-
-    font-size: 12px;
-
-    font-weight: 600;
-
-    transition:
-        border-color .2s ease,
-        box-shadow .2s ease,
-        transform .2s ease;
-
-}
-
-
-.google-button:hover {
-
-    border-color:
-        #c7c3b9;
-
-    box-shadow:
-        0 8px 22px
-        rgba(30,28,24,0.07);
-
-    transform:
-        translateY(-1px);
-
-}
-
-
-.google-icon {
-
-    width: 18px;
-
-    height: 18px;
-
-    display: flex;
-
-}
-
-
-.google-icon svg {
-
-    width: 18px;
-
-    height: 18px;
-
-}
-
-
-.google-icon path:nth-child(1) {
-    fill: #4285F4;
-}
-
-
-.google-icon path:nth-child(2) {
-    fill: #34A853;
-}
-
-
-.google-icon path:nth-child(3) {
-    fill: #FBBC05;
-}
-
-
-.google-icon path:nth-child(4) {
-    fill: #EA4335;
-}
-
-
-/* =========================================================
-   CADASTRO
-========================================================= */
-
-.login-register {
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    gap: 5px;
-
-    margin-top: 27px;
-
-    color:
-        #85827b;
-
-    font-size: 12px;
-
-}
-
-
-.login-register a {
-
-    color:
-        var(--gold-dark);
-
-    font-weight: 700;
-
-}
-
-
-.login-register a:hover {
-
-    text-decoration: underline;
-
-}
-
-
-/* =========================================================
-   PRIVACIDADE
-========================================================= */
-
-.login-privacy {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: 9px;
-
-    margin-top: 30px;
-
-    padding:
-        13px 14px;
-
-    border:
-        1px solid
-        rgba(180,154,108,0.16);
-
-    background:
-        rgba(180,154,108,0.05);
-
-}
-
-
-.login-privacy span {
-
-    font-size: 12px;
-
-    opacity: 0.7;
-
-}
-
-
-.login-privacy p {
-
-    color:
-        #85827b;
-
-    font-size: 10px;
-
-    line-height: 1.55;
-
-}
-
-
-/* =========================================================
-   CONTATO
-========================================================= */
-
-.login-contact {
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 6px;
-
-    margin-top: 38px;
-
-}
-
-
-.login-contact span {
-
-    color:
-        #aaa79f;
-
-    font-size: 8px;
-
-    font-weight: 700;
-
-    letter-spacing: 2px;
-
-}
-
-
-.login-contact a {
-
-    color:
-        var(--gold-dark);
-
-    font-size: 11px;
-
-    font-weight: 600;
-
-}
-
-
-.login-contact a:hover {
-
-    text-decoration: underline;
-
-}
-
-
-/* =========================================================
-   MODAL
-========================================================= */
-
-.modal {
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 1000;
-
-    display: none;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 25px;
-
-}
-
-
-.modal.open {
-
-    display: flex;
-
-}
-
-
-.modal-overlay {
-
-    position: absolute;
-
-    inset: 0;
-
-    background:
-        rgba(15,15,13,0.65);
-
-    backdrop-filter:
-        blur(7px);
-
-    animation:
-        modalFade .2s ease;
-
-}
-
-
-.modal-card {
-
-    position: relative;
-
-    z-index: 2;
-
-    width: 100%;
-
-    max-width: 440px;
-
-    padding:
-        45px;
-
-    background:
-        #faf9f6;
-
-    box-shadow:
-        0 30px 80px
-        rgba(0,0,0,0.22);
-
-    animation:
-        modalUp .25s ease;
-
-}
-
-
-@keyframes modalFade {
-
-    from {
-        opacity: 0;
     }
 
-    to {
-        opacity: 1;
-    }
 
-}
+    setTimeout(
+        () => {
+
+            recoveryEmail?.focus();
+
+        },
+        100
+    );
 
 
-@keyframes modalUp {
-
-    from {
-        opacity: 0;
-        transform:
-            translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform:
-            translateY(0);
-    }
+    document.body.style.overflow =
+        "hidden";
 
 }
 
@@ -1504,278 +450,241 @@ a {
    FECHAR MODAL
 ========================================================= */
 
-.modal-close {
+function fecharModalRecuperacao() {
 
-    position: absolute;
+    if (!forgotPasswordModal) {
+        return;
+    }
 
-    top: 15px;
 
-    right: 17px;
+    forgotPasswordModal.classList.remove(
+        "open"
+    );
 
-    width: 36px;
 
-    height: 36px;
+    forgotPasswordModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
 
-    display: flex;
 
-    align-items: center;
-
-    justify-content: center;
-
-    border: none;
-
-    background: transparent;
-
-    color:
-        #77746d;
-
-    font-size: 25px;
-
-    font-weight: 300;
+    document.body.style.overflow =
+        "";
 
 }
 
 
-.modal-close:hover {
+if (closeForgotModal) {
 
-    color:
-        var(--black);
-
-}
-
-
-/* =========================================================
-   ÍCONE MODAL
-========================================================= */
-
-.modal-icon {
-
-    width: 46px;
-
-    height: 46px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    margin-bottom: 22px;
-
-    border:
-        1px solid
-        rgba(180,154,108,0.4);
-
-    color:
-        var(--gold-dark);
-
-    font-size: 18px;
+    closeForgotModal.addEventListener(
+        "click",
+        fecharModalRecuperacao
+    );
 
 }
 
 
-.modal-card h3 {
+if (forgotModalOverlay) {
 
-    margin-top: 4px;
-
-    font-family:
-        "Playfair Display",
-        Georgia,
-        serif;
-
-    font-size: 32px;
-
-    font-weight: 500;
-
-}
-
-
-.modal-card > p {
-
-    margin:
-        12px 0 28px;
-
-    color:
-        var(--muted);
-
-    font-size: 13px;
-
-    line-height: 1.7;
+    forgotModalOverlay.addEventListener(
+        "click",
+        fecharModalRecuperacao
+    );
 
 }
 
 
 /* =========================================================
-   RESPONSIVIDADE — TABLET
+   TECLA ESC
 ========================================================= */
 
-@media (max-width: 1050px) {
+document.addEventListener(
+    "keydown",
+    event => {
 
-    .login-page {
+        if (
+            event.key ===
+            "Escape"
+        ) {
 
-        grid-template-columns:
-            1fr
-            500px;
+            if (
+                forgotPasswordModal?.classList.contains(
+                    "open"
+                )
+            ) {
+
+                fecharModalRecuperacao();
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   RECUPERAÇÃO DE SENHA
+========================================================= */
+
+if (forgotPasswordForm) {
+
+    forgotPasswordForm.addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+
+            const email =
+                recoveryEmail.value.trim();
+
+
+            if (
+                !validarEmail(email)
+            ) {
+
+                mostrarMensagemRecuperacao(
+                    "Digite um e-mail válido.",
+                    "error"
+                );
+
+                recoveryEmail.focus();
+
+                return;
+
+            }
+
+
+            recoveryButton.disabled =
+                true;
+
+
+            recoveryButton.textContent =
+                "Enviando...";
+
+
+            try {
+
+                await sendPasswordResetEmail(
+                    auth,
+                    email
+                );
+
+
+                mostrarMensagemRecuperacao(
+                    "Enviamos as instruções de recuperação para o seu e-mail.",
+                    "success"
+                );
+
+
+                recoveryEmail.value =
+                    "";
+
+
+                setTimeout(
+                    fecharModalRecuperacao,
+                    2500
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erro na recuperação:",
+                    error
+                );
+
+
+                mostrarMensagemRecuperacao(
+                    obterMensagemRecuperacao(
+                        error
+                    ),
+                    "error"
+                );
+
+            } finally {
+
+                recoveryButton.disabled =
+                    false;
+
+                recoveryButton.textContent =
+                    "Enviar instruções";
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CARREGAMENTO DO LOGIN
+========================================================= */
+
+function iniciarCarregamento() {
+
+    if (!loginButton) {
+        return;
+    }
+
+
+    loginButton.disabled =
+        true;
+
+
+    loginButton.classList.add(
+        "loading"
+    );
+
+
+    if (loginButtonText) {
+
+        loginButtonText.textContent =
+            "Entrando...";
 
     }
 
 
-    .login-brand {
+    if (loginSpinner) {
 
-        padding:
-            45px;
-
-    }
-
-
-    .brand-message h1 {
-
-        font-size:
-            clamp(42px, 5vw, 60px);
+        loginSpinner.style.display =
+            "block";
 
     }
 
 }
 
 
-/* =========================================================
-   RESPONSIVIDADE — MOBILE
-========================================================= */
+function finalizarCarregamento() {
 
-@media (max-width: 800px) {
+    if (!loginButton) {
+        return;
+    }
 
-    body {
 
-        background:
-            var(--cream);
+    loginButton.disabled =
+        false;
+
+
+    loginButton.classList.remove(
+        "loading"
+    );
+
+
+    if (loginButtonText) {
+
+        loginButtonText.textContent =
+            "Entrar na minha conta";
 
     }
 
 
-    .login-page {
+    if (loginSpinner) {
 
-        display: block;
-
-        min-height: 100vh;
-
-    }
-
-
-    /* -----------------------------------------
-       MARCA
-    ----------------------------------------- */
-
-    .login-brand {
-
-        min-height:
-            auto;
-
-        padding:
-            28px 25px 45px;
-
-    }
-
-
-    .brand-logo {
-
-        margin-bottom:
-            70px;
-
-    }
-
-
-    .brand-message h1 {
-
-        font-size:
-            clamp(42px, 13vw, 58px);
-
-        letter-spacing:
-            -1.5px;
-
-    }
-
-
-    .brand-message p {
-
-        font-size:
-            13px;
-
-        margin-top:
-            20px;
-
-    }
-
-
-    .brand-quote {
-
-        margin-top:
-            35px;
-
-    }
-
-
-    .brand-meeting {
-
-        margin-top:
-            30px;
-
-    }
-
-
-    .brand-footer {
-
-        display:
-            none;
-
-    }
-
-
-    /* -----------------------------------------
-       LOGIN
-    ----------------------------------------- */
-
-    .login-panel {
-
-        min-height:
-            auto;
-
-        padding:
-            55px 25px 45px;
-
-        background:
-            var(--cream-light);
-
-    }
-
-
-    .login-card {
-
-        max-width:
-            500px;
-
-    }
-
-
-    .login-heading {
-
-        margin-bottom:
-            30px;
-
-    }
-
-
-    .login-heading h2 {
-
-        font-size:
-            38px;
-
-    }
-
-
-    .login-contact {
-
-        margin-top:
-            30px;
+        loginSpinner.style.display =
+            "none";
 
     }
 
@@ -1783,79 +692,297 @@ a {
 
 
 /* =========================================================
-   MOBILE PEQUENO
+   VALIDAÇÃO DE E-MAIL
 ========================================================= */
 
-@media (max-width: 420px) {
+function validarEmail(
+    email
+) {
 
-    .login-brand {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(email);
 
-        padding:
-            25px 20px 38px;
+}
+
+
+/* =========================================================
+   MOSTRAR ERRO DE CAMPO
+========================================================= */
+
+function mostrarCampoErro(
+    elemento,
+    mensagem
+) {
+
+    if (!elemento) {
+        return;
+    }
+
+
+    elemento.textContent =
+        mensagem;
+
+
+    elemento.classList.add(
+        "show"
+    );
+
+}
+
+
+/* =========================================================
+   LIMPAR ERROS
+========================================================= */
+
+function limparErros() {
+
+    if (emailError) {
+
+        emailError.textContent =
+            "";
+
+        emailError.classList.remove(
+            "show"
+        );
 
     }
 
 
-    .login-panel {
+    if (passwordError) {
 
-        padding:
-            45px 20px 35px;
+        passwordError.textContent =
+            "";
 
-    }
-
-
-    .brand-logo {
-
-        margin-bottom:
-            55px;
+        passwordError.classList.remove(
+            "show"
+        );
 
     }
 
 
-    .brand-logo-text {
+    limparMensagem();
 
-        font-size:
-            18px;
+}
+
+
+/* =========================================================
+   MENSAGEM GERAL
+========================================================= */
+
+function mostrarMensagem(
+    mensagem,
+    tipo = "error"
+) {
+
+    if (!loginMessage) {
+        return;
+    }
+
+
+    loginMessage.textContent =
+        mensagem;
+
+
+    loginMessage.className =
+        `login-message show ${tipo}`;
+
+}
+
+
+function limparMensagem() {
+
+    if (!loginMessage) {
+        return;
+    }
+
+
+    loginMessage.textContent =
+        "";
+
+    loginMessage.className =
+        "login-message";
+
+}
+
+
+/* =========================================================
+   MENSAGEM RECUPERAÇÃO
+========================================================= */
+
+function mostrarMensagemRecuperacao(
+    mensagem,
+    tipo
+) {
+
+    if (!recoveryMessage) {
+        return;
+    }
+
+
+    recoveryMessage.textContent =
+        mensagem;
+
+
+    recoveryMessage.className =
+        `login-message show ${tipo}`;
+
+}
+
+
+/* =========================================================
+   ERROS DO FIREBASE
+========================================================= */
+
+function mostrarErroFirebase(
+    error
+) {
+
+    let mensagem =
+        "Não foi possível entrar. Verifique seus dados e tente novamente.";
+
+
+    switch (
+        error.code
+    ) {
+
+        case "auth/invalid-email":
+
+            mensagem =
+                "O e-mail informado não é válido.";
+
+            break;
+
+
+        case "auth/user-not-found":
+
+            mensagem =
+                "Não encontramos uma conta com esse e-mail.";
+
+            break;
+
+
+        case "auth/wrong-password":
+
+            mensagem =
+                "A senha informada está incorreta.";
+
+            break;
+
+
+        case "auth/invalid-credential":
+
+            mensagem =
+                "E-mail ou senha incorretos.";
+
+            break;
+
+
+        case "auth/user-disabled":
+
+            mensagem =
+                "Esta conta foi desativada.";
+
+            break;
+
+
+        case "auth/too-many-requests":
+
+            mensagem =
+                "Foram feitas muitas tentativas. Aguarde alguns minutos e tente novamente.";
+
+            break;
+
+
+        case "auth/network-request-failed":
+
+            mensagem =
+                "Não foi possível conectar ao servidor. Verifique sua internet.";
+
+            break;
+
+
+        case "auth/popup-blocked":
+
+            mensagem =
+                "O navegador bloqueou a janela do Google. Permita pop-ups para este site.";
+
+            break;
+
+
+        case "auth/popup-closed-by-user":
+
+            mensagem =
+                "A janela do Google foi fechada.";
+
+            break;
+
+
+        case "auth/unauthorized-domain":
+
+            mensagem =
+                "Este domínio ainda não está autorizado no Firebase Authentication.";
+
+            break;
+
+
+        default:
+
+            console.warn(
+                "Código Firebase não tratado:",
+                error.code
+            );
+
+            mensagem =
+                "Não foi possível realizar o login. Tente novamente.";
+
+            break;
 
     }
 
 
-    .brand-message h1 {
+    mostrarMensagem(
+        mensagem,
+        "error"
+    );
 
-        font-size:
-            40px;
-
-    }
-
-
-    .brand-message p {
-
-        font-size:
-            12px;
-
-    }
+}
 
 
-    .login-heading h2 {
+/* =========================================================
+   ERROS DE RECUPERAÇÃO
+========================================================= */
 
-        font-size:
-            34px;
+function obterMensagemRecuperacao(
+    error
+) {
 
-    }
+    switch (
+        error.code
+    ) {
+
+        case "auth/invalid-email":
+
+            return "Digite um e-mail válido.";
 
 
-    .modal {
+        case "auth/user-not-found":
 
-        padding:
-            15px;
-
-    }
+            return "Não encontramos uma conta com esse e-mail.";
 
 
-    .modal-card {
+        case "auth/too-many-requests":
 
-        padding:
-            35px 25px;
+            return "Muitas tentativas. Aguarde alguns minutos.";
+
+
+        case "auth/network-request-failed":
+
+            return "Verifique sua conexão com a internet.";
+
+
+        default:
+
+            return "Não foi possível enviar o e-mail de recuperação.";
 
     }
 
@@ -1863,46 +990,92 @@ a {
 
 
 /* =========================================================
-   ACESSIBILIDADE
+   REDIRECIONAMENTO
 ========================================================= */
 
-button:focus-visible,
-a:focus-visible,
-input:focus-visible {
+function redirecionarCliente() {
 
-    outline:
-        2px solid
-        var(--gold);
+    /*
+     * IMPORTANTE:
+     *
+     * Depois vamos criar cliente.html.
+     *
+     * Por enquanto o login será enviado
+     * para a área principal do cliente.
+     */
 
-    outline-offset:
-        3px;
+    window.location.href =
+        "cliente.html";
 
 }
 
 
 /* =========================================================
-   REDUÇÃO DE MOVIMENTO
+   LIMPAR E-MAIL AO SAIR DO CAMPO
 ========================================================= */
 
-@media (prefers-reduced-motion: reduce) {
+emailInput?.addEventListener(
+    "blur",
+    () => {
 
-    *,
-    *::before,
-    *::after {
+        const email =
+            emailInput.value.trim();
 
-        scroll-behavior:
-            auto !important;
 
-        animation-duration:
-            0.01ms !important;
+        if (
+            email &&
+            !validarEmail(email)
+        ) {
 
-        animation-iteration-count:
-            1 !important;
+            mostrarCampoErro(
+                emailError,
+                "Digite um e-mail válido."
+            );
 
-        transition-duration:
-            0.01ms !important;
+        } else {
+
+            if (emailError) {
+
+                emailError.textContent =
+                    "";
+
+            }
+
+        }
 
     }
+);
 
-}
+
+/* =========================================================
+   ENTER NO MODAL
+========================================================= */
+
+recoveryEmail?.addEventListener(
+    "input",
+    () => {
+
+        if (
+            recoveryMessage
+        ) {
+
+            recoveryMessage.className =
+                "login-message";
+
+            recoveryMessage.textContent =
+                "";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   LOG
+========================================================= */
+
+console.log(
+    "Suas Memórias Aqui — Login inicializado."
+);
 ```
