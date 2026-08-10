@@ -5,36 +5,25 @@
    Configuração central do Firebase
 ========================================================= */
 
-
-/* =========================================================
-   FIREBASE APP
-========================================================= */
-
 import {
     initializeApp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-
-/* =========================================================
-   FIREBASE AUTHENTICATION
-========================================================= */
 
 import {
     getAuth
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-
-/* =========================================================
-   FIRESTORE
-========================================================= */
-
 import {
     getFirestore
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+import {
+    getStorage
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+
 
 /* =========================================================
-   CONFIGURAÇÃO DO SEU PROJETO
+   CONFIGURAÇÃO DO PROJETO
 ========================================================= */
 
 const firebaseConfig = {
@@ -74,7 +63,7 @@ const app =
 
 
 /* =========================================================
-   AUTENTICATION
+   FIREBASE AUTHENTICATION
 ========================================================= */
 
 const auth =
@@ -94,21 +83,49 @@ const db =
 
 
 /* =========================================================
-   EXPORTAR
+   FIREBASE STORAGE
+========================================================= */
+
+const storage =
+    getStorage(
+        app
+    );
+
+
+/* =========================================================
+   EXPORTAR SERVIÇOS
 ========================================================= */
 
 export {
+
     app,
+
     auth,
-    db
+
+    db,
+
+    storage
+
 };
 
 
 /* =========================================================
-   CONFIRMAÇÃO
+   CONFIRMAÇÃO NO CONSOLE
 ========================================================= */
 
 console.log(
-    "Firebase conectado com sucesso."
+    "Suas Memórias Aqui — Firebase conectado."
+);
+
+console.log(
+    "Authentication: pronto."
+);
+
+console.log(
+    "Firestore: pronto."
+);
+
+console.log(
+    "Storage: pronto."
 );
 ```
