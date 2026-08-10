@@ -3,8 +3,12 @@
    SUAS MEMÓRIAS AQUI
    CLIENTE.JS
 
-   Área exclusiva do cliente
-   Firebase Authentication + Firestore + Storage
+   Área exclusiva dos clientes
+   Firebase Authentication
+   Galeria privada
+   Menu do usuário
+   Lightbox
+   Responsividade
 ========================================================= */
 
 
@@ -17,18 +21,19 @@ import {
     db
 } from "./firebase.js";
 
+
 import {
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
+
 import {
     collection,
+    getDocs,
     query,
     where,
-    getDocs,
-    doc,
-    getDoc
+    orderBy
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 
@@ -36,47 +41,47 @@ import {
    ELEMENTOS
 ========================================================= */
 
-const clientName =
-    document.getElementById("clientName");
+const userButton =
+    document.getElementById("userButton");
 
-const heroClientName =
-    document.getElementById("heroClientName");
-
-const dropdownClientName =
-    document.getElementById("dropdownClientName");
-
-const dropdownClientEmail =
-    document.getElementById("dropdownClientEmail");
-
-const clientAvatar =
-    document.getElementById("clientAvatar");
-
-const clientAvatarPlaceholder =
-    document.getElementById("clientAvatarPlaceholder");
-
-const profileButton =
-    document.getElementById("profileButton");
-
-const clientProfile =
-    document.querySelector(".client-profile");
-
-const profileDropdown =
-    document.getElementById("profileDropdown");
+const userMenu =
+    document.getElementById("userMenu");
 
 const logoutButton =
     document.getElementById("logoutButton");
 
-const mobileLogoutButton =
-    document.getElementById("mobileLogoutButton");
+const mobileLogout =
+    document.getElementById("mobileLogout");
 
-const clientMenuButton =
-    document.getElementById("clientMenuButton");
+const mobileMenuButton =
+    document.getElementById("mobileMenuButton");
 
-const clientMobileMenu =
-    document.getElementById("clientMobileMenu");
+const mobileNavigation =
+    document.getElementById("mobileNavigation");
 
-const clientGallery =
-    document.getElementById("clientGallery");
+const userName =
+    document.getElementById("userName");
+
+const userEmail =
+    document.getElementById("userEmail");
+
+const menuUserName =
+    document.getElementById("menuUserName");
+
+const menuUserEmail =
+    document.getElementById("menuUserEmail");
+
+const heroUserName =
+    document.getElementById("heroUserName");
+
+const userAvatar =
+    document.getElementById("userAvatar");
+
+const menuAvatar =
+    document.getElementById("menuAvatar");
+
+const galleryGrid =
+    document.getElementById("galleryGrid");
 
 const galleryLoading =
     document.getElementById("galleryLoading");
@@ -90,53 +95,14 @@ const photoCount =
 const videoCount =
     document.getElementById("videoCount");
 
-const eventDate =
-    document.getElementById("eventDate");
+const eventCount =
+    document.getElementById("eventCount");
 
-const eventDateFull =
-    document.getElementById("eventDateFull");
+const toast =
+    document.getElementById("clientToast");
 
-const eventTime =
-    document.getElementById("eventTime");
-
-const eventLocation =
-    document.getElementById("eventLocation");
-
-const eventService =
-    document.getElementById("eventService");
-
-const eventName =
-    document.getElementById("eventName");
-
-const downloadAllButton =
-    document.getElementById("downloadAllButton");
-
-const lightbox =
-    document.getElementById("clientLightbox");
-
-const lightboxImage =
-    document.getElementById("lightboxImage");
-
-const lightboxVideo =
-    document.getElementById("lightboxVideo");
-
-const lightboxTitle =
-    document.getElementById("lightboxTitle");
-
-const lightboxDownload =
-    document.getElementById("lightboxDownload");
-
-const lightboxClose =
-    document.getElementById("lightboxClose");
-
-const lightboxBackdrop =
-    document.getElementById("lightboxBackdrop");
-
-const lightboxPrev =
-    document.getElementById("lightboxPrev");
-
-const lightboxNext =
-    document.getElementById("lightboxNext");
+const toastMessage =
+    document.getElementById("toastMessage");
 
 
 /* =========================================================
@@ -153,443 +119,595 @@ let currentLightboxIndex = 0;
 
 
 /* =========================================================
-   VERIFICAÇÃO DE LOGIN
+   UTILITÁRIOS
 ========================================================= */
 
-onAuthStateChanged(auth, async (user) => {
 
-    if (!user) {
+/**
+ * Escapa caracteres HTML para evitar
+ * inserção indevida de código.
+ */
 
-        /*
-         * Se não estiver logado,
-         * volta para a página de login.
-         */
+function escapeHTML(value) {
 
-        window.location.replace("login.html");
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
 
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/**
+ * Mostra uma pequena mensagem na tela.
+ */
+
+function showToast(message) {
+
+    if (!toast || !toastMessage) {
         return;
     }
 
+    toastMessage.textContent =
+        message;
 
-    currentUser = user;
+    toast.classList.add("show");
 
+    clearTimeout(
+        showToast.timeout
+    );
 
-    /*
-     * Mostra imediatamente os dados
-     * disponíveis no Authentication.
-     */
+    showToast.timeout =
+        setTimeout(() => {
 
-    showUserData(user);
+            toast.classList.remove("show");
 
-
-    /*
-     * Busca dados complementares
-     * no Firestore.
-     */
-
-    await loadClientProfile(user.uid);
+        }, 3500);
+}
 
 
-    /*
-     * Carrega a galeria privada.
-     */
+/**
+ * Obtém o primeiro nome do usuário.
+ */
 
-    await loadClientGallery(user.uid);
+function getFirstName(name) {
 
-});
+    if (!name) {
+        return "Cliente";
+    }
 
-
-/* =========================================================
-   MOSTRAR DADOS DO USUÁRIO
-========================================================= */
-
-function showUserData(user) {
-
-    const displayName =
-        user.displayName ||
-        user.email?.split("@")[0] ||
-        "Cliente";
+    return name
+        .trim()
+        .split(/\s+/)[0];
+}
 
 
-    const firstName =
-        displayName
+/**
+ * Cria iniciais do usuário.
+ */
+
+function getInitials(name) {
+
+    if (!name) {
+        return "SM";
+    }
+
+    const parts =
+        name
             .trim()
-            .split(" ")[0];
+            .split(/\s+/)
+            .filter(Boolean);
 
+    if (parts.length === 1) {
 
-    if (clientName) {
-
-        clientName.textContent =
-            firstName;
-
-    }
-
-
-    if (heroClientName) {
-
-        heroClientName.textContent =
-            firstName;
+        return parts[0]
+            .substring(0, 2)
+            .toUpperCase();
 
     }
 
-
-    if (dropdownClientName) {
-
-        dropdownClientName.textContent =
-            displayName;
-
-    }
-
-
-    if (dropdownClientEmail) {
-
-        dropdownClientEmail.textContent =
-            user.email || "—";
-
-    }
-
-
-    /*
-     * Foto do Google,
-     * caso exista.
-     */
-
-    if (user.photoURL && clientAvatar) {
-
-        clientAvatar.src =
-            user.photoURL;
-
-        clientAvatar.classList.add(
-            "loaded"
-        );
-
-        if (clientAvatarPlaceholder) {
-
-            clientAvatarPlaceholder.style.display =
-                "none";
-
-        }
-
-    }
-
+    return (
+        parts[0][0] +
+        parts[parts.length - 1][0]
+    ).toUpperCase();
 }
 
 
 /* =========================================================
-   PERFIL DO CLIENTE — FIRESTORE
+   AVATAR
 ========================================================= */
 
-async function loadClientProfile(uid) {
+function createFallbackAvatar(element, name) {
 
-    try {
+    if (!element) {
+        return;
+    }
 
-        /*
-         * Estrutura esperada:
+    element.innerHTML = `
+        <span
+            style="
+                font-family: 'DM Sans', sans-serif;
+                font-size: 10px;
+                font-weight: 700;
+            "
+        >
+            ${escapeHTML(getInitials(name))}
+        </span>
+    `;
+}
 
-         clientes
-             └── UID
-                 ├── nome
-                 ├── email
-                 ├── evento
-                 ├── dataEvento
-                 ├── horario
-                 ├── local
-                 └── servico
-        */
 
+/**
+ * Atualiza avatar do usuário.
+ */
 
-        const clientRef =
-            doc(
-                db,
-                "clientes",
-                uid
+function updateAvatar(element, photoURL, name) {
+
+    if (!element) {
+        return;
+    }
+
+    if (photoURL) {
+
+        element.innerHTML = "";
+
+        const image =
+            document.createElement("img");
+
+        image.src = photoURL;
+
+        image.alt =
+            `Foto de ${name || "cliente"}`;
+
+        image.loading = "lazy";
+
+        image.onerror = () => {
+
+            createFallbackAvatar(
+                element,
+                name
             );
 
+        };
 
-        const clientSnapshot =
-            await getDoc(clientRef);
+        element.appendChild(image);
+
+    } else {
+
+        createFallbackAvatar(
+            element,
+            name
+        );
+    }
+}
 
 
-        if (!clientSnapshot.exists()) {
+/* =========================================================
+   DADOS DO USUÁRIO
+========================================================= */
 
-            console.log(
-                "Perfil do cliente ainda não possui dados adicionais."
+function updateUserInterface(user) {
+
+    if (!user) {
+        return;
+    }
+
+    const name =
+        user.displayName ||
+        "Cliente";
+
+    const email =
+        user.email ||
+        "Conta do cliente";
+
+    const firstName =
+        getFirstName(name);
+
+
+    /* HEADER */
+
+    if (userName) {
+        userName.textContent =
+            name;
+    }
+
+    if (userEmail) {
+        userEmail.textContent =
+            email;
+    }
+
+
+    /* MENU */
+
+    if (menuUserName) {
+        menuUserName.textContent =
+            name;
+    }
+
+    if (menuUserEmail) {
+        menuUserEmail.textContent =
+            email;
+    }
+
+
+    /* HERO */
+
+    if (heroUserName) {
+        heroUserName.textContent =
+            firstName;
+    }
+
+
+    /* AVATARES */
+
+    updateAvatar(
+        userAvatar,
+        user.photoURL,
+        name
+    );
+
+    updateAvatar(
+        menuAvatar,
+        user.photoURL,
+        name
+    );
+}
+
+
+/* =========================================================
+   PROTEÇÃO DA PÁGINA
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async (user) => {
+
+        /*
+         * Se não estiver logado,
+         * volta para o login.
+         */
+
+        if (!user) {
+
+            window.location.replace(
+                "login.html"
             );
 
             return;
-
-        }
-
-
-        const data =
-            clientSnapshot.data();
-
-
-        /*
-         * Nome
-         */
-
-        if (data.nome) {
-
-            const firstName =
-                data.nome
-                    .trim()
-                    .split(" ")[0];
-
-
-            if (clientName) {
-
-                clientName.textContent =
-                    firstName;
-
-            }
-
-
-            if (heroClientName) {
-
-                heroClientName.textContent =
-                    firstName;
-
-            }
-
-
-            if (dropdownClientName) {
-
-                dropdownClientName.textContent =
-                    data.nome;
-
-            }
-
         }
 
 
         /*
-         * Evento
+         * Usuário autenticado.
          */
 
-        if (data.evento && eventName) {
+        currentUser =
+            user;
 
-            eventName.textContent =
-                data.evento;
 
-        }
+        updateUserInterface(
+            user
+        );
 
 
         /*
-         * Data
+         * Carrega as memórias
+         * daquele usuário.
          */
 
-        if (data.dataEvento) {
+        await loadClientGallery(
+            user
+        );
 
-            const formattedDate =
-                formatDate(
-                    data.dataEvento
+    }
+);
+
+
+/* =========================================================
+   MENU DO USUÁRIO
+========================================================= */
+
+if (userButton) {
+
+    userButton.addEventListener(
+        "click",
+        (event) => {
+
+            event.stopPropagation();
+
+            const isOpen =
+                userMenu.classList.contains(
+                    "open"
                 );
 
+            userMenu.classList.toggle(
+                "open"
+            );
 
-            if (eventDate) {
+            userButton.setAttribute(
+                "aria-expanded",
+                String(!isOpen)
+            );
 
-                eventDate.textContent =
-                    formattedDate;
+        }
+    );
+}
 
+
+/* Fecha menu ao clicar fora */
+
+document.addEventListener(
+    "click",
+    (event) => {
+
+        if (
+            userMenu &&
+            userButton &&
+            !userMenu.contains(event.target) &&
+            !userButton.contains(event.target)
+        ) {
+
+            userMenu.classList.remove(
+                "open"
+            );
+
+            userButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+        }
+
+    }
+);
+
+
+/* =========================================================
+   MENU MOBILE
+========================================================= */
+
+if (mobileMenuButton) {
+
+    mobileMenuButton.addEventListener(
+        "click",
+        () => {
+
+            const isOpen =
+                mobileNavigation.classList.contains(
+                    "open"
+                );
+
+            mobileNavigation.classList.toggle(
+                "open"
+            );
+
+            mobileMenuButton.setAttribute(
+                "aria-expanded",
+                String(!isOpen)
+            );
+
+
+            const icon =
+                mobileMenuButton.querySelector(
+                    "i"
+                );
+
+            if (!icon) {
+                return;
             }
 
+            if (!isOpen) {
 
-            if (eventDateFull) {
+                icon.classList.remove(
+                    "fa-bars"
+                );
 
-                eventDateFull.textContent =
-                    formattedDate;
+                icon.classList.add(
+                    "fa-xmark"
+                );
 
+            } else {
+
+                icon.classList.remove(
+                    "fa-xmark"
+                );
+
+                icon.classList.add(
+                    "fa-bars"
+                );
             }
 
         }
+    );
+}
 
 
-        /*
-         * Horário
-         */
+/* Fecha menu mobile ao clicar em link */
 
-        if (data.horario && eventTime) {
+if (mobileNavigation) {
 
-            eventTime.textContent =
-                data.horario;
+    mobileNavigation
+        .querySelectorAll("a")
+        .forEach((link) => {
 
-        }
+            link.addEventListener(
+                "click",
+                () => {
+
+                    mobileNavigation.classList.remove(
+                        "open"
+                    );
+
+                    mobileMenuButton.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                    const icon =
+                        mobileMenuButton.querySelector(
+                            "i"
+                        );
+
+                    if (icon) {
+
+                        icon.classList.remove(
+                            "fa-xmark"
+                        );
+
+                        icon.classList.add(
+                            "fa-bars"
+                        );
+                    }
+
+                }
+            );
+
+        });
+}
 
 
-        /*
-         * Local
-         */
+/* =========================================================
+   LOGOUT
+========================================================= */
 
-        if (data.local && eventLocation) {
+async function logout() {
 
-            eventLocation.textContent =
-                data.local;
+    try {
 
-        }
+        await signOut(auth);
 
+        showToast(
+            "Você saiu da sua conta."
+        );
 
-        /*
-         * Serviço
-         */
+        setTimeout(() => {
 
-        if (data.servico && eventService) {
+            window.location.replace(
+                "login.html"
+            );
 
-            eventService.textContent =
-                data.servico;
-
-        }
+        }, 500);
 
     } catch (error) {
 
         console.error(
-            "Erro ao carregar perfil:",
+            "Erro ao sair:",
             error
         );
 
+        showToast(
+            "Não foi possível sair da conta."
+        );
     }
+}
 
+
+if (logoutButton) {
+
+    logoutButton.addEventListener(
+        "click",
+        logout
+    );
+}
+
+
+if (mobileLogout) {
+
+    mobileLogout.addEventListener(
+        "click",
+        logout
+    );
 }
 
 
 /* =========================================================
-   CARREGAR GALERIA DO CLIENTE
+   GALERIA DO CLIENTE
 ========================================================= */
 
-async function loadClientGallery(uid) {
+
+/**
+ * Busca fotografias e vídeos
+ * do cliente no Firestore.
+ *
+ * Estrutura esperada:
+ *
+ * collection: gallery
+ *
+ * documento:
+ *
+ * {
+ *   clientId: "UID",
+ *   type: "photo",
+ *   url: "...",
+ *   title: "...",
+ *   description: "...",
+ *   eventName: "...",
+ *   createdAt: ...
+ * }
+ */
+
+async function loadClientGallery(user) {
+
+    showGalleryLoading();
+
 
     try {
 
-        if (galleryLoading) {
-
-            galleryLoading.style.display =
-                "flex";
-
-        }
-
-
-        /*
-         * Estrutura esperada:
-
-         fotos
-             ├── documento
-             │   ├── clientId
-             │   ├── url
-             │   ├── tipo
-             │   ├── titulo
-             │   └── createdAt
-         */
-
-
-        const photosRef =
+        const galleryRef =
             collection(
                 db,
-                "fotos"
+                "gallery"
             );
 
 
-        const photosQuery =
+        const galleryQuery =
             query(
-                photosRef,
+                galleryRef,
                 where(
                     "clientId",
                     "==",
-                    uid
+                    user.uid
+                ),
+                orderBy(
+                    "createdAt",
+                    "desc"
                 )
             );
 
 
         const snapshot =
             await getDocs(
-                photosQuery
+                galleryQuery
             );
 
 
-        galleryItems = [];
+        galleryItems =
+            snapshot.docs.map(
+                (document) => ({
+
+                    id:
+                        document.id,
+
+                    ...document.data()
+
+                })
+            );
 
 
-        snapshot.forEach((photoDoc) => {
-
-            const data =
-                photoDoc.data();
+        filteredItems =
+            [...galleryItems];
 
 
-            /*
-             * Aceita "foto" ou "video".
-             */
+        updateGalleryCounters();
 
-            const type =
-                data.tipo === "video"
-                    ? "video"
-                    : "photo";
-
-
-            if (!data.url) {
-
-                return;
-
-            }
-
-
-            galleryItems.push({
-
-                id:
-                    photoDoc.id,
-
-                url:
-                    data.url,
-
-                type:
-                    type,
-
-                title:
-                    data.titulo ||
-                    "Memória",
-
-                createdAt:
-                    data.createdAt ||
-                    null
-
-            });
-
-        });
-
-
-        /*
-         * Ordenação.
-         */
-
-        galleryItems.sort(
-            (a, b) => {
-
-                const dateA =
-                    a.createdAt?.seconds ||
-                    0;
-
-                const dateB =
-                    b.createdAt?.seconds ||
-                    0;
-
-                return dateB - dateA;
-
-            }
-        );
-
-
-        /*
-         * Contadores.
-         */
-
-        updateCounters();
-
-
-        /*
-         * Renderização.
-         */
-
-        renderGallery(
-            "all"
-        );
+        renderGallery();
 
 
     } catch (error) {
@@ -600,19 +718,89 @@ async function loadClientGallery(uid) {
         );
 
 
-        showGalleryError();
+        /*
+         * Caso a coleção ainda não tenha
+         * sido criada, mostramos a galeria
+         * vazia em vez de quebrar o site.
+         */
 
-    } finally {
+        galleryItems = [];
 
-        if (galleryLoading) {
+        filteredItems = [];
 
-            galleryLoading.style.display =
-                "none";
+        updateGalleryCounters();
 
-        }
+        showGalleryEmpty();
+
+        /*
+         * Não mostramos erro técnico
+         * para o cliente.
+         */
 
     }
 
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function showGalleryLoading() {
+
+    if (galleryLoading) {
+
+        galleryLoading.style.display =
+            "flex";
+    }
+
+    if (galleryEmpty) {
+
+        galleryEmpty.classList.remove(
+            "show"
+        );
+    }
+
+    if (galleryGrid) {
+
+        galleryGrid.innerHTML =
+            "";
+    }
+}
+
+
+function hideGalleryLoading() {
+
+    if (galleryLoading) {
+
+        galleryLoading.style.display =
+            "none";
+    }
+}
+
+
+/* =========================================================
+   GALERIA VAZIA
+========================================================= */
+
+function showGalleryEmpty() {
+
+    hideGalleryLoading();
+
+
+    if (galleryGrid) {
+
+        galleryGrid.innerHTML =
+            "";
+    }
+
+
+    if (galleryEmpty) {
+
+        galleryEmpty.classList.add(
+            "show"
+        );
+    }
 }
 
 
@@ -620,27 +808,38 @@ async function loadClientGallery(uid) {
    CONTADORES
 ========================================================= */
 
-function updateCounters() {
+function updateGalleryCounters() {
 
     const photos =
         galleryItems.filter(
-            item =>
-                item.type === "photo"
+            (item) =>
+                item.type === "photo" ||
+                item.type === "image"
         ).length;
 
 
     const videos =
         galleryItems.filter(
-            item =>
+            (item) =>
                 item.type === "video"
         ).length;
+
+
+    const events =
+        new Set(
+            galleryItems
+                .map(
+                    (item) =>
+                        item.eventName
+                )
+                .filter(Boolean)
+        ).size;
 
 
     if (photoCount) {
 
         photoCount.textContent =
             photos;
-
     }
 
 
@@ -648,75 +847,71 @@ function updateCounters() {
 
         videoCount.textContent =
             videos;
+    }
 
+
+    if (eventCount) {
+
+        eventCount.textContent =
+            events;
     }
 
 }
 
 
 /* =========================================================
-   RENDERIZAR GALERIA
+   RENDER GALERIA
 ========================================================= */
 
-function renderGallery(filter = "all") {
+function renderGallery() {
 
-    if (!clientGallery) {
+    hideGalleryLoading();
+
+
+    if (!galleryItems.length) {
+
+        showGalleryEmpty();
+
         return;
     }
 
 
-    filteredItems =
-        filter === "all"
-            ? [...galleryItems]
-            : galleryItems.filter(
-                item =>
-                    item.type === filter
-            );
-
-
-    clientGallery.innerHTML =
-        "";
-
-
-    /*
-     * Nenhum conteúdo.
-     */
-
     if (!filteredItems.length) {
 
-        if (galleryEmpty) {
-
-            galleryEmpty.hidden =
-                false;
-
-        }
-
+        showGalleryEmpty();
 
         return;
-
     }
 
 
     if (galleryEmpty) {
 
-        galleryEmpty.hidden =
-            true;
-
+        galleryEmpty.classList.remove(
+            "show"
+        );
     }
+
+
+    if (!galleryGrid) {
+        return;
+    }
+
+
+    galleryGrid.innerHTML =
+        "";
 
 
     filteredItems.forEach(
         (item, index) => {
 
-            const galleryElement =
-                createGalleryElement(
+            const element =
+                createGalleryItem(
                     item,
                     index
                 );
 
-
-            clientGallery.appendChild(
-                galleryElement
+            galleryGrid.appendChild(
+                element
             );
 
         }
@@ -729,7 +924,7 @@ function renderGallery(filter = "all") {
    CRIAR ITEM DA GALERIA
 ========================================================= */
 
-function createGalleryElement(
+function createGalleryItem(
     item,
     index
 ) {
@@ -744,96 +939,115 @@ function createGalleryElement(
         "gallery-item";
 
 
-    article.dataset.type =
-        item.type;
-
-
     article.dataset.index =
         index;
 
 
+    const type =
+        item.type || "photo";
+
+
+    const title =
+        item.title ||
+        item.eventName ||
+        "Sua memória";
+
+
+    const description =
+        item.description ||
+        "Registro especial";
+
+
+    const url =
+        item.url ||
+        item.imageUrl;
+
+
     /*
-     * FOTO
+     * Se não houver URL,
+     * não criamos imagem quebrada.
      */
 
-    if (item.type === "photo") {
+    if (!url) {
 
-        const image =
-            document.createElement(
-                "img"
-            );
+        article.innerHTML = `
+            <div
+                style="
+                    width:100%;
+                    height:100%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    color:#9b958c;
+                    background:#ebe7df;
+                "
+            >
+                <i
+                    class="fa-regular fa-image"
+                    style="font-size:28px;"
+                ></i>
+            </div>
+        `;
 
-
-        image.src =
-            item.url;
-
-        image.alt =
-            item.title;
-
-        image.loading =
-            "lazy";
-
-
-        article.appendChild(
-            image
-        );
-
+        return article;
     }
 
 
-    /*
-     * VÍDEO
-     */
-
-    else {
-
-        const video =
-            document.createElement(
-                "video"
-            );
-
-
-        video.src =
-            item.url;
-
-        video.muted =
-            true;
-
-        video.playsInline =
-            true;
-
-        video.preload =
-            "metadata";
-
-
-        article.appendChild(
-            video
+    const image =
+        document.createElement(
+            "img"
         );
 
+
+    image.src =
+        url;
+
+    image.alt =
+        title;
+
+    image.loading =
+        "lazy";
+
+
+    image.onerror =
+        () => {
+
+            image.style.display =
+                "none";
+
+        };
+
+
+    article.appendChild(
+        image
+    );
+
+
+    /*
+     * Ícone de vídeo.
+     */
+
+    if (type === "video") {
 
         const videoIcon =
             document.createElement(
                 "span"
             );
 
-
         videoIcon.className =
             "gallery-video-icon";
-
 
         videoIcon.innerHTML =
             '<i class="fa-solid fa-play"></i>';
 
-
         article.appendChild(
             videoIcon
         );
-
     }
 
 
     /*
-     * OVERLAY
+     * Overlay.
      */
 
     const overlay =
@@ -846,131 +1060,15 @@ function createGalleryElement(
         "gallery-item-overlay";
 
 
-    const title =
-        document.createElement(
-            "span"
-        );
+    overlay.innerHTML = `
+        <strong>
+            ${escapeHTML(title)}
+        </strong>
 
-
-    title.className =
-        "gallery-item-title";
-
-    title.textContent =
-        item.title;
-
-
-    const actions =
-        document.createElement(
-            "div"
-        );
-
-
-    actions.className =
-        "gallery-item-actions";
-
-
-    /*
-     * BOTÃO VISUALIZAR
-     */
-
-    const viewButton =
-        document.createElement(
-            "button"
-        );
-
-
-    viewButton.type =
-        "button";
-
-    viewButton.className =
-        "gallery-item-action";
-
-
-    viewButton.title =
-        "Visualizar";
-
-
-    viewButton.innerHTML =
-        '<i class="fa-regular fa-eye"></i>';
-
-
-    viewButton.addEventListener(
-        "click",
-        (event) => {
-
-            event.stopPropagation();
-
-            openLightbox(
-                index
-            );
-
-        }
-    );
-
-
-    /*
-     * BOTÃO DOWNLOAD
-     */
-
-    const downloadButton =
-        document.createElement(
-            "a"
-        );
-
-
-    downloadButton.className =
-        "gallery-item-action";
-
-
-    downloadButton.href =
-        item.url;
-
-    downloadButton.download =
-        item.title || "memoria";
-
-
-    downloadButton.target =
-        "_blank";
-
-
-    downloadButton.rel =
-        "noopener";
-
-
-    downloadButton.title =
-        "Baixar";
-
-
-    downloadButton.innerHTML =
-        '<i class="fa-solid fa-download"></i>';
-
-
-    downloadButton.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-        }
-    );
-
-
-    actions.appendChild(
-        viewButton
-    );
-
-    actions.appendChild(
-        downloadButton
-    );
-
-
-    overlay.appendChild(
-        title
-    );
-
-    overlay.appendChild(
-        actions
-    );
+        <span>
+            ${escapeHTML(description)}
+        </span>
+    `;
 
 
     article.appendChild(
@@ -979,7 +1077,7 @@ function createGalleryElement(
 
 
     /*
-     * Clicar na imagem.
+     * Clique.
      */
 
     article.addEventListener(
@@ -995,13 +1093,138 @@ function createGalleryElement(
 
 
     return article;
-
 }
+
+
+/* =========================================================
+   FILTROS
+========================================================= */
+
+const filterButtons =
+    document.querySelectorAll(
+        ".filter-button"
+    );
+
+
+filterButtons.forEach(
+    (button) => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                filterButtons.forEach(
+                    (item) => {
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                const filter =
+                    button.dataset.filter;
+
+
+                if (filter === "all") {
+
+                    filteredItems =
+                        [...galleryItems];
+
+                } else {
+
+                    filteredItems =
+                        galleryItems.filter(
+                            (item) => {
+
+                                if (
+                                    filter === "photo"
+                                ) {
+
+                                    return (
+                                        item.type === "photo" ||
+                                        item.type === "image"
+                                    );
+
+                                }
+
+                                if (
+                                    filter === "video"
+                                ) {
+
+                                    return (
+                                        item.type === "video"
+                                    );
+
+                                }
+
+                                return true;
+
+                            }
+                        );
+                }
+
+
+                renderGallery();
+
+            }
+        );
+
+    }
+);
 
 
 /* =========================================================
    LIGHTBOX
 ========================================================= */
+
+const lightbox =
+    document.getElementById(
+        "lightbox"
+    );
+
+const lightboxImage =
+    document.getElementById(
+        "lightboxImage"
+    );
+
+const lightboxTitle =
+    document.getElementById(
+        "lightboxTitle"
+    );
+
+const lightboxDescription =
+    document.getElementById(
+        "lightboxDescription"
+    );
+
+const lightboxClose =
+    document.getElementById(
+        "lightboxClose"
+    );
+
+const lightboxBackdrop =
+    document.getElementById(
+        "lightboxBackdrop"
+    );
+
+const lightboxPrev =
+    document.getElementById(
+        "lightboxPrev"
+    );
+
+const lightboxNext =
+    document.getElementById(
+        "lightboxNext"
+    );
+
 
 function openLightbox(index) {
 
@@ -1027,19 +1250,35 @@ function openLightbox(index) {
             "aria-hidden",
             "false"
         );
-
     }
 
 
-    document.body.style.overflow =
-        "hidden";
-
+    document.body.classList.add(
+        "no-scroll"
+    );
 }
 
 
-/* =========================================================
-   ATUALIZAR LIGHTBOX
-========================================================= */
+function closeLightbox() {
+
+    if (lightbox) {
+
+        lightbox.classList.remove(
+            "open"
+        );
+
+        lightbox.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+    }
+
+
+    document.body.classList.remove(
+        "no-scroll"
+    );
+}
+
 
 function updateLightbox() {
 
@@ -1054,112 +1293,68 @@ function updateLightbox() {
     }
 
 
-    /*
-     * FOTO
-     */
+    const url =
+        item.url ||
+        item.imageUrl;
 
-    if (item.type === "photo") {
+
+    if (lightboxImage) {
 
         lightboxImage.src =
-            item.url;
+            url || "";
 
-        lightboxImage.style.display =
-            "block";
-
-
-        lightboxVideo.pause();
-
-        lightboxVideo.removeAttribute(
-            "src"
-        );
-
-        lightboxVideo.style.display =
-            "none";
-
-    }
-
-
-    /*
-     * VÍDEO
-     */
-
-    else {
-
-        lightboxImage.removeAttribute(
-            "src"
-        );
-
-        lightboxImage.style.display =
-            "none";
-
-
-        lightboxVideo.src =
-            item.url;
-
-        lightboxVideo.style.display =
-            "block";
-
+        lightboxImage.alt =
+            item.title ||
+            "Memória do cliente";
     }
 
 
     if (lightboxTitle) {
 
         lightboxTitle.textContent =
-            item.title;
-
+            item.title ||
+            item.eventName ||
+            "Sua memória";
     }
 
 
-    if (lightboxDownload) {
+    if (lightboxDescription) {
 
-        lightboxDownload.href =
-            item.url;
-
-        lightboxDownload.download =
-            item.title ||
-            "memoria";
-
+        lightboxDescription.textContent =
+            item.description ||
+            "";
     }
 
 }
 
 
 /* =========================================================
-   FECHAR LIGHTBOX
+   NAVEGAÇÃO LIGHTBOX
 ========================================================= */
 
-function closeLightbox() {
+function showPrevious() {
 
-    if (!lightbox) {
+    if (!filteredItems.length) {
         return;
     }
 
 
-    lightbox.classList.remove(
-        "open"
-    );
+    currentLightboxIndex--;
+
+    if (
+        currentLightboxIndex < 0
+    ) {
+
+        currentLightboxIndex =
+            filteredItems.length - 1;
+    }
 
 
-    lightbox.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-
-    lightboxVideo.pause();
-
-
-    document.body.style.overflow =
-        "";
-
+    updateLightbox();
 }
 
 
-/* =========================================================
-   PRÓXIMO
-========================================================= */
-
-function nextLightbox() {
+function showNext() {
 
     if (!filteredItems.length) {
         return;
@@ -1175,46 +1370,12 @@ function nextLightbox() {
 
         currentLightboxIndex =
             0;
-
     }
 
 
     updateLightbox();
-
 }
 
-
-/* =========================================================
-   ANTERIOR
-========================================================= */
-
-function previousLightbox() {
-
-    if (!filteredItems.length) {
-        return;
-    }
-
-
-    currentLightboxIndex--;
-
-    if (
-        currentLightboxIndex < 0
-    ) {
-
-        currentLightboxIndex =
-            filteredItems.length - 1;
-
-    }
-
-
-    updateLightbox();
-
-}
-
-
-/* =========================================================
-   EVENTOS DO LIGHTBOX
-========================================================= */
 
 if (lightboxClose) {
 
@@ -1222,7 +1383,6 @@ if (lightboxClose) {
         "click",
         closeLightbox
     );
-
 }
 
 
@@ -1232,17 +1392,6 @@ if (lightboxBackdrop) {
         "click",
         closeLightbox
     );
-
-}
-
-
-if (lightboxNext) {
-
-    lightboxNext.addEventListener(
-        "click",
-        nextLightbox
-    );
-
 }
 
 
@@ -1250,583 +1399,89 @@ if (lightboxPrev) {
 
     lightboxPrev.addEventListener(
         "click",
-        previousLightbox
+        showPrevious
     );
-
 }
 
 
-/*
- * Teclado
- */
+if (lightboxNext) {
+
+    lightboxNext.addEventListener(
+        "click",
+        showNext
+    );
+}
+
+
+/* =========================================================
+   TECLADO
+========================================================= */
 
 document.addEventListener(
     "keydown",
-    event => {
+    (event) => {
 
         if (
-            !lightbox?.classList.contains(
+            !lightbox ||
+            !lightbox.classList.contains(
                 "open"
             )
         ) {
-
             return;
-
         }
 
 
-        if (event.key === "Escape") {
+        if (
+            event.key === "Escape"
+        ) {
 
             closeLightbox();
 
         }
 
 
-        if (event.key === "ArrowRight") {
-
-            nextLightbox();
-
-        }
-
-
-        if (event.key === "ArrowLeft") {
-
-            previousLightbox();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   FILTROS DA GALERIA
-========================================================= */
-
-document
-    .querySelectorAll(
-        ".gallery-filter"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    document
-                        .querySelectorAll(
-                            ".gallery-filter"
-                        )
-                        .forEach(
-                            item => {
-
-                                item.classList.remove(
-                                    "active"
-                                );
-
-                            }
-                        );
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-
-                    const filter =
-                        button.dataset.filter ||
-                        "all";
-
-
-                    renderGallery(
-                        filter
-                    );
-
-                }
-            );
-
-        }
-    );
-
-
-/* =========================================================
-   DOWNLOAD DE TODAS
-========================================================= */
-
-if (downloadAllButton) {
-
-    downloadAllButton.addEventListener(
-        "click",
-        async () => {
-
-            if (!galleryItems.length) {
-
-                alert(
-                    "Ainda não existem arquivos disponíveis para baixar."
-                );
-
-                return;
-
-            }
-
-
-            /*
-             * O navegador pode bloquear
-             * vários downloads automáticos.
-             *
-             * Por isso abrimos os arquivos
-             * individualmente em novas abas.
-             */
-
-            galleryItems.forEach(
-                (item, index) => {
-
-                    setTimeout(
-                        () => {
-
-                            window.open(
-                                item.url,
-                                "_blank"
-                            );
-
-                        },
-                        index * 300
-                    );
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function logout() {
-
-    try {
-
-        await signOut(
-            auth
-        );
-
-
-        window.location.replace(
-            "login.html"
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao sair:",
-            error
-        );
-
-
-        alert(
-            "Não foi possível sair da conta. Tente novamente."
-        );
-
-    }
-
-}
-
-
-if (logoutButton) {
-
-    logoutButton.addEventListener(
-        "click",
-        logout
-    );
-
-}
-
-
-if (mobileLogoutButton) {
-
-    mobileLogoutButton.addEventListener(
-        "click",
-        logout
-    );
-
-}
-
-
-/* =========================================================
-   MENU DO PERFIL
-========================================================= */
-
-if (profileButton) {
-
-    profileButton.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            clientProfile.classList.toggle(
-                "open"
-            );
-
-        }
-    );
-
-}
-
-
-document.addEventListener(
-    "click",
-    event => {
-
         if (
-            clientProfile &&
-            !clientProfile.contains(
-                event.target
-            )
+            event.key === "ArrowLeft"
         ) {
 
-            clientProfile.classList.remove(
-                "open"
-            );
+            showPrevious();
 
         }
-
-    }
-);
-
-
-/* =========================================================
-   MENU MOBILE
-========================================================= */
-
-if (clientMenuButton) {
-
-    clientMenuButton.addEventListener(
-        "click",
-        () => {
-
-            clientMobileMenu.classList.toggle(
-                "open"
-            );
-
-            document.body.classList.toggle(
-                "menu-open"
-            );
-
-        }
-    );
-
-}
-
-
-document
-    .querySelectorAll(
-        ".client-mobile-menu a"
-    )
-    .forEach(
-        link => {
-
-            link.addEventListener(
-                "click",
-                () => {
-
-                    clientMobileMenu.classList.remove(
-                        "open"
-                    );
-
-                    document.body.classList.remove(
-                        "menu-open"
-                    );
-
-                }
-            );
-
-        }
-    );
-
-
-/* =========================================================
-   HEADER AO ROLAR
-========================================================= */
-
-const header =
-    document.getElementById(
-        "clientHeader"
-    );
-
-
-window.addEventListener(
-    "scroll",
-    () => {
-
-        if (!header) {
-            return;
-        }
-
-
-        if (window.scrollY > 30) {
-
-            header.classList.add(
-                "scrolled"
-            );
-
-        } else {
-
-            header.classList.remove(
-                "scrolled"
-            );
-
-        }
-
-    },
-    {
-        passive: true
-    }
-);
-
-
-/* =========================================================
-   NAVEGAÇÃO ATIVA
-========================================================= */
-
-const navigationLinks =
-    document.querySelectorAll(
-        ".client-nav-link"
-    );
-
-
-const sections =
-    document.querySelectorAll(
-        "main section[id]"
-    );
-
-
-window.addEventListener(
-    "scroll",
-    () => {
-
-        let currentSection =
-            "inicio";
-
-
-        sections.forEach(
-            section => {
-
-                const sectionTop =
-                    section.offsetTop - 150;
-
-
-                if (
-                    window.scrollY >=
-                    sectionTop
-                ) {
-
-                    currentSection =
-                        section.id;
-
-                }
-
-            }
-        );
-
-
-        navigationLinks.forEach(
-            link => {
-
-                link.classList.remove(
-                    "active"
-                );
-
-
-                if (
-                    link.getAttribute(
-                        "href"
-                    ) ===
-                    `#${currentSection}`
-                ) {
-
-                    link.classList.add(
-                        "active"
-                    );
-
-                }
-
-            }
-        );
-
-    },
-    {
-        passive: true
-    }
-);
-
-
-/* =========================================================
-   ERRO DA GALERIA
-========================================================= */
-
-function showGalleryError() {
-
-    if (!clientGallery) {
-        return;
-    }
-
-
-    clientGallery.innerHTML = `
-
-        <div
-            class="gallery-loading"
-            style="grid-column:1/-1;"
-        >
-
-            <i
-                class="fa-solid fa-circle-exclamation"
-                style="
-                    font-size:28px;
-                    color:#b49a6c;
-                "
-            ></i>
-
-            <p>
-                Não foi possível carregar suas fotos.
-            </p>
-
-            <button
-                type="button"
-                id="retryGallery"
-                style="
-                    margin-top:10px;
-                    padding:10px 16px;
-                    border:1px solid #ddd8ce;
-                    background:transparent;
-                    cursor:pointer;
-                    font-size:9px;
-                "
-            >
-                Tentar novamente
-            </button>
-
-        </div>
-
-    `;
-
-
-    const retry =
-        document.getElementById(
-            "retryGallery"
-        );
-
-
-    if (retry) {
-
-        retry.addEventListener(
-            "click",
-            () => {
-
-                if (currentUser) {
-
-                    loadClientGallery(
-                        currentUser.uid
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   FORMATAR DATA
-========================================================= */
-
-function formatDate(value) {
-
-    if (!value) {
-        return "A confirmar";
-    }
-
-
-    /*
-     * Timestamp do Firestore
-     */
-
-    if (
-        typeof value.toDate ===
-        "function"
-    ) {
-
-        value =
-            value.toDate();
-
-    }
-
-
-    /*
-     * Data JavaScript
-     */
-
-    if (
-        value instanceof Date
-    ) {
-
-        return value.toLocaleDateString(
-            "pt-BR"
-        );
-
-    }
-
-
-    /*
-     * String
-     */
-
-    if (
-        typeof value ===
-        "string"
-    ) {
-
-        const date =
-            new Date(
-                value
-            );
 
 
         if (
-            !Number.isNaN(
-                date.getTime()
-            )
+            event.key === "ArrowRight"
         ) {
 
-            return date.toLocaleDateString(
-                "pt-BR"
-            );
+            showNext();
 
         }
 
     }
-
-
-    return String(
-        value
-    );
-
-}
+);
 
 
 /* =========================================================
-   FINAL
+   FECHAR MENU AO REDIRECIONAR
+========================================================= */
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+
+        document.body.classList.remove(
+            "no-scroll"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   CONSOLE
 ========================================================= */
 
 console.log(
-    "Área do cliente carregada — Suas Memórias Aqui."
+    "Suas Memórias Aqui — área do cliente carregada."
 );
 ```
