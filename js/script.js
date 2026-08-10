@@ -1,185 +1,296 @@
-```javascript
 /* =========================================================
    SUAS MEMÓRIAS AQUI
    SCRIPT.JS
-   JavaScript principal do site
+   Funcionalidades da página inicial
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
-       MENU MOBILE
-    ===================================================== */
+       ELEMENTOS
+    ====================================================== */
 
-    const menuButton = document.getElementById("menuButton");
-    const mobileMenu = document.getElementById("mobileMenu");
+    const header =
+        document.getElementById("mainHeader");
 
-    if (menuButton && mobileMenu) {
+    const menuToggle =
+        document.getElementById("menuToggle");
 
-        menuButton.addEventListener("click", () => {
+    const mobileMenu =
+        document.getElementById("mobileMenu");
 
-            mobileMenu.classList.toggle("active");
+    const mobileClose =
+        document.getElementById("mobileClose");
 
-            const aberto =
-                mobileMenu.classList.contains("active");
+    const mobileLinks =
+        document.querySelectorAll(
+            ".mobile-menu a"
+        );
 
-            menuButton.setAttribute(
-                "aria-expanded",
-                aberto
+    const navLinks =
+        document.querySelectorAll(
+            ".main-nav .nav-link"
+        );
+
+
+    /* =====================================================
+       HEADER AO ROLAR
+    ====================================================== */
+
+    function atualizarHeader() {
+
+        if (!header) {
+            return;
+        }
+
+        if (window.scrollY > 40) {
+
+            header.classList.add(
+                "scrolled"
             );
 
-            menuButton.innerHTML =
-                aberto ? "✕" : "☰";
+        } else {
 
-        });
+            header.classList.remove(
+                "scrolled"
+            );
+
+        }
+
+    }
 
 
-        /* Fechar menu ao clicar em um link */
+    atualizarHeader();
 
-        const mobileLinks =
-            mobileMenu.querySelectorAll("a");
 
-        mobileLinks.forEach(link => {
+    window.addEventListener(
+        "scroll",
+        atualizarHeader,
+        {
+            passive: true
+        }
+    );
 
-            link.addEventListener("click", () => {
 
-                mobileMenu.classList.remove("active");
+    /* =====================================================
+       ABRIR MENU MOBILE
+    ====================================================== */
 
-                menuButton.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
+    function abrirMenu() {
 
-                menuButton.innerHTML = "☰";
+        if (!mobileMenu) {
+            return;
+        }
 
-            });
+        mobileMenu.classList.add(
+            "open"
+        );
 
-        });
+        document.body.classList.add(
+            "menu-open"
+        );
 
     }
 
 
     /* =====================================================
-       FECHAR MENU AO REDIMENSIONAR A TELA
-    ===================================================== */
+       FECHAR MENU MOBILE
+    ====================================================== */
 
-    window.addEventListener("resize", () => {
+    function fecharMenu() {
 
-        if (
-            window.innerWidth > 800 &&
-            mobileMenu
-        ) {
+        if (!mobileMenu) {
+            return;
+        }
 
-            mobileMenu.classList.remove("active");
+        mobileMenu.classList.remove(
+            "open"
+        );
 
-            if (menuButton) {
+        document.body.classList.remove(
+            "menu-open"
+        );
 
-                menuButton.innerHTML = "☰";
+    }
 
-                menuButton.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
+
+    if (menuToggle) {
+
+        menuToggle.addEventListener(
+            "click",
+            abrirMenu
+        );
+
+    }
+
+
+    if (mobileClose) {
+
+        mobileClose.addEventListener(
+            "click",
+            fecharMenu
+        );
+
+    }
+
+
+    /* =====================================================
+       LINKS DO MENU MOBILE
+    ====================================================== */
+
+    mobileLinks.forEach(
+        link => {
+
+            link.addEventListener(
+                "click",
+                () => {
+
+                    fecharMenu();
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       ESC FECHA MENU
+    ====================================================== */
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                fecharMenu();
 
             }
 
         }
-
-    });
+    );
 
 
     /* =====================================================
-       HEADER AO ROLAR A PÁGINA
-    ===================================================== */
+       DESTAQUE DO MENU
+    ====================================================== */
 
-    const header =
-        document.querySelector(".header");
+    const secoes =
+        document.querySelectorAll(
+            "main section[id]"
+        );
 
-    if (header) {
 
-        window.addEventListener("scroll", () => {
+    function atualizarSecaoAtiva() {
 
-            if (window.scrollY > 40) {
+        if (!secoes.length) {
+            return;
+        }
 
-                header.classList.add("scrolled");
 
-            } else {
+        let secaoAtual = "";
 
-                header.classList.remove("scrolled");
+
+        secoes.forEach(
+            secao => {
+
+                const distancia =
+                    secao.offsetTop -
+                    window.scrollY -
+                    180;
+
+
+                if (distancia <= 0) {
+
+                    secaoAtual =
+                        secao.id;
+
+                }
 
             }
+        );
 
-        });
+
+        navLinks.forEach(
+            link => {
+
+                link.classList.remove(
+                    "active"
+                );
+
+
+                const destino =
+                    link.getAttribute(
+                        "href"
+                    );
+
+
+                if (
+                    destino ===
+                    `#${secaoAtual}`
+                ) {
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
 
     }
 
 
+    window.addEventListener(
+        "scroll",
+        atualizarSecaoAtiva,
+        {
+            passive: true
+        }
+    );
+
+
+    atualizarSecaoAtiva();
+
+
     /* =====================================================
-       LINKS INTERNOS COM SCROLL SUAVE
-    ===================================================== */
+       FECHAR MENU SE REDIMENSIONAR
+    ====================================================== */
 
-    const internalLinks =
-        document.querySelectorAll(
-            'a[href^="#"]'
-        );
-
-    internalLinks.forEach(link => {
-
-        link.addEventListener("click", event => {
-
-            const targetId =
-                link.getAttribute("href");
+    window.addEventListener(
+        "resize",
+        () => {
 
             if (
-                !targetId ||
-                targetId === "#"
+                window.innerWidth > 800
             ) {
-                return;
+
+                fecharMenu();
+
             }
 
-            const target =
-                document.querySelector(targetId);
-
-            if (!target) {
-                return;
-            }
-
-            event.preventDefault();
-
-            const headerHeight =
-                header
-                    ? header.offsetHeight
-                    : 0;
-
-            const position =
-                target.getBoundingClientRect().top +
-                window.scrollY -
-                headerHeight;
-
-            window.scrollTo({
-
-                top: position,
-
-                behavior: "smooth"
-
-            });
-
-        });
-
-    });
+        }
+    );
 
 
     /* =====================================================
-       ANIMAÇÃO DOS ELEMENTOS AO ENTRAREM NA TELA
-    ===================================================== */
+       ANIMAÇÃO DE ENTRADA
+    ====================================================== */
 
-    const animatedElements =
+    const elementosAnimados =
         document.querySelectorAll(
-            ".service-card, .experience-card, .client-feature"
+            ".service-card, " +
+            ".visual-card, " +
+            ".contact-option, " +
+            ".experience-list > div"
         );
 
+
     if (
-        animatedElements.length > 0 &&
         "IntersectionObserver" in window
     ) {
 
@@ -187,23 +298,25 @@ document.addEventListener("DOMContentLoaded", () => {
             new IntersectionObserver(
                 entries => {
 
-                    entries.forEach(entry => {
+                    entries.forEach(
+                        entry => {
 
-                        if (
-                            entry.isIntersecting
-                        ) {
+                            if (
+                                entry.isIntersecting
+                            ) {
 
-                            entry.target.classList.add(
-                                "visible"
-                            );
+                                entry.target.classList.add(
+                                    "visible"
+                                );
 
-                            observer.unobserve(
-                                entry.target
-                            );
+                                observer.unobserve(
+                                    entry.target
+                                );
+
+                            }
 
                         }
-
-                    });
+                    );
 
                 },
                 {
@@ -212,94 +325,136 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-        animatedElements.forEach(element => {
+        elementosAnimados.forEach(
+            elemento => {
 
-            element.classList.add(
-                "scroll-animation"
-            );
+                elemento.classList.add(
+                    "animate-on-scroll"
+                );
 
-            observer.observe(element);
-
-        });
-
-    }
-
-
-    /* =====================================================
-       ANO AUTOMÁTICO DO FOOTER
-    ===================================================== */
-
-    const currentYear =
-        document.querySelector(
-            "[data-current-year]"
-        );
-
-    if (currentYear) {
-
-        currentYear.textContent =
-            new Date().getFullYear();
-
-    }
-
-
-    /* =====================================================
-       PROTEÇÃO BÁSICA CONTRA CLIQUE DIREITO
-       
-       NÃO É SEGURANÇA REAL.
-       A segurança verdadeira será feita pelo Firebase.
-    ===================================================== */
-
-    document.addEventListener(
-        "contextmenu",
-        event => {
-
-            if (
-                document.body.dataset.protectImages ===
-                "true"
-            ) {
-
-                event.preventDefault();
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       PREVENÇÃO DE FORMULÁRIOS DEMO
-    ===================================================== */
-
-    const forms =
-        document.querySelectorAll(
-            "form[data-demo]"
-        );
-
-    forms.forEach(form => {
-
-        form.addEventListener(
-            "submit",
-            event => {
-
-                event.preventDefault();
-
-                console.log(
-                    "Formulário aguardando integração."
+                observer.observe(
+                    elemento
                 );
 
             }
         );
 
-    });
+    } else {
+
+        elementosAnimados.forEach(
+            elemento => {
+
+                elemento.classList.add(
+                    "visible"
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       LINKS COM SCROLL SUAVE
+    ====================================================== */
+
+    document
+        .querySelectorAll(
+            'a[href^="#"]'
+        )
+        .forEach(
+            link => {
+
+                link.addEventListener(
+                    "click",
+                    event => {
+
+                        const destino =
+                            link.getAttribute(
+                                "href"
+                            );
+
+
+                        if (
+                            !destino ||
+                            destino === "#"
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const elemento =
+                            document.querySelector(
+                                destino
+                            );
+
+
+                        if (!elemento) {
+                            return;
+                        }
+
+
+                        event.preventDefault();
+
+
+                        const alturaHeader =
+                            header
+                                ? header.offsetHeight
+                                : 0;
+
+
+                        const posicao =
+                            elemento.offsetTop -
+                            alturaHeader;
+
+
+                        window.scrollTo({
+
+                            top:
+                                posicao,
+
+                            behavior:
+                                "smooth"
+
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       ATUALIZAÇÃO DO ANO
+    ====================================================== */
+
+    const anoAtual =
+        new Date().getFullYear();
+
+
+    document
+        .querySelectorAll(
+            ".footer-center span"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.textContent =
+                    `© ${anoAtual} Suas Memórias Aqui`;
+
+            }
+        );
 
 
     /* =====================================================
        LOG DO SISTEMA
-    ===================================================== */
+    ====================================================== */
 
     console.log(
-        "Suas Memórias Aqui — site carregado."
+        "Suas Memórias Aqui — site carregado com sucesso."
     );
 
 });
-```
