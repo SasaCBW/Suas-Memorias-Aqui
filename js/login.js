@@ -2,12 +2,28 @@
 /* =========================================================
    SUAS MEMÓRIAS AQUI
    LOGIN.JS
-   Sistema de login do cliente
+   Autenticação real com Firebase
 ========================================================= */
 
 
 /* =========================================================
-   ELEMENTOS
+   FIREBASE
+========================================================= */
+
+import {
+    auth,
+    googleProvider
+} from "./firebase.js";
+
+import {
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+/* =========================================================
+   ELEMENTOS DA PÁGINA
 ========================================================= */
 
 const loginForm =
@@ -25,12 +41,6 @@ const togglePassword =
 const loginButton =
     document.getElementById("loginButton");
 
-const buttonLoader =
-    document.getElementById("buttonLoader");
-
-const loginError =
-    document.getElementById("loginError");
-
 const googleLogin =
     document.getElementById("googleLogin");
 
@@ -39,6 +49,9 @@ const forgotPassword =
 
 const createAccount =
     document.getElementById("createAccount");
+
+const loginError =
+    document.getElementById("loginError");
 
 const accessModal =
     document.getElementById("accessModal");
@@ -60,10 +73,10 @@ if (togglePassword && passwordInput) {
         "click",
         () => {
 
-            const passwordVisible =
+            const mostrando =
                 passwordInput.type === "text";
 
-            if (passwordVisible) {
+            if (mostrando) {
 
                 passwordInput.type = "password";
 
@@ -97,24 +110,25 @@ if (togglePassword && passwordInput) {
    MENSAGENS
 ========================================================= */
 
-function showMessage(
-    message,
-    type = "error"
+function mostrarMensagem(
+    mensagem,
+    tipo = "error"
 ) {
 
     if (!loginError) {
         return;
     }
 
-    loginError.textContent = message;
+    loginError.textContent =
+        mensagem;
 
     loginError.className =
-        `form-message ${type} show`;
+        `form-message ${tipo} show`;
 
 }
 
 
-function clearMessage() {
+function limparMensagem() {
 
     if (!loginError) {
         return;
@@ -129,34 +143,24 @@ function clearMessage() {
 
 
 /* =========================================================
-   ESTADO DO BOTÃO
+   LOADING
 ========================================================= */
 
-function setLoading(
-    loading
+function definirLoading(
+    carregando
 ) {
 
     if (!loginButton) {
         return;
     }
 
-    if (loading) {
+    loginButton.disabled =
+        carregando;
 
-        loginButton.disabled = true;
-
-        loginButton.classList.add(
-            "loading"
-        );
-
-    } else {
-
-        loginButton.disabled = false;
-
-        loginButton.classList.remove(
-            "loading"
-        );
-
-    }
+    loginButton.classList.toggle(
+        "loading",
+        carregando
+    );
 
 }
 
@@ -165,7 +169,7 @@ function setLoading(
    VALIDAÇÃO DE E-MAIL
 ========================================================= */
 
-function isValidEmail(email) {
+function emailValido(email) {
 
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         .test(email);
@@ -174,7 +178,7 @@ function isValidEmail(email) {
 
 
 /* =========================================================
-   LOGIN COM E-MAIL
+   LOGIN COM E-MAIL E SENHA
 ========================================================= */
 
 if (loginForm) {
@@ -185,13 +189,14 @@ if (loginForm) {
 
             event.preventDefault();
 
-            clearMessage();
+            limparMensagem();
 
             const email =
                 emailInput.value.trim();
 
-            const password =
+            const senha =
                 passwordInput.value;
+
 
             /* -----------------------------------------
                VALIDAÇÕES
@@ -199,7 +204,7 @@ if (loginForm) {
 
             if (!email) {
 
-                showMessage(
+                mostrarMensagem(
                     "Digite seu e-mail."
                 );
 
@@ -209,9 +214,10 @@ if (loginForm) {
 
             }
 
-            if (!isValidEmail(email)) {
 
-                showMessage(
+            if (!emailValido(email)) {
+
+                mostrarMensagem(
                     "Digite um e-mail válido."
                 );
 
@@ -221,9 +227,10 @@ if (loginForm) {
 
             }
 
-            if (!password) {
 
-                showMessage(
+            if (!senha) {
+
+                mostrarMensagem(
                     "Digite sua senha."
                 );
 
@@ -233,87 +240,62 @@ if (loginForm) {
 
             }
 
-            if (password.length < 6) {
 
-                showMessage(
-                    "A senha precisa ter pelo menos 6 caracteres."
-                );
-
-                passwordInput.focus();
-
-                return;
-
-            }
+            definirLoading(true);
 
 
             /* -----------------------------------------
-               ATIVAR LOADING
+               FIREBASE AUTHENTICATION
             ----------------------------------------- */
-
-            setLoading(true);
-
-
-            /*
-             * A autenticação real será conectada ao
-             * Firebase Authentication.
-             *
-             * Não colocamos senhas diretamente neste
-             * arquivo por segurança.
-             */
-
 
             try {
 
-                /*
-                 * Quando o Firebase estiver configurado,
-                 * o código abaixo será utilizado:
-                 *
-                 * await signInWithEmailAndPassword(
-                 *     auth,
-                 *     email,
-                 *     password
-                 * );
-                 *
-                 * Depois:
-                 *
-                 * window.location.href =
-                 *     "cliente.html";
-                 */
+                const resultado =
+                    await signInWithEmailAndPassword(
+                        auth,
+                        email,
+                        senha
+                    );
 
 
-                /*
-                 * TEMPORARIAMENTE:
-                 * informa que o Firebase ainda será
-                 * conectado.
-                 */
-
-                await new Promise(
-                    resolve =>
-                        setTimeout(resolve, 800)
+                console.log(
+                    "Usuário conectado:",
+                    resultado.user.uid
                 );
 
 
-                showMessage(
-                    "O sistema de autenticação ainda está sendo conectado ao Firebase.",
+                mostrarMensagem(
+                    "Login realizado! Entrando na sua área...",
                     "success"
                 );
+
+
+                /* -------------------------------------
+                   REDIRECIONAMENTO
+                ------------------------------------- */
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "cliente.html";
+
+                }, 800);
+
 
             } catch (error) {
 
                 console.error(
-                    "Erro ao entrar:",
+                    "Erro no login:",
                     error
                 );
 
-                showMessage(
-                    getFirebaseErrorMessage(
+                mostrarMensagem(
+                    traduzirErroFirebase(
                         error
                     )
                 );
 
-            } finally {
-
-                setLoading(false);
+                definirLoading(false);
 
             }
 
@@ -333,62 +315,63 @@ if (googleLogin) {
         "click",
         async () => {
 
-            clearMessage();
+            limparMensagem();
 
-            googleLogin.disabled = true;
+            googleLogin.disabled =
+                true;
 
             const textoOriginal =
                 googleLogin.innerHTML;
 
             googleLogin.innerHTML =
-                "Conectando com Google...";
+                "Conectando...";
 
 
             try {
 
-                /*
-                 * Quando o Firebase estiver conectado:
-                 *
-                 * const provider =
-                 *     new GoogleAuthProvider();
-                 *
-                 * await signInWithPopup(
-                 *     auth,
-                 *     provider
-                 * );
-                 *
-                 * window.location.href =
-                 *     "cliente.html";
-                 */
+                const resultado =
+                    await signInWithPopup(
+                        auth,
+                        googleProvider
+                    );
 
 
-                await new Promise(
-                    resolve =>
-                        setTimeout(resolve, 800)
+                console.log(
+                    "Login Google:",
+                    resultado.user.uid
                 );
 
 
-                showMessage(
-                    "O login com Google será ativado junto com o Firebase.",
+                mostrarMensagem(
+                    "Login realizado! Entrando na sua área...",
                     "success"
                 );
+
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "cliente.html";
+
+                }, 800);
+
 
             } catch (error) {
 
                 console.error(
-                    "Erro no Google:",
+                    "Erro no login Google:",
                     error
                 );
 
-                showMessage(
-                    getFirebaseErrorMessage(
+                mostrarMensagem(
+                    traduzirErroFirebase(
                         error
                     )
                 );
 
-            } finally {
 
-                googleLogin.disabled = false;
+                googleLogin.disabled =
+                    false;
 
                 googleLogin.innerHTML =
                     textoOriginal;
@@ -413,7 +396,7 @@ if (forgotPassword) {
 
             event.preventDefault();
 
-            clearMessage();
+            limparMensagem();
 
             const email =
                 emailInput.value.trim();
@@ -421,7 +404,7 @@ if (forgotPassword) {
 
             if (!email) {
 
-                showMessage(
+                mostrarMensagem(
                     "Digite seu e-mail para recuperar a senha."
                 );
 
@@ -432,9 +415,9 @@ if (forgotPassword) {
             }
 
 
-            if (!isValidEmail(email)) {
+            if (!emailValido(email)) {
 
-                showMessage(
+                mostrarMensagem(
                     "Digite um e-mail válido."
                 );
 
@@ -445,20 +428,34 @@ if (forgotPassword) {
             }
 
 
-            /*
-             * Quando o Firebase estiver conectado:
-             *
-             * await sendPasswordResetEmail(
-             *     auth,
-             *     email
-             * );
-             */
+            try {
+
+                await sendPasswordResetEmail(
+                    auth,
+                    email
+                );
 
 
-            showMessage(
-                "A recuperação de senha será ativada junto com o Firebase.",
-                "success"
-            );
+                mostrarMensagem(
+                    "Enviamos um link de recuperação para seu e-mail.",
+                    "success"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erro ao recuperar senha:",
+                    error
+                );
+
+                mostrarMensagem(
+                    traduzirErroFirebase(
+                        error
+                    )
+                );
+
+            }
 
         }
     );
@@ -470,7 +467,7 @@ if (forgotPassword) {
    MODAL DE SOLICITAÇÃO DE ACESSO
 ========================================================= */
 
-function openAccessModal() {
+function abrirModal() {
 
     if (!accessModal) {
         return;
@@ -491,7 +488,7 @@ function openAccessModal() {
 }
 
 
-function closeAccessModal() {
+function fecharModal() {
 
     if (!accessModal) {
         return;
@@ -516,7 +513,7 @@ if (createAccount) {
 
     createAccount.addEventListener(
         "click",
-        openAccessModal
+        abrirModal
     );
 
 }
@@ -526,7 +523,7 @@ if (closeModal) {
 
     closeModal.addEventListener(
         "click",
-        closeAccessModal
+        fecharModal
     );
 
 }
@@ -536,14 +533,14 @@ if (modalOverlay) {
 
     modalOverlay.addEventListener(
         "click",
-        closeAccessModal
+        fecharModal
     );
 
 }
 
 
 /* =========================================================
-   ESC FECHA O MODAL
+   ESC FECHA MODAL
 ========================================================= */
 
 document.addEventListener(
@@ -558,7 +555,7 @@ document.addEventListener(
             )
         ) {
 
-            closeAccessModal();
+            fecharModal();
 
         }
 
@@ -567,25 +564,18 @@ document.addEventListener(
 
 
 /* =========================================================
-   MENSAGENS DO FIREBASE
+   TRADUZIR ERROS DO FIREBASE
 ========================================================= */
 
-function getFirebaseErrorMessage(
+function traduzirErroFirebase(
     error
 ) {
 
-    if (!error) {
-
-        return "Não foi possível realizar o login.";
-
-    }
+    const codigo =
+        error?.code || "";
 
 
-    const code =
-        error.code || "";
-
-
-    switch (code) {
+    switch (codigo) {
 
         case "auth/invalid-email":
 
@@ -619,17 +609,32 @@ function getFirebaseErrorMessage(
 
         case "auth/popup-closed-by-user":
 
-            return "A janela do Google foi fechada antes do login.";
+            return "A janela do Google foi fechada.";
 
 
         case "auth/popup-blocked":
 
-            return "O navegador bloqueou a janela de login do Google.";
+            return "O navegador bloqueou a janela do Google. Permita pop-ups para continuar.";
+
+
+        case "auth/unauthorized-domain":
+
+            return "Este domínio ainda não está autorizado no Firebase.";
+
+
+        case "auth/operation-not-allowed":
+
+            return "Este método de login ainda não foi ativado no Firebase.";
+
+
+        case "auth/user-disabled":
+
+            return "Esta conta foi desativada. Entre em contato conosco.";
 
 
         default:
 
-            return "Não foi possível entrar. Tente novamente.";
+            return "Não foi possível entrar. Verifique seus dados e tente novamente.";
 
     }
 
@@ -637,33 +642,34 @@ function getFirebaseErrorMessage(
 
 
 /* =========================================================
-   LIMPAR ERRO AO DIGITAR
+   LIMPAR MENSAGEM AO DIGITAR
 ========================================================= */
 
 if (emailInput) {
 
     emailInput.addEventListener(
         "input",
-        clearMessage
+        limparMensagem
     );
 
 }
+
 
 if (passwordInput) {
 
     passwordInput.addEventListener(
         "input",
-        clearMessage
+        limparMensagem
     );
 
 }
 
 
 /* =========================================================
-   LOG
+   INFORMAÇÃO NO CONSOLE
 ========================================================= */
 
 console.log(
-    "Suas Memórias Aqui — login.js carregado."
+    "Suas Memórias Aqui — autenticação Firebase carregada."
 );
 ```
