@@ -1,0 +1,1275 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Envio de fotos — Suas Memórias Aqui"
+    >
+
+    <meta
+        name="robots"
+        content="noindex, nofollow"
+    >
+
+    <title>
+        Enviar Fotos | Suas Memórias Aqui
+    </title>
+
+
+    <!-- =====================================================
+         FONTES
+    ====================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/admin.css"
+    >
+
+    <style>
+
+        /* =================================================
+           UPLOAD PAGE
+        ================================================= */
+
+        .upload-page {
+
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+            padding: 35px 30px 60px;
+
+        }
+
+
+        .upload-top {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .upload-top-text span {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #967344;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+        }
+
+
+        .upload-top-text h1 {
+
+            margin: 0;
+
+            color: #1d1d1d;
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size: 34px;
+
+            font-weight: 600;
+
+        }
+
+
+        .upload-top-text p {
+
+            max-width: 650px;
+
+            margin: 9px 0 0;
+
+            color: #8c8c8c;
+
+            font-size: 11px;
+
+            line-height: 1.7;
+
+        }
+
+
+        .upload-back {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-height: 43px;
+
+            padding: 0 18px;
+
+            border: 1px solid #ded9d0;
+
+            border-radius: 8px;
+
+            color: #333;
+
+            background: #fff;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            transition: .2s ease;
+
+        }
+
+
+        .upload-back:hover {
+
+            border-color: #9a7748;
+
+            color: #9a7748;
+
+        }
+
+
+        /* =================================================
+           CARD
+        ================================================= */
+
+        .upload-card {
+
+            padding: 30px;
+
+            border: 1px solid #e8e4dc;
+
+            border-radius: 15px;
+
+            background: #fff;
+
+            box-shadow:
+                0 15px 45px
+                rgba(30, 25, 18, .05);
+
+        }
+
+
+        .upload-form {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 22px;
+
+        }
+
+
+        .upload-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+
+        }
+
+
+        .upload-field {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+        }
+
+
+        .upload-field.full {
+
+            grid-column: 1 / -1;
+
+        }
+
+
+        .upload-field label {
+
+            color: #272727;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+        }
+
+
+        .upload-field select,
+        .upload-field input[type="text"] {
+
+            width: 100%;
+
+            height: 48px;
+
+            padding: 0 13px;
+
+            border: 1px solid #dfdbd3;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            background: #faf9f7;
+
+            color: #222;
+
+            font-size: 11px;
+
+        }
+
+
+        .upload-field select:focus,
+        .upload-field input[type="text"]:focus {
+
+            border-color: #aa8552;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(170,133,82,.09);
+
+        }
+
+
+        /* =================================================
+           DROPZONE
+        ================================================= */
+
+        .upload-dropzone {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-height: 240px;
+
+            padding: 35px;
+
+            border: 1.5px dashed #cfc6b8;
+
+            border-radius: 13px;
+
+            background: #faf9f6;
+
+            text-align: center;
+
+            cursor: pointer;
+
+            transition:
+                border-color .2s ease,
+                background .2s ease;
+
+        }
+
+
+        .upload-dropzone:hover,
+        .upload-dropzone.dragover {
+
+            border-color: #9d7848;
+
+            background: #f8f3eb;
+
+        }
+
+
+        .upload-dropzone-content {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+        }
+
+
+        .upload-cloud {
+
+            width: 60px;
+            height: 60px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 15px;
+
+            border-radius: 50%;
+
+            background: #eee8df;
+
+            color: #8c6a3e;
+
+            font-size: 24px;
+
+        }
+
+
+        .upload-dropzone h2 {
+
+            margin: 0;
+
+            color: #292929;
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size: 22px;
+
+            font-weight: 600;
+
+        }
+
+
+        .upload-dropzone p {
+
+            max-width: 480px;
+
+            margin: 8px auto 0;
+
+            color: #999;
+
+            font-size: 10px;
+
+            line-height: 1.6;
+
+        }
+
+
+        .upload-dropzone strong {
+
+            color: #89673c;
+
+        }
+
+
+        #photoInput {
+
+            display: none;
+
+        }
+
+
+        /* =================================================
+           PREVIEW
+        ================================================= */
+
+        .upload-preview-section {
+
+            display: none;
+
+            margin-top: 24px;
+
+        }
+
+
+        .upload-preview-section.visible {
+
+            display: block;
+
+        }
+
+
+        .upload-preview-heading {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 13px;
+
+        }
+
+
+        .upload-preview-heading strong {
+
+            color: #262626;
+
+            font-size: 11px;
+
+        }
+
+
+        .upload-preview-heading span {
+
+            color: #999;
+
+            font-size: 9px;
+
+        }
+
+
+        .preview-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, minmax(0, 1fr));
+
+            gap: 10px;
+
+        }
+
+
+        .preview-item {
+
+            position: relative;
+
+            aspect-ratio: 1 / 1;
+
+            overflow: hidden;
+
+            border-radius: 8px;
+
+            background: #eee;
+
+        }
+
+
+        .preview-item img {
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+        }
+
+
+        .preview-item-name {
+
+            position: absolute;
+
+            right: 0;
+            bottom: 0;
+            left: 0;
+
+            padding: 6px;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    transparent,
+                    rgba(0,0,0,.7)
+                );
+
+            color: #fff;
+
+            font-size: 7px;
+
+            white-space: nowrap;
+
+            text-overflow: ellipsis;
+
+        }
+
+
+        /* =================================================
+           PROGRESS
+        ================================================= */
+
+        .upload-progress {
+
+            display: none;
+
+            margin-top: 25px;
+
+        }
+
+
+        .upload-progress.visible {
+
+            display: block;
+
+        }
+
+
+        .progress-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-bottom: 8px;
+
+            color: #777;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+        }
+
+
+        .progress-track {
+
+            width: 100%;
+
+            height: 7px;
+
+            overflow: hidden;
+
+            border-radius: 20px;
+
+            background: #eeeae4;
+
+        }
+
+
+        .progress-bar {
+
+            width: 0%;
+
+            height: 100%;
+
+            border-radius: inherit;
+
+            background: #947042;
+
+            transition: width .2s ease;
+
+        }
+
+
+        /* =================================================
+           AÇÕES
+        ================================================= */
+
+        .upload-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            padding-top: 5px;
+
+        }
+
+
+        .upload-clear-button {
+
+            min-height: 47px;
+
+            padding: 0 20px;
+
+            border: 1px solid #ded9d1;
+
+            border-radius: 8px;
+
+            background: #fff;
+
+            color: #555;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+        }
+
+
+        .upload-submit-button {
+
+            min-height: 47px;
+
+            padding: 0 25px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #1d1d1d;
+
+            color: #fff;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+
+        }
+
+
+        .upload-submit-button:hover {
+
+            background: #8e6b40;
+
+        }
+
+
+        .upload-submit-button:disabled {
+
+            opacity: .55;
+
+            cursor: not-allowed;
+
+        }
+
+
+        /* =================================================
+           MENSAGEM
+        ================================================= */
+
+        .upload-message {
+
+            min-height: 20px;
+
+            margin-top: 5px;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .upload-message.error {
+
+            color: #a34f4f;
+
+        }
+
+
+        .upload-message.success {
+
+            color: #4d825f;
+
+        }
+
+
+        /* =================================================
+           INFORMAÇÃO
+        ================================================= */
+
+        .upload-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 14px;
+
+            margin-top: 18px;
+
+        }
+
+
+        .upload-info-card {
+
+            padding: 18px;
+
+            border: 1px solid #e7e2da;
+
+            border-radius: 11px;
+
+            background: #fff;
+
+        }
+
+
+        .upload-info-card strong {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #272727;
+
+            font-size: 10px;
+
+        }
+
+
+        .upload-info-card p {
+
+            margin: 0;
+
+            color: #999;
+
+            font-size: 9px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =================================================
+           RESPONSIVO
+        ================================================= */
+
+        @media (max-width: 800px) {
+
+            .upload-page {
+
+                padding:
+                    25px 18px 45px;
+
+            }
+
+
+            .upload-top {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+            }
+
+
+            .upload-top-text h1 {
+
+                font-size: 29px;
+
+            }
+
+
+            .upload-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .upload-field.full {
+
+                grid-column: auto;
+
+            }
+
+
+            .preview-grid {
+
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+
+            }
+
+
+            .upload-info {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .upload-card {
+
+                padding: 18px;
+
+            }
+
+
+            .upload-dropzone {
+
+                min-height: 210px;
+
+                padding: 22px;
+
+            }
+
+
+            .preview-grid {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+            }
+
+
+            .upload-actions {
+
+                flex-direction: column;
+
+            }
+
+
+            .upload-clear-button,
+            .upload-submit-button {
+
+                width: 100%;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         PÁGINA
+    ====================================================== -->
+
+    <main class="upload-page">
+
+
+        <!-- =================================================
+             CABEÇALHO
+        ================================================== -->
+
+        <header class="upload-top">
+
+
+            <div class="upload-top-text">
+
+                <span>
+                    GALERIA PRIVADA
+                </span>
+
+                <h1>
+                    Enviar fotos
+                </h1>
+
+                <p>
+                    Selecione o cliente, escolha a galeria
+                    e envie as fotos do evento diretamente
+                    para o armazenamento seguro do projeto.
+                </p>
+
+            </div>
+
+
+            <a
+                href="admin.html"
+                class="upload-back"
+            >
+                ← Voltar ao painel
+            </a>
+
+
+        </header>
+
+
+        <!-- =================================================
+             FORMULÁRIO
+        ================================================== -->
+
+        <section class="upload-card">
+
+
+            <form
+                id="uploadForm"
+                class="upload-form"
+            >
+
+
+                <div class="upload-grid">
+
+
+                    <!-- =====================================
+                         CLIENTE
+                    ====================================== -->
+
+                    <div class="upload-field">
+
+                        <label
+                            for="uploadClient"
+                        >
+                            Cliente
+                        </label>
+
+                        <select
+                            id="uploadClient"
+                            required
+                        >
+
+                            <option value="">
+                                Selecione um cliente
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         GALERIA
+                    ====================================== -->
+
+                    <div class="upload-field">
+
+                        <label
+                            for="uploadGallery"
+                        >
+                            Galeria
+                        </label>
+
+                        <select
+                            id="uploadGallery"
+                            required
+                            disabled
+                        >
+
+                            <option value="">
+                                Selecione primeiro o cliente
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         NOME DO EVENTO
+                    ====================================== -->
+
+                    <div
+                        class="upload-field full"
+                    >
+
+                        <label
+                            for="uploadDescription"
+                        >
+                            Identificação das fotos
+                        </label>
+
+                        <input
+                            id="uploadDescription"
+                            type="text"
+                            placeholder="Ex.: Festa de 15 anos — fotos oficiais"
+                            maxlength="120"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     ÁREA DE UPLOAD
+                ================================================== -->
+
+                <label
+                    for="photoInput"
+                    id="uploadDropzone"
+                    class="upload-dropzone"
+                >
+
+
+                    <input
+                        id="photoInput"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        multiple
+                    >
+
+
+                    <div
+                        class="upload-dropzone-content"
+                    >
+
+                        <div
+                            class="upload-cloud"
+                        >
+                            ↑
+                        </div>
+
+                        <h2>
+                            Adicione suas fotos
+                        </h2>
+
+                        <p>
+                            Arraste as imagens para esta área
+                            ou <strong>clique para selecionar</strong>.
+                            Você pode selecionar várias fotos
+                            de uma vez.
+                        </p>
+
+                        <p>
+                            Formatos aceitos:
+                            JPG, PNG e WEBP.
+                        </p>
+
+                    </div>
+
+
+                </label>
+
+
+                <!-- =================================================
+                     PREVIEW
+                ================================================== -->
+
+                <section
+                    id="previewSection"
+                    class="upload-preview-section"
+                >
+
+
+                    <div
+                        class="upload-preview-heading"
+                    >
+
+                        <strong>
+                            Fotos selecionadas
+                        </strong>
+
+                        <span
+                            id="selectedCount"
+                        >
+                            0 fotos
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        id="previewGrid"
+                        class="preview-grid"
+                    ></div>
+
+
+                </section>
+
+
+                <!-- =================================================
+                     PROGRESSO
+                ================================================== -->
+
+                <div
+                    id="uploadProgress"
+                    class="upload-progress"
+                >
+
+                    <div class="progress-top">
+
+                        <span
+                            id="progressText"
+                        >
+                            Preparando envio...
+                        </span>
+
+                        <span
+                            id="progressPercent"
+                        >
+                            0%
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="progress-track"
+                    >
+
+                        <div
+                            id="progressBar"
+                            class="progress-bar"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     MENSAGEM
+                ================================================== -->
+
+                <div
+                    id="uploadMessage"
+                    class="upload-message"
+                    aria-live="polite"
+                ></div>
+
+
+                <!-- =================================================
+                     BOTÕES
+                ================================================== -->
+
+                <div
+                    class="upload-actions"
+                >
+
+                    <button
+                        id="clearUploadButton"
+                        type="button"
+                        class="upload-clear-button"
+                    >
+                        Limpar seleção
+                    </button>
+
+
+                    <button
+                        id="submitUploadButton"
+                        type="submit"
+                        class="upload-submit-button"
+                        disabled
+                    >
+                        ENVIAR FOTOS
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+        <!-- =================================================
+             INFORMAÇÕES
+        ================================================== -->
+
+        <section
+            class="upload-info"
+        >
+
+
+            <article
+                class="upload-info-card"
+            >
+
+                <strong>
+                    🔒 Galeria privada
+                </strong>
+
+                <p>
+                    As fotos ficam vinculadas à galeria
+                    selecionada e não são exibidas
+                    publicamente no site.
+                </p>
+
+            </article>
+
+
+            <article
+                class="upload-info-card"
+            >
+
+                <strong>
+                    📷 Várias fotos
+                </strong>
+
+                <p>
+                    Selecione várias imagens de uma vez
+                    para agilizar o envio das fotos
+                    do evento.
+                </p>
+
+            </article>
+
+
+            <article
+                class="upload-info-card"
+            >
+
+                <strong>
+                    ☁ Armazenamento
+                </strong>
+
+                <p>
+                    Os arquivos serão enviados para o
+                    Firebase Storage configurado
+                    no projeto.
+                </p>
+
+            </article>
+
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="js/upload.js"
+    ></script>
+
+
+</body>
+
+</html>
+```
+
+### Próximo arquivo
+
+Agora vem o arquivo que realmente fará essa tela funcionar:
+
+`js/upload.js`
+
+Ele vai cuidar de **carregar os clientes, mostrar as galerias correspondentes, selecionar várias fotos, criar prévias e enviar os arquivos para o Firebase Storage**.
