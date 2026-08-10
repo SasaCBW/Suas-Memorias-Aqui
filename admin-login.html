@@ -1,0 +1,1021 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Área administrativa — Suas Memórias Aqui"
+    >
+
+    <title>
+        Administração | Suas Memórias Aqui
+    </title>
+
+
+    <!-- =====================================================
+         GOOGLE FONTS
+    ====================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/login.css"
+    >
+
+
+    <style>
+
+        /* =================================================
+           ADMIN LOGIN
+        ================================================= */
+
+        .admin-login-page {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 25px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #181818 0%,
+                    #242424 55%,
+                    #171717 100%
+                );
+
+        }
+
+
+        .admin-login-wrapper {
+
+            width:
+                min(1050px, 100%);
+
+            min-height: 650px;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            overflow: hidden;
+
+            border-radius: 20px;
+
+            background: #ffffff;
+
+            box-shadow:
+                0 35px 100px
+                rgba(0, 0, 0, 0.35);
+
+        }
+
+
+        /* =================================================
+           LADO ESQUERDO
+        ================================================= */
+
+        .admin-login-brand {
+
+            position: relative;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            padding: 50px;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #292929,
+                    #151515
+                );
+
+            color: #ffffff;
+
+        }
+
+
+        .admin-login-brand::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 420px;
+            height: 420px;
+
+            top: -190px;
+            right: -170px;
+
+            border:
+                1px solid
+                rgba(217, 193, 155, 0.25);
+
+            border-radius: 50%;
+
+        }
+
+
+        .admin-login-brand::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 320px;
+            height: 320px;
+
+            bottom: -170px;
+            left: -150px;
+
+            border:
+                1px solid
+                rgba(217, 193, 155, 0.15);
+
+            border-radius: 50%;
+
+        }
+
+
+        .admin-brand-content {
+
+            position: relative;
+
+            z-index: 2;
+
+        }
+
+
+        .admin-brand-logo {
+
+            width: 55px;
+            height: 55px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 28px;
+
+            border-radius: 50%;
+
+            background: #ffffff;
+
+            color: #181818;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .admin-brand-content > span {
+
+            display: block;
+
+            margin-bottom: 10px;
+
+            color: #d9c19b;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 3px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .admin-brand-content h1 {
+
+            max-width: 400px;
+
+            margin: 0;
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size: 43px;
+
+            font-weight: 500;
+
+            line-height: 1.12;
+
+        }
+
+
+        .admin-brand-content p {
+
+            max-width: 390px;
+
+            margin-top: 18px;
+
+            color:
+                rgba(255, 255, 255, 0.62);
+
+            font-size: 12px;
+
+            line-height: 1.8;
+
+        }
+
+
+        .admin-brand-footer {
+
+            position: relative;
+
+            z-index: 2;
+
+            color:
+                rgba(255, 255, 255, 0.4);
+
+            font-size: 9px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =================================================
+           LADO DIREITO
+        ================================================= */
+
+        .admin-login-form-area {
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 50px;
+
+            background: #ffffff;
+
+        }
+
+
+        .admin-login-form-wrapper {
+
+            width:
+                min(390px, 100%);
+
+        }
+
+
+        .admin-login-heading {
+
+            margin-bottom: 32px;
+
+        }
+
+
+        .admin-login-heading > span {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #8b683e;
+
+            font-size: 8px;
+
+            font-weight: 800;
+
+            letter-spacing: 2.5px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .admin-login-heading h2 {
+
+            margin: 0;
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            color: #181818;
+
+            font-size: 31px;
+
+            font-weight: 600;
+
+        }
+
+
+        .admin-login-heading p {
+
+            margin-top: 8px;
+
+            color: #929292;
+
+            font-size: 10px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =================================================
+           FORMULÁRIO
+        ================================================= */
+
+        .admin-login-form {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 17px;
+
+        }
+
+
+        .admin-login-field {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+        }
+
+
+        .admin-login-field label {
+
+            color: #252525;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+        }
+
+
+        .admin-input-wrapper {
+
+            position: relative;
+
+        }
+
+
+        .admin-input-wrapper > span {
+
+            position: absolute;
+
+            top: 50%;
+            left: 14px;
+
+            transform:
+                translateY(-50%);
+
+            color: #a8a49d;
+
+            font-size: 14px;
+
+            pointer-events: none;
+
+        }
+
+
+        .admin-login-field input {
+
+            width: 100%;
+
+            height: 49px;
+
+            padding:
+                0 14px 0 42px;
+
+            border:
+                1px solid #e3dfd7;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            background: #faf9f7;
+
+            color: #1c1c1c;
+
+            font-size: 11px;
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .admin-login-field input:focus {
+
+            border-color: #b18a55;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(177, 138, 85, .10);
+
+        }
+
+
+        .admin-login-field input::placeholder {
+
+            color: #aaa7a0;
+
+        }
+
+
+        /* =================================================
+           SENHA
+        ================================================= */
+
+        .password-wrapper {
+
+            position: relative;
+
+        }
+
+
+        .password-wrapper input {
+
+            padding-right: 45px;
+
+        }
+
+
+        .toggle-password {
+
+            position: absolute;
+
+            top: 50%;
+            right: 12px;
+
+            transform:
+                translateY(-50%);
+
+            width: 30px;
+            height: 30px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border: none;
+
+            background: transparent;
+
+            color: #999;
+
+            cursor: pointer;
+
+        }
+
+
+        .toggle-password:hover {
+
+            color: #8b683e;
+
+        }
+
+
+        /* =================================================
+           BOTÃO
+        ================================================= */
+
+        .admin-login-button {
+
+            width: 100%;
+
+            height: 50px;
+
+            margin-top: 5px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #181818;
+
+            color: #ffffff;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: .5px;
+
+            cursor: pointer;
+
+            transition:
+                background .25s ease,
+                transform .25s ease;
+
+        }
+
+
+        .admin-login-button:hover {
+
+            background: #8b683e;
+
+            transform:
+                translateY(-2px);
+
+        }
+
+
+        .admin-login-button:disabled {
+
+            opacity: .6;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+        }
+
+
+        /* =================================================
+           MENSAGEM
+        ================================================= */
+
+        .admin-login-message {
+
+            min-height: 22px;
+
+            margin-top: 4px;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+
+            text-align: center;
+
+        }
+
+
+        .admin-login-message.error {
+
+            color: #a84f4f;
+
+        }
+
+
+        .admin-login-message.success {
+
+            color: #4e8562;
+
+        }
+
+
+        /* =================================================
+           VOLTAR
+        ================================================= */
+
+        .admin-back-link {
+
+            display: flex;
+
+            justify-content: center;
+
+            margin-top: 22px;
+
+            color: #888;
+
+            font-size: 9px;
+
+            transition: .2s ease;
+
+        }
+
+
+        .admin-back-link:hover {
+
+            color: #8b683e;
+
+        }
+
+
+        /* =================================================
+           RESPONSIVIDADE
+        ================================================= */
+
+        @media (max-width: 800px) {
+
+            .admin-login-page {
+
+                padding: 15px;
+
+            }
+
+
+            .admin-login-wrapper {
+
+                grid-template-columns: 1fr;
+
+                min-height: auto;
+
+            }
+
+
+            .admin-login-brand {
+
+                min-height: 280px;
+
+                padding: 35px;
+
+            }
+
+
+            .admin-brand-content h1 {
+
+                font-size: 35px;
+
+            }
+
+
+            .admin-brand-footer {
+
+                display: none;
+
+            }
+
+
+            .admin-login-form-area {
+
+                padding: 40px 30px;
+
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            .admin-login-brand {
+
+                min-height: 240px;
+
+                padding: 28px;
+
+            }
+
+
+            .admin-brand-logo {
+
+                width: 48px;
+                height: 48px;
+
+                margin-bottom: 20px;
+
+            }
+
+
+            .admin-brand-content h1 {
+
+                font-size: 30px;
+
+            }
+
+
+            .admin-brand-content p {
+
+                margin-top: 12px;
+
+                font-size: 10px;
+
+            }
+
+
+            .admin-login-form-area {
+
+                padding:
+                    35px 22px;
+
+            }
+
+
+            .admin-login-heading h2 {
+
+                font-size: 27px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         PÁGINA
+    ====================================================== -->
+
+    <main class="admin-login-page">
+
+
+        <section
+            class="admin-login-wrapper"
+            aria-label="Login administrativo"
+        >
+
+
+            <!-- =============================================
+                 MARCA
+            ============================================== -->
+
+            <div class="admin-login-brand">
+
+
+                <div class="admin-brand-content">
+
+
+                    <div class="admin-brand-logo">
+                        SM
+                    </div>
+
+
+                    <span>
+                        Área exclusiva
+                    </span>
+
+
+                    <h1>
+                        Suas Memórias Aqui
+                    </h1>
+
+
+                    <p>
+                        Painel administrativo para
+                        gerenciamento de clientes,
+                        galerias, eventos e registros
+                        fotográficos.
+                    </p>
+
+
+                </div>
+
+
+                <div class="admin-brand-footer">
+
+                    Acesso restrito à administração.<br>
+
+                    Suas Memórias Aqui ©
+                    <span id="currentYear"></span>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =============================================
+                 FORMULÁRIO
+            ============================================== -->
+
+            <div class="admin-login-form-area">
+
+
+                <div
+                    class="admin-login-form-wrapper"
+                >
+
+
+                    <div class="admin-login-heading">
+
+                        <span>
+                            Administração
+                        </span>
+
+                        <h2>
+                            Bem-vinda de volta.
+                        </h2>
+
+                        <p>
+                            Entre com a conta
+                            autorizada para acessar
+                            o painel administrativo.
+                        </p>
+
+                    </div>
+
+
+                    <form
+                        id="adminLoginForm"
+                        class="admin-login-form"
+                    >
+
+
+                        <!-- =================================
+                             E-MAIL
+                        ================================== -->
+
+                        <div
+                            class="admin-login-field"
+                        >
+
+                            <label
+                                for="adminEmail"
+                            >
+                                E-mail
+                            </label>
+
+
+                            <div
+                                class="admin-input-wrapper"
+                            >
+
+                                <span>
+                                    ✉
+                                </span>
+
+
+                                <input
+                                    type="email"
+                                    id="adminEmail"
+                                    name="email"
+                                    placeholder="seu@email.com"
+                                    autocomplete="email"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================
+                             SENHA
+                        ================================== -->
+
+                        <div
+                            class="admin-login-field"
+                        >
+
+                            <label
+                                for="adminPassword"
+                            >
+                                Senha
+                            </label>
+
+
+                            <div
+                                class="admin-input-wrapper password-wrapper"
+                            >
+
+                                <span>
+                                    ●
+                                </span>
+
+
+                                <input
+                                    type="password"
+                                    id="adminPassword"
+                                    name="password"
+                                    placeholder="Digite sua senha"
+                                    autocomplete="current-password"
+                                    required
+                                >
+
+
+                                <button
+                                    type="button"
+                                    id="toggleAdminPassword"
+                                    class="toggle-password"
+                                    aria-label="Mostrar senha"
+                                >
+                                    ◉
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================
+                             MENSAGEM
+                        ================================== -->
+
+                        <div
+                            id="adminLoginMessage"
+                            class="admin-login-message"
+                            aria-live="polite"
+                        ></div>
+
+
+                        <!-- =================================
+                             ENTRAR
+                        ================================== -->
+
+                        <button
+                            type="submit"
+                            id="adminLoginButton"
+                            class="admin-login-button"
+                        >
+                            ENTRAR NO PAINEL
+                        </button>
+
+
+                    </form>
+
+
+                    <!-- =====================================
+                         VOLTAR
+                    ====================================== -->
+
+                    <a
+                        href="index.html"
+                        class="admin-back-link"
+                    >
+                        ← Voltar para Suas Memórias Aqui
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         ANO
+    ====================================================== -->
+
+    <script>
+
+        document.getElementById(
+            "currentYear"
+        ).textContent =
+            new Date().getFullYear();
+
+    </script>
+
+
+    <!-- =====================================================
+         JAVASCRIPT DO LOGIN
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="js/admin-login.js"
+    ></script>
+
+
+</body>
+
+</html>
+```
