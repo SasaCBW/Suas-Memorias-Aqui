@@ -13,7 +13,7 @@
 
     <meta
         name="theme-color"
-        content="#20201e"
+        content="#1e1d1a"
     >
 
     <meta
@@ -22,7 +22,7 @@
     >
 
     <title>
-        Área do Cliente | Suas Memórias Aqui
+        Acesso do Cliente | Suas Memórias Aqui
     </title>
 
 
@@ -70,68 +70,89 @@
 
 
     <!-- =====================================================
-         LADO VISUAL
+         TELA DE LOGIN
     ====================================================== -->
 
     <main class="login-page">
 
 
+        <!-- =================================================
+             LADO VISUAL
+        ================================================== -->
+
         <section class="login-visual">
 
-            <div class="login-visual-bg"></div>
+
+            <div class="login-visual-image"></div>
+
 
             <div class="login-visual-overlay"></div>
 
 
-            <a
-                href="index.html"
-                class="login-brand"
-            >
-
-                <span class="login-brand-mark">
-                    SM
-                </span>
-
-                <span class="login-brand-text">
-
-                    Suas Memórias
-
-                    <small>
-                        FOTOGRAFIA & STORY MAKER
-                    </small>
-
-                </span>
-
-            </a>
-
-
             <div class="login-visual-content">
 
-                <span>
-                    ÁREA EXCLUSIVA
-                </span>
 
-                <h1>
-                    Suas memórias,
-                    <em>sempre com você.</em>
-                </h1>
+                <a
+                    href="index.html"
+                    class="login-brand"
+                >
 
-                <p>
+                    <span class="login-brand-mark">
+                        SM
+                    </span>
 
-                    Entre na sua área exclusiva para
-                    acompanhar e acessar os registros
-                    do seu evento.
+                    <span class="login-brand-text">
 
-                </p>
+                        Suas Memórias
 
-            </div>
+                        <small>
+                            FOTOGRAFIA & STORY MAKER
+                        </small>
+
+                    </span>
+
+                </a>
 
 
-            <div class="login-visual-footer">
+                <div class="login-quote">
 
-                <span>
-                    Momentos passam. Memórias ficam.
-                </span>
+                    <span class="quote-line"></span>
+
+                    <p>
+                        Histórias passam.
+                        Memórias ficam.
+                    </p>
+
+                    <span class="quote-author">
+                        SUAS MEMÓRIAS AQUI
+                    </span>
+
+                </div>
+
+
+                <div class="login-visual-footer">
+
+                    <span>
+                        FOTOGRAFIA
+                    </span>
+
+                    <span>
+                        •
+                    </span>
+
+                    <span>
+                        STORY MAKER
+                    </span>
+
+                    <span>
+                        •
+                    </span>
+
+                    <span>
+                        EXPERIÊNCIAS
+                    </span>
+
+                </div>
 
             </div>
 
@@ -139,39 +160,37 @@
 
 
         <!-- =================================================
-             ÁREA DE LOGIN
+             LADO DO FORMULÁRIO
         ================================================== -->
 
         <section class="login-panel">
 
 
-            <div class="login-container">
+            <div class="login-panel-inner">
 
 
-                <div class="login-mobile-brand">
+                <!-- LOGO MOBILE -->
 
-                    <a
-                        href="index.html"
-                        class="login-brand-dark"
-                    >
+                <a
+                    href="index.html"
+                    class="mobile-brand"
+                >
 
-                        <span class="login-brand-mark">
-                            SM
-                        </span>
+                    <span class="login-brand-mark">
+                        SM
+                    </span>
 
-                        <span class="login-brand-text">
+                    <span class="login-brand-text">
 
-                            Suas Memórias
+                        Suas Memórias
 
-                            <small>
-                                FOTOGRAFIA & STORY MAKER
-                            </small>
+                        <small>
+                            FOTOGRAFIA & STORY MAKER
+                        </small>
 
-                        </span>
+                    </span>
 
-                    </a>
-
-                </div>
+                </a>
 
 
                 <!-- =================================================
@@ -181,38 +200,50 @@
                 <div class="login-heading">
 
                     <span class="login-eyebrow">
-                        BEM-VINDO(A) DE VOLTA
+                        ÁREA EXCLUSIVA
                     </span>
 
-                    <h2>
-                        Acesse sua conta
-                    </h2>
+                    <h1>
+                        Bem-vindo.
+                    </h1>
 
                     <p>
-                        Entre para acessar suas memórias.
+                        Entre na sua conta para acessar
+                        suas memórias e conteúdos exclusivos.
                     </p>
 
                 </div>
 
 
                 <!-- =================================================
-                     MENSAGEM
+                     ALERTA
                 ================================================== -->
 
                 <div
-                    class="auth-message"
-                    id="authMessage"
+                    class="login-alert"
+                    id="loginAlert"
                     role="alert"
-                ></div>
+                    aria-live="polite"
+                >
+
+                    <i
+                        class="fa-solid fa-circle-exclamation"
+                    ></i>
+
+                    <span id="loginAlertText">
+                        Ocorreu um erro.
+                    </span>
+
+                </div>
 
 
                 <!-- =================================================
-                     LOGIN
+                     FORMULÁRIO
                 ================================================== -->
 
                 <form
                     id="loginForm"
-                    class="auth-form"
+                    class="login-form"
                     novalidate
                 >
 
@@ -221,9 +252,12 @@
 
                     <div class="form-group">
 
-                        <label for="loginEmail">
+                        <label
+                            for="email"
+                        >
                             E-mail
                         </label>
+
 
                         <div class="input-wrapper">
 
@@ -231,9 +265,10 @@
                                 class="fa-regular fa-envelope"
                             ></i>
 
+
                             <input
                                 type="email"
-                                id="loginEmail"
+                                id="email"
                                 name="email"
                                 placeholder="seuemail@email.com"
                                 autocomplete="email"
@@ -242,10 +277,11 @@
 
                         </div>
 
-                        <span
+
+                        <small
                             class="field-error"
-                            id="loginEmailError"
-                        ></span>
+                            id="emailError"
+                        ></small>
 
                     </div>
 
@@ -256,17 +292,18 @@
 
                         <div class="label-row">
 
-                            <label for="loginPassword">
+                            <label
+                                for="password"
+                            >
                                 Senha
                             </label>
 
-                            <button
-                                type="button"
+                            <a
+                                href="#"
                                 id="forgotPassword"
-                                class="forgot-password"
                             >
                                 Esqueci minha senha
-                            </button>
+                            </a>
 
                         </div>
 
@@ -277,19 +314,21 @@
                                 class="fa-solid fa-lock"
                             ></i>
 
+
                             <input
                                 type="password"
-                                id="loginPassword"
+                                id="password"
                                 name="password"
                                 placeholder="Digite sua senha"
                                 autocomplete="current-password"
                                 required
                             >
 
+
                             <button
                                 type="button"
                                 class="password-toggle"
-                                id="togglePassword"
+                                id="passwordToggle"
                                 aria-label="Mostrar senha"
                             >
 
@@ -301,19 +340,20 @@
 
                         </div>
 
-                        <span
+
+                        <small
                             class="field-error"
-                            id="loginPasswordError"
-                        ></span>
+                            id="passwordError"
+                        ></small>
 
                     </div>
 
 
                     <!-- LEMBRAR -->
 
-                    <div class="remember-row">
+                    <div class="form-options">
 
-                        <label class="checkbox-label">
+                        <label class="remember-option">
 
                             <input
                                 type="checkbox"
@@ -323,7 +363,7 @@
                             <span class="custom-checkbox"></span>
 
                             <span>
-                                Lembrar de mim
+                                Lembrar meu acesso
                             </span>
 
                         </label>
@@ -340,12 +380,17 @@
                     >
 
                         <span id="loginButtonText">
-                            Entrar na minha conta
+                            Entrar na minha área
                         </span>
 
                         <i
                             class="fa-solid fa-arrow-right"
                         ></i>
+
+                        <span
+                            class="button-loader"
+                            id="buttonLoader"
+                        ></span>
 
                     </button>
 
@@ -354,7 +399,7 @@
 
 
                 <!-- =================================================
-                     SEPARADOR
+                     DIVISOR
                 ================================================== -->
 
                 <div class="login-divider">
@@ -388,39 +433,48 @@
 
 
                 <!-- =================================================
-                     CRIAR CONTA
+                     CADASTRO
                 ================================================== -->
 
-                <div class="create-account">
+                <div class="login-register">
 
-                    <span>
-                        Ainda não possui uma conta?
-                    </span>
+                    <p>
+                        Ainda não possui acesso?
+                    </p>
 
-                    <button
-                        type="button"
-                        id="showRegister"
+                    <a
+                        href="contato.html"
                     >
-                        Criar minha conta
-                    </button>
+                        Solicitar acesso
+                        <i
+                            class="fa-solid fa-arrow-right"
+                        ></i>
+                    </a>
 
                 </div>
 
 
                 <!-- =================================================
-                     VOLTAR
+                     RODAPÉ
                 ================================================== -->
 
-                <a
-                    href="index.html"
-                    class="back-home"
-                >
+                <footer class="login-footer">
 
-                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>
+                        © 2026 Suas Memórias Aqui
+                    </span>
 
-                    Voltar para o site
+                    <span class="footer-dot">
+                        •
+                    </span>
 
-                </a>
+                    <a
+                        href="contato.html"
+                    >
+                        Fale conosco
+                    </a>
+
+                </footer>
 
 
             </div>
@@ -431,100 +485,74 @@
 
 
     <!-- =====================================================
-         MODAL — CRIAR CONTA
+         MODAL RECUPERAR SENHA
     ====================================================== -->
 
     <div
-        class="auth-modal"
-        id="registerModal"
+        class="password-modal"
+        id="passwordModal"
         aria-hidden="true"
     >
 
-        <div class="modal-backdrop"></div>
+        <div
+            class="password-modal-backdrop"
+            id="passwordModalBackdrop"
+        ></div>
 
 
         <div
-            class="modal-content"
+            class="password-modal-content"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="registerTitle"
+            aria-labelledby="passwordModalTitle"
         >
 
             <button
                 type="button"
                 class="modal-close"
-                id="closeRegister"
+                id="modalClose"
                 aria-label="Fechar"
             >
                 ×
             </button>
 
 
-            <div class="modal-heading">
+            <div class="modal-icon">
 
-                <span class="login-eyebrow">
-                    NOVO CLIENTE
-                </span>
-
-                <h2 id="registerTitle">
-                    Criar sua conta
-                </h2>
-
-                <p>
-                    Crie seu acesso para acompanhar
-                    suas memórias.
-                </p>
+                <i
+                    class="fa-regular fa-envelope"
+                ></i>
 
             </div>
 
 
-            <div
-                class="auth-message"
-                id="registerMessage"
-                role="alert"
-            ></div>
+            <span class="login-eyebrow">
+                RECUPERAÇÃO
+            </span>
+
+
+            <h2 id="passwordModalTitle">
+                Esqueceu sua senha?
+            </h2>
+
+
+            <p>
+                Informe o e-mail cadastrado e
+                enviaremos as instruções para
+                criar uma nova senha.
+            </p>
 
 
             <form
-                id="registerForm"
-                class="auth-form"
-                novalidate
+                id="resetPasswordForm"
+                class="reset-form"
             >
 
-
                 <div class="form-group">
 
-                    <label for="registerName">
-                        Nome
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <i
-                            class="fa-regular fa-user"
-                        ></i>
-
-                        <input
-                            type="text"
-                            id="registerName"
-                            placeholder="Seu nome completo"
-                            autocomplete="name"
-                            required
-                        >
-
-                    </div>
-
-                    <span
-                        class="field-error"
-                        id="registerNameError"
-                    ></span>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="registerEmail">
+                    <label
+                        for="resetEmail"
+                    >
                         E-mail
                     </label>
 
@@ -536,7 +564,7 @@
 
                         <input
                             type="email"
-                            id="registerEmail"
+                            id="resetEmail"
                             placeholder="seuemail@email.com"
                             autocomplete="email"
                             required
@@ -544,66 +572,17 @@
 
                     </div>
 
-                    <span
-                        class="field-error"
-                        id="registerEmailError"
-                    ></span>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="registerPassword">
-                        Senha
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <i
-                            class="fa-solid fa-lock"
-                        ></i>
-
-                        <input
-                            type="password"
-                            id="registerPassword"
-                            placeholder="Mínimo de 6 caracteres"
-                            autocomplete="new-password"
-                            minlength="6"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            class="password-toggle"
-                            id="toggleRegisterPassword"
-                            aria-label="Mostrar senha"
-                        >
-
-                            <i
-                                class="fa-regular fa-eye"
-                            ></i>
-
-                        </button>
-
-                    </div>
-
-                    <span
-                        class="field-error"
-                        id="registerPasswordError"
-                    ></span>
-
                 </div>
 
 
                 <button
                     type="submit"
                     class="login-button"
-                    id="registerButton"
+                    id="resetButton"
                 >
 
-                    <span id="registerButtonText">
-                        Criar minha conta
+                    <span>
+                        Enviar instruções
                     </span>
 
                     <i
@@ -612,6 +591,11 @@
 
                 </button>
 
+
+                <div
+                    class="reset-message"
+                    id="resetMessage"
+                ></div>
 
             </form>
 
