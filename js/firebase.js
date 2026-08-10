@@ -4,46 +4,27 @@
    FIREBASE.JS
 
    Configuração central do Firebase
-   Authentication
-   Firestore
-   Storage
-========================================================= */
-
-
-/* =========================================================
-   FIREBASE APP
 ========================================================= */
 
 import {
     initializeApp
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-
-
-/* =========================================================
-   AUTHENTICATION
-========================================================= */
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 
 import {
     getAuth
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-
-/* =========================================================
-   FIRESTORE
-========================================================= */
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 import {
     getFirestore
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-
-
-/* =========================================================
-   STORAGE
-========================================================= */
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
 import {
     getStorage
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
+
+import {
+    getAnalytics
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
 
 
 /* =========================================================
@@ -72,11 +53,12 @@ const firebaseConfig = {
 
     measurementId:
         "G-GR899RTPSW"
+
 };
 
 
 /* =========================================================
-   INICIALIZAR FIREBASE
+   INICIALIZAÇÃO
 ========================================================= */
 
 const app =
@@ -86,43 +68,72 @@ const app =
 
 
 /* =========================================================
-   SERVIÇOS
+   AUTENTICAÇÃO
 ========================================================= */
 
 const auth =
-    getAuth(app);
-
-
-const db =
-    getFirestore(app);
-
-
-const storage =
-    getStorage(app);
+    getAuth(
+        app
+    );
 
 
 /* =========================================================
-   EXPORTAR
+   FIRESTORE
+========================================================= */
+
+const db =
+    getFirestore(
+        app
+    );
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+const storage =
+    getStorage(
+        app
+    );
+
+
+/* =========================================================
+   ANALYTICS
+========================================================= */
+
+let analytics = null;
+
+try {
+
+    analytics =
+        getAnalytics(
+            app
+        );
+
+} catch (error) {
+
+    console.info(
+        "Firebase Analytics não está disponível neste ambiente."
+    );
+
+}
+
+
+/* =========================================================
+   EXPORTAÇÕES
 ========================================================= */
 
 export {
+
     app,
+
     auth,
+
     db,
-    storage
+
+    storage,
+
+    analytics
+
 };
-
-
-/* =========================================================
-   TESTE
-========================================================= */
-
-console.log(
-    "Firebase conectado com sucesso."
-);
-
-console.log(
-    "Projeto:",
-    firebaseConfig.projectId
-);
 ```
