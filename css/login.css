@@ -2,7 +2,7 @@
 /* =========================================================
    SUAS MEMÓRIAS AQUI
    LOGIN.CSS
-   Área exclusiva do cliente
+   Design profissional da área de acesso
 ========================================================= */
 
 
@@ -16,30 +16,39 @@
     box-sizing: border-box;
 }
 
+
 html {
-    min-height: 100%;
+    scroll-behavior: smooth;
 }
+
 
 body {
     min-height: 100vh;
 
-    display: flex;
+    font-family:
+        "DM Sans",
+        Arial,
+        sans-serif;
 
-    font-family: "DM Sans", sans-serif;
+    color: #252522;
 
-    background: #ffffff;
+    background:
+        #f4f1eb;
 
-    color: #191919;
+    overflow-x: hidden;
 }
+
 
 button,
 input {
-    font: inherit;
+    font-family: inherit;
 }
+
 
 button {
     cursor: pointer;
 }
+
 
 a {
     color: inherit;
@@ -52,70 +61,153 @@ a {
 ========================================================= */
 
 :root {
-    --black: #171717;
-    --dark: #222222;
 
-    --gray-dark: #555555;
-    --gray: #777777;
-    --gray-light: #eeeeee;
+    --black:
+        #20201e;
 
-    --white: #ffffff;
+    --dark:
+        #292925;
 
-    --gold: #b18a55;
-    --gold-dark: #8e6c3e;
-    --gold-light: #d4b987;
+    --cream:
+        #f4f1eb;
 
-    --red: #b94040;
+    --cream-light:
+        #faf9f6;
 
-    --border: #e6e2dc;
+    --white:
+        #ffffff;
+
+    --gold:
+        #b49a6c;
+
+    --gold-dark:
+        #92794e;
+
+    --text:
+        #252522;
+
+    --muted:
+        #77756f;
+
+    --border:
+        #dfdcd4;
+
+    --error:
+        #b94b4b;
+
+    --success:
+        #46785b;
 
     --shadow:
-        0 20px 60px rgba(0, 0, 0, 0.08);
+        0 25px 70px
+        rgba(30, 28, 24, 0.12);
 
-    --transition: 0.3s ease;
 }
 
 
 /* =========================================================
-   LADO VISUAL
+   FUNDO
 ========================================================= */
 
-.login-visual {
-    position: relative;
+.login-background {
+    position: fixed;
 
-    width: 50%;
-    min-height: 100vh;
+    inset: 0;
 
-    display: flex;
+    z-index: -1;
 
     overflow: hidden;
 
-    color: var(--white);
-
     background:
-        url("../assets/login.jpg")
-        center center / cover no-repeat;
+        linear-gradient(
+            120deg,
+            #f6f3ed 0%,
+            #ece7dd 50%,
+            #f8f6f1 100%
+        );
 }
 
-.visual-overlay {
+
+.background-shape {
+    position: absolute;
+
+    border-radius: 50%;
+
+    filter:
+        blur(2px);
+
+    pointer-events: none;
+}
+
+
+.shape-one {
+    width: 520px;
+    height: 520px;
+
+    left: -250px;
+    top: -220px;
+
+    background:
+        rgba(180, 154, 108, 0.12);
+}
+
+
+.shape-two {
+    width: 650px;
+    height: 650px;
+
+    right: -350px;
+    bottom: -300px;
+
+    background:
+        rgba(255, 255, 255, 0.72);
+}
+
+
+.background-grain {
     position: absolute;
 
     inset: 0;
 
-    background:
-        linear-gradient(
-            135deg,
-            rgba(0, 0, 0, 0.78),
-            rgba(0, 0, 0, 0.35)
-        );
+    opacity: 0.035;
+
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+
+    pointer-events: none;
 }
 
-.visual-content {
-    position: relative;
 
-    z-index: 2;
+/* =========================================================
+   PÁGINA
+========================================================= */
+
+.login-page {
 
     width: 100%;
+
+    min-height: 100vh;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(420px, 1fr)
+        minmax(480px, 620px);
+
+}
+
+
+/* =========================================================
+   LADO DA MARCA
+========================================================= */
+
+.login-brand {
+
+    min-height: 100vh;
+
+    padding:
+        55px
+        clamp(45px, 7vw, 110px);
 
     display: flex;
 
@@ -123,7 +215,80 @@ a {
 
     justify-content: space-between;
 
-    padding: 45px;
+    color: var(--white);
+
+    background:
+        linear-gradient(
+            145deg,
+            #171715 0%,
+            #272722 48%,
+            #181816 100%
+        );
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+.login-brand::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 700px;
+
+    height: 700px;
+
+    border-radius: 50%;
+
+    right: -400px;
+
+    top: -250px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+}
+
+
+.login-brand::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+
+    height: 500px;
+
+    border-radius: 50%;
+
+    left: -350px;
+
+    bottom: -300px;
+
+    border:
+        1px solid
+        rgba(180,154,108,0.18);
+
+}
+
+
+/* =========================================================
+   CONTEÚDO DA MARCA
+========================================================= */
+
+.brand-content {
+
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 570px;
+
 }
 
 
@@ -131,201 +296,333 @@ a {
    LOGO
 ========================================================= */
 
-.visual-logo {
-    display: flex;
+.brand-logo {
 
-    align-items: center;
-
-    gap: 12px;
-
-    width: fit-content;
-
-    font-family: "Playfair Display", serif;
-
-    font-size: 18px;
-}
-
-.visual-logo-icon {
-    width: 44px;
-    height: 44px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background: var(--white);
-
-    color: var(--black);
-
-    font-family: "DM Sans", sans-serif;
-
-    font-size: 12px;
-
-    font-weight: 800;
-
-    letter-spacing: 1px;
-}
-
-.visual-logo small {
-    display: block;
-
-    margin-top: 3px;
-
-    color: var(--gold-light);
-
-    font-family: "DM Sans", sans-serif;
-
-    font-size: 9px;
-
-    font-weight: 700;
-
-    letter-spacing: 3px;
-
-    text-transform: uppercase;
-}
-
-
-/* =========================================================
-   MENSAGEM VISUAL
-========================================================= */
-
-.visual-message {
-    max-width: 600px;
-}
-
-.visual-label {
-    display: block;
-
-    margin-bottom: 20px;
-
-    color: var(--gold-light);
-
-    font-size: 10px;
-
-    font-weight: 800;
-
-    letter-spacing: 3px;
-}
-
-.visual-message h1 {
-    font-family: "Playfair Display", serif;
-
-    font-size: clamp(48px, 5vw, 74px);
-
-    font-weight: 600;
-
-    line-height: 1.05;
-
-    letter-spacing: -2px;
-}
-
-.visual-message h1 span {
-    color: #dfc08d;
-}
-
-.visual-message p {
-    max-width: 520px;
-
-    margin-top: 25px;
-
-    color: rgba(255, 255, 255, 0.78);
-
-    font-size: 16px;
-
-    line-height: 1.8;
-}
-
-
-/* =========================================================
-   RODAPÉ VISUAL
-========================================================= */
-
-.visual-footer {
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-
-    color: rgba(255, 255, 255, 0.65);
-
-    font-size: 10px;
-
-    font-weight: 700;
-
-    letter-spacing: 2px;
-
-    text-transform: uppercase;
-}
-
-.visual-footer i {
-    width: 4px;
-    height: 4px;
-
-    border-radius: 50%;
-
-    background: var(--gold);
-}
-
-
-/* =========================================================
-   ÁREA DO LOGIN
-========================================================= */
-
-.login-area {
-    width: 50%;
-    min-height: 100vh;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 45px 30px;
-
-    background: var(--white);
-}
-
-.login-container {
-    width: min(430px, 100%);
-}
-
-
-/* =========================================================
-   VOLTAR
-========================================================= */
-
-.back-link {
     display: inline-flex;
 
     align-items: center;
 
-    gap: 8px;
+    gap: 14px;
 
-    margin-bottom: 55px;
+    margin-bottom:
+        clamp(90px, 13vh, 170px);
 
-    color: var(--gray);
+}
+
+
+.brand-logo-symbol {
+
+    width: 48px;
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.55);
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 14px;
+
+    letter-spacing: 1px;
+
+    color: var(--gold);
+
+}
+
+
+.brand-logo-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 20px;
+
+    letter-spacing: 0.2px;
+
+}
+
+
+.brand-logo-text small {
+
+    font-family:
+        "DM Sans",
+        sans-serif;
+
+    font-size: 8px;
+
+    letter-spacing: 2.5px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+}
+
+
+/* =========================================================
+   MENSAGEM
+========================================================= */
+
+.eyebrow {
+
+    display: block;
+
+    margin-bottom: 18px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+    color: var(--gold);
+
+}
+
+
+.brand-message h1 {
+
+    max-width: 600px;
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(48px, 5.5vw, 76px);
+
+    line-height: 1.04;
+
+    font-weight: 500;
+
+    letter-spacing: -2px;
+
+}
+
+
+.brand-message p {
+
+    max-width: 480px;
+
+    margin-top: 28px;
+
+    color:
+        rgba(255,255,255,0.65);
+
+    font-size: 15px;
+
+    line-height: 1.8;
+
+}
+
+
+/* =========================================================
+   FRASE
+========================================================= */
+
+.brand-quote {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 15px;
+
+    margin-top: 55px;
+
+    padding-left: 18px;
+
+    border-left:
+        1px solid
+        rgba(180,154,108,0.55);
+
+}
+
+
+.brand-quote > span {
+
+    color: var(--gold);
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 36px;
+
+    line-height: 0.7;
+
+}
+
+
+.brand-quote p {
+
+    max-width: 300px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 15px;
+
+    font-style: italic;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   REUNIÃO
+========================================================= */
+
+.brand-meeting {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    margin-top: 45px;
+
+}
+
+
+.meeting-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(180,154,108,0.45);
+
+    color: var(--gold);
+
+    font-size: 16px;
+
+}
+
+
+.brand-meeting div:last-child {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+
+.brand-meeting strong {
 
     font-size: 13px;
 
-    transition: var(--transition);
+    font-weight: 600;
+
 }
 
-.back-link span {
-    font-size: 18px;
 
-    transition: var(--transition);
+.brand-meeting span {
+
+    color:
+        rgba(255,255,255,0.48);
+
+    font-size: 12px;
+
 }
 
-.back-link:hover {
-    color: var(--black);
+
+/* =========================================================
+   RODAPÉ DA MARCA
+========================================================= */
+
+.brand-footer {
+
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    color:
+        rgba(255,255,255,0.32);
+
+    font-size: 10px;
+
+    letter-spacing: 0.5px;
+
 }
 
-.back-link:hover span {
-    transform: translateX(-4px);
+
+/* =========================================================
+   PAINEL DE LOGIN
+========================================================= */
+
+.login-panel {
+
+    min-height: 100vh;
+
+    padding:
+        50px
+        clamp(35px, 6vw, 90px);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(250,249,246,0.95);
+
+}
+
+
+/* =========================================================
+   CARTÃO
+========================================================= */
+
+.login-card {
+
+    width: 100%;
+
+    max-width: 450px;
+
 }
 
 
@@ -333,46 +630,57 @@ a {
    CABEÇALHO
 ========================================================= */
 
-.login-header {
-    margin-bottom: 32px;
+.login-heading {
+
+    margin-bottom: 35px;
+
 }
 
-.mobile-logo {
-    display: none;
-}
 
-.login-label {
+.login-heading .login-eyebrow {
+
     display: block;
 
-    margin-bottom: 12px;
+    margin-bottom: 13px;
 
     color: var(--gold-dark);
 
-    font-size: 10px;
+    font-size: 9px;
 
     font-weight: 800;
 
-    letter-spacing: 3px;
+    letter-spacing: 2.5px;
+
 }
 
-.login-header h2 {
-    font-family: "Playfair Display", serif;
 
-    font-size: 46px;
+.login-heading h2 {
 
-    font-weight: 600;
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(36px, 4vw, 48px);
 
     line-height: 1.1;
 
-    letter-spacing: -1px;
+    font-weight: 500;
+
+    color: var(--text);
+
 }
 
-.login-header p {
+
+.login-heading p {
+
     margin-top: 10px;
 
-    color: var(--gray);
+    color: var(--muted);
 
     font-size: 14px;
+
 }
 
 
@@ -381,51 +689,52 @@ a {
 ========================================================= */
 
 .login-form {
+
     width: 100%;
+
 }
 
-.form-group {
-    margin-bottom: 21px;
+
+.form-field {
+
+    margin-bottom: 22px;
+
 }
 
-.form-group label {
+
+.form-field > label,
+.password-label label {
+
     display: block;
 
-    margin-bottom: 8px;
+    margin-bottom: 9px;
 
-    color: #333333;
+    color: #46443f;
 
-    font-size: 13px;
+    font-size: 12px;
 
     font-weight: 700;
+
 }
 
-.password-label {
-    display: flex;
 
-    align-items: center;
+.password-label {
+
+    display: flex;
 
     justify-content: space-between;
 
-    gap: 10px;
+    align-items: center;
+
+    margin-bottom: 9px;
+
 }
+
 
 .password-label label {
-    margin-bottom: 8px;
-}
 
-.password-label a {
-    color: var(--gold-dark);
+    margin-bottom: 0;
 
-    font-size: 11px;
-
-    font-weight: 600;
-
-    margin-bottom: 8px;
-}
-
-.password-label a:hover {
-    text-decoration: underline;
 }
 
 
@@ -434,91 +743,182 @@ a {
 ========================================================= */
 
 .input-wrapper {
+
     position: relative;
 
     display: flex;
 
     align-items: center;
+
 }
 
-.input-icon {
-    position: absolute;
-
-    left: 16px;
-
-    color: #999999;
-
-    font-size: 15px;
-
-    pointer-events: none;
-}
 
 .input-wrapper input {
+
     width: 100%;
 
-    height: 53px;
+    height: 55px;
 
     padding:
-        0 48px
-        0 45px;
+        0
+        48px;
 
-    border: 1px solid var(--border);
+    border:
+        1px solid
+        var(--border);
 
-    border-radius: 10px;
+    border-radius: 2px;
 
     outline: none;
 
-    background: #fbfaf8;
+    background:
+        rgba(255,255,255,0.8);
 
-    color: var(--black);
+    color: var(--text);
 
     font-size: 14px;
 
-    transition: var(--transition);
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+
 }
+
 
 .input-wrapper input::placeholder {
-    color: #aaaaaa;
+
+    color:
+        #aaa79f;
+
 }
 
-.input-wrapper input:focus {
-    border-color: var(--gold);
 
-    background: var(--white);
+.input-wrapper input:hover {
+
+    background:
+        #ffffff;
+
+}
+
+
+.input-wrapper input:focus {
+
+    border-color:
+        var(--gold);
+
+    background:
+        #ffffff;
 
     box-shadow:
-        0 0 0 4px rgba(177, 138, 85, 0.08);
+        0 0 0 4px
+        rgba(180,154,108,0.09);
+
 }
 
 
 /* =========================================================
-   MOSTRAR SENHA
+   ÍCONE INPUT
 ========================================================= */
 
-.toggle-password {
+.input-icon {
+
     position: absolute;
 
-    right: 13px;
+    left: 17px;
 
-    width: 34px;
-    height: 34px;
+    z-index: 2;
 
-    display: flex;
+    width: 20px;
 
-    align-items: center;
-    justify-content: center;
+    text-align: center;
+
+    color:
+        #9a978f;
+
+    font-size: 13px;
+
+    pointer-events: none;
+
+}
+
+
+.toggle-password {
+
+    position: absolute;
+
+    right: 12px;
+
+    width: 35px;
+
+    height: 35px;
 
     border: none;
 
     background: transparent;
 
-    color: #777777;
+    color:
+        #929087;
 
-    font-size: 16px;
+    font-size: 13px;
+
+    transition:
+        color .2s ease;
+
 }
 
+
 .toggle-password:hover {
-    color: var(--black);
+
+    color: var(--gold-dark);
+
+}
+
+
+/* =========================================================
+   ESQUECI SENHA
+========================================================= */
+
+.forgot-password {
+
+    border: none;
+
+    background: transparent;
+
+    color:
+        var(--gold-dark);
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+}
+
+
+.forgot-password:hover {
+
+    text-decoration: underline;
+
+}
+
+
+/* =========================================================
+   ERROS
+========================================================= */
+
+.field-error {
+
+    display: block;
+
+    min-height: 16px;
+
+    margin-top: 6px;
+
+    color:
+        var(--error);
+
+    font-size: 11px;
+
 }
 
 
@@ -526,38 +926,57 @@ a {
    MENSAGEM
 ========================================================= */
 
-.form-message {
+.login-message {
+
     display: none;
 
     padding: 12px 14px;
 
-    margin-bottom: 17px;
+    margin-bottom: 15px;
 
-    border-radius: 8px;
+    border-radius: 3px;
 
     font-size: 12px;
 
     line-height: 1.5;
+
 }
 
-.form-message.show {
+
+.login-message.show {
+
     display: block;
+
 }
 
-.form-message.error {
-    background: #fff2f2;
 
-    border: 1px solid #f1cccc;
+.login-message.error {
 
-    color: var(--red);
+    color:
+        #914343;
+
+    background:
+        rgba(185,75,75,0.08);
+
+    border:
+        1px solid
+        rgba(185,75,75,0.18);
+
 }
 
-.form-message.success {
-    background: #f0f8f2;
 
-    border: 1px solid #cce5d1;
+.login-message.success {
 
-    color: #397248;
+    color:
+        #37654a;
+
+    background:
+        rgba(70,120,91,0.08);
+
+    border:
+        1px solid
+        rgba(70,120,91,0.18);
+
 }
 
 
@@ -566,87 +985,132 @@ a {
 ========================================================= */
 
 .login-button {
+
     position: relative;
 
     width: 100%;
 
-    height: 54px;
+    height: 56px;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
-    border: none;
+    gap: 10px;
 
-    border-radius: 10px;
+    border:
+        1px solid
+        var(--black);
 
-    background: var(--black);
+    border-radius: 2px;
 
-    color: var(--white);
+    background:
+        var(--black);
 
-    font-size: 13px;
+    color:
+        #ffffff;
+
+    font-size: 12px;
 
     font-weight: 700;
 
-    transition: var(--transition);
+    letter-spacing: 0.5px;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+
 }
+
 
 .login-button:hover {
-    background: var(--gold-dark);
 
-    transform: translateY(-2px);
+    background:
+        #33332e;
 
     box-shadow:
-        0 12px 25px rgba(142, 108, 62, 0.18);
+        0 12px 25px
+        rgba(32,32,30,0.16);
+
+    transform:
+        translateY(-1px);
+
 }
 
+
+.login-button:active {
+
+    transform:
+        translateY(0);
+
+}
+
+
 .login-button:disabled {
-    opacity: 0.65;
 
-    cursor: not-allowed;
+    cursor:
+        not-allowed;
 
-    transform: none;
+    opacity:
+        0.65;
 
-    box-shadow: none;
+    transform:
+        none;
+
 }
 
 
 /* =========================================================
-   LOADER
+   SPINNER
 ========================================================= */
 
-.button-loader {
+.button-spinner {
+
     display: none;
 
-    width: 18px;
-    height: 18px;
+    width: 15px;
 
-    margin-left: 10px;
+    height: 15px;
 
     border:
-        2px solid rgba(255, 255, 255, 0.35);
+        2px solid
+        rgba(255,255,255,0.35);
 
-    border-top-color: var(--white);
+    border-top-color:
+        #ffffff;
 
     border-radius: 50%;
 
     animation:
-        spin 0.8s linear infinite;
+        loginSpin .7s linear infinite;
+
 }
 
-.login-button.loading .button-loader {
+
+.login-button.loading
+.button-spinner {
+
     display: block;
+
 }
 
-.login-button.loading .button-text {
-    opacity: 0.75;
+
+.login-button.loading
+#loginButtonText {
+
+    display: none;
+
 }
 
-@keyframes spin {
+
+@keyframes loginSpin {
 
     to {
-        transform: rotate(360deg);
+        transform:
+            rotate(360deg);
     }
 
 }
@@ -656,43 +1120,41 @@ a {
    DIVISOR
 ========================================================= */
 
-.divider {
-    position: relative;
+.login-divider {
 
     display: flex;
 
     align-items: center;
 
-    justify-content: center;
+    gap: 14px;
 
-    margin: 27px 0;
+    margin:
+        27px 0;
+
 }
 
-.divider::before {
-    content: "";
 
-    position: absolute;
+.login-divider span {
 
-    left: 0;
-    right: 0;
+    flex: 1;
 
     height: 1px;
 
-    background: var(--border);
+    background:
+        var(--border);
+
 }
 
-.divider span {
-    position: relative;
 
-    z-index: 2;
+.login-divider small {
 
-    padding: 0 15px;
+    color:
+        #a09d95;
 
-    background: var(--white);
+    font-size: 10px;
 
-    color: #999999;
+    white-space: nowrap;
 
-    font-size: 11px;
 }
 
 
@@ -701,57 +1163,95 @@ a {
 ========================================================= */
 
 .google-button {
+
     width: 100%;
 
-    height: 53px;
+    height: 55px;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
-    gap: 11px;
+    gap: 12px;
 
     border:
-        1px solid var(--border);
+        1px solid
+        var(--border);
 
-    border-radius: 10px;
+    border-radius: 2px;
 
-    background: var(--white);
+    background:
+        #ffffff;
 
-    color: #333333;
+    color:
+        #393834;
 
-    font-size: 13px;
+    font-size: 12px;
 
     font-weight: 600;
 
-    transition: var(--transition);
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        transform .2s ease;
+
 }
+
 
 .google-button:hover {
-    border-color: #cfc8bd;
 
-    background: #faf9f7;
+    border-color:
+        #c7c3b9;
 
-    transform: translateY(-2px);
+    box-shadow:
+        0 8px 22px
+        rgba(30,28,24,0.07);
+
+    transform:
+        translateY(-1px);
+
 }
 
+
 .google-icon {
-    width: 25px;
-    height: 25px;
+
+    width: 18px;
+
+    height: 18px;
 
     display: flex;
 
-    align-items: center;
-    justify-content: center;
+}
 
-    font-family: Arial, sans-serif;
 
-    font-size: 16px;
+.google-icon svg {
 
-    font-weight: 700;
+    width: 18px;
 
-    color: #4285f4;
+    height: 18px;
+
+}
+
+
+.google-icon path:nth-child(1) {
+    fill: #4285F4;
+}
+
+
+.google-icon path:nth-child(2) {
+    fill: #34A853;
+}
+
+
+.google-icon path:nth-child(3) {
+    fill: #FBBC05;
+}
+
+
+.google-icon path:nth-child(4) {
+    fill: #EA4335;
 }
 
 
@@ -759,68 +1259,88 @@ a {
    CADASTRO
 ========================================================= */
 
-.register-area {
+.login-register {
+
     display: flex;
 
-    align-items: center;
     justify-content: center;
+
+    align-items: center;
 
     gap: 5px;
 
-    margin-top: 28px;
+    margin-top: 27px;
 
-    color: var(--gray);
+    color:
+        #85827b;
 
     font-size: 12px;
+
 }
 
-.register-area button {
-    border: none;
 
-    background: transparent;
+.login-register a {
 
-    color: var(--gold-dark);
-
-    font-size: 12px;
+    color:
+        var(--gold-dark);
 
     font-weight: 700;
+
 }
 
-.register-area button:hover {
+
+.login-register a:hover {
+
     text-decoration: underline;
+
 }
 
 
 /* =========================================================
-   SEGURANÇA
+   PRIVACIDADE
 ========================================================= */
 
-.security-info {
+.login-privacy {
+
     display: flex;
 
     align-items: flex-start;
 
-    gap: 10px;
+    gap: 9px;
 
-    margin-top: 32px;
+    margin-top: 30px;
 
-    padding: 14px;
+    padding:
+        13px 14px;
 
-    border-radius: 9px;
+    border:
+        1px solid
+        rgba(180,154,108,0.16);
 
-    background: #f8f7f5;
+    background:
+        rgba(180,154,108,0.05);
+
 }
 
-.security-info > span {
-    font-size: 14px;
+
+.login-privacy span {
+
+    font-size: 12px;
+
+    opacity: 0.7;
+
 }
 
-.security-info p {
-    color: #777777;
+
+.login-privacy p {
+
+    color:
+        #85827b;
 
     font-size: 10px;
 
-    line-height: 1.5;
+    line-height: 1.55;
+
 }
 
 
@@ -829,27 +1349,50 @@ a {
 ========================================================= */
 
 .login-contact {
-    margin-top: 28px;
 
-    text-align: center;
+    display: flex;
 
-    color: #999999;
+    flex-direction: column;
 
-    font-size: 11px;
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 38px;
+
 }
 
-.login-contact a {
-    display: inline-block;
 
-    margin-top: 5px;
+.login-contact span {
 
-    color: var(--gold-dark);
+    color:
+        #aaa79f;
+
+    font-size: 8px;
 
     font-weight: 700;
+
+    letter-spacing: 2px;
+
 }
 
+
+.login-contact a {
+
+    color:
+        var(--gold-dark);
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+}
+
+
 .login-contact a:hover {
+
     text-decoration: underline;
+
 }
 
 
@@ -858,314 +1401,507 @@ a {
 ========================================================= */
 
 .modal {
+
     position: fixed;
 
     inset: 0;
 
-    z-index: 5000;
+    z-index: 1000;
 
     display: none;
 
     align-items: center;
+
     justify-content: center;
 
-    padding: 20px;
+    padding: 25px;
+
 }
 
-.modal.active {
+
+.modal.open {
+
     display: flex;
+
 }
+
 
 .modal-overlay {
+
     position: absolute;
 
     inset: 0;
 
     background:
-        rgba(0, 0, 0, 0.65);
+        rgba(15,15,13,0.65);
 
-    backdrop-filter: blur(5px);
+    backdrop-filter:
+        blur(7px);
+
+    animation:
+        modalFade .2s ease;
+
 }
 
-.modal-content {
+
+.modal-card {
+
     position: relative;
 
     z-index: 2;
 
-    width: min(430px, 100%);
+    width: 100%;
 
-    padding: 45px 35px;
+    max-width: 440px;
 
-    border-radius: 18px;
+    padding:
+        45px;
 
-    background: var(--white);
+    background:
+        #faf9f6;
 
     box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.25);
-
-    text-align: center;
+        0 30px 80px
+        rgba(0,0,0,0.22);
 
     animation:
-        modalIn 0.25s ease;
+        modalUp .25s ease;
+
 }
 
-@keyframes modalIn {
+
+@keyframes modalFade {
 
     from {
         opacity: 0;
-        transform: translateY(20px) scale(0.97);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
     }
 
 }
 
+
+@keyframes modalUp {
+
+    from {
+        opacity: 0;
+        transform:
+            translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+/* =========================================================
+   FECHAR MODAL
+========================================================= */
+
 .modal-close {
+
     position: absolute;
 
-    top: 14px;
-    right: 14px;
+    top: 15px;
 
-    width: 35px;
-    height: 35px;
+    right: 17px;
+
+    width: 36px;
+
+    height: 36px;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     border: none;
 
-    border-radius: 50%;
+    background: transparent;
 
-    background: #f4f2ef;
-
-    color: #555555;
-
-    font-size: 21px;
-
-    transition: var(--transition);
-}
-
-.modal-close:hover {
-    background: var(--black);
-
-    color: var(--white);
-}
-
-.modal-icon {
-    width: 58px;
-    height: 58px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    margin: 0 auto 20px;
-
-    border-radius: 50%;
-
-    background: #f4ede2;
+    color:
+        #77746d;
 
     font-size: 25px;
+
+    font-weight: 300;
+
 }
 
-.modal-content h3 {
-    margin-bottom: 12px;
 
-    font-family: "Playfair Display", serif;
+.modal-close:hover {
 
-    font-size: 30px;
-}
+    color:
+        var(--black);
 
-.modal-content > p {
-    margin-bottom: 25px;
-
-    color: var(--gray);
-
-    font-size: 13px;
-
-    line-height: 1.7;
-}
-
-.modal-button {
-    width: 100%;
-
-    min-height: 50px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 9px;
-
-    background: #25d366;
-
-    color: var(--white);
-
-    font-size: 13px;
-
-    font-weight: 700;
-
-    transition: var(--transition);
-}
-
-.modal-button:hover {
-    background: #1eaf55;
-
-    transform: translateY(-2px);
-}
-
-.modal-secondary {
-    display: block;
-
-    margin-top: 17px;
-
-    color: var(--gold-dark);
-
-    font-size: 12px;
-
-    font-weight: 700;
-}
-
-.modal-secondary:hover {
-    text-decoration: underline;
 }
 
 
 /* =========================================================
-   RESPONSIVIDADE
+   ÍCONE MODAL
 ========================================================= */
 
-@media (max-width: 900px) {
+.modal-icon {
 
-    .login-visual {
-        width: 42%;
+    width: 46px;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 22px;
+
+    border:
+        1px solid
+        rgba(180,154,108,0.4);
+
+    color:
+        var(--gold-dark);
+
+    font-size: 18px;
+
+}
+
+
+.modal-card h3 {
+
+    margin-top: 4px;
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 32px;
+
+    font-weight: 500;
+
+}
+
+
+.modal-card > p {
+
+    margin:
+        12px 0 28px;
+
+    color:
+        var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE — TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .login-page {
+
+        grid-template-columns:
+            1fr
+            500px;
+
     }
 
-    .login-area {
-        width: 58%;
+
+    .login-brand {
+
+        padding:
+            45px;
+
+    }
+
+
+    .brand-message h1 {
+
+        font-size:
+            clamp(42px, 5vw, 60px);
+
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE — MOBILE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    body {
+
+        background:
+            var(--cream);
+
+    }
+
+
+    .login-page {
+
+        display: block;
+
+        min-height: 100vh;
+
+    }
+
+
+    /* -----------------------------------------
+       MARCA
+    ----------------------------------------- */
+
+    .login-brand {
+
+        min-height:
+            auto;
+
+        padding:
+            28px 25px 45px;
+
+    }
+
+
+    .brand-logo {
+
+        margin-bottom:
+            70px;
+
+    }
+
+
+    .brand-message h1 {
+
+        font-size:
+            clamp(42px, 13vw, 58px);
+
+        letter-spacing:
+            -1.5px;
+
+    }
+
+
+    .brand-message p {
+
+        font-size:
+            13px;
+
+        margin-top:
+            20px;
+
+    }
+
+
+    .brand-quote {
+
+        margin-top:
+            35px;
+
+    }
+
+
+    .brand-meeting {
+
+        margin-top:
+            30px;
+
+    }
+
+
+    .brand-footer {
+
+        display:
+            none;
+
+    }
+
+
+    /* -----------------------------------------
+       LOGIN
+    ----------------------------------------- */
+
+    .login-panel {
+
+        min-height:
+            auto;
+
+        padding:
+            55px 25px 45px;
+
+        background:
+            var(--cream-light);
+
+    }
+
+
+    .login-card {
+
+        max-width:
+            500px;
+
+    }
+
+
+    .login-heading {
+
+        margin-bottom:
+            30px;
+
+    }
+
+
+    .login-heading h2 {
+
+        font-size:
+            38px;
+
+    }
+
+
+    .login-contact {
+
+        margin-top:
+            30px;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE PEQUENO
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .login-brand {
+
+        padding:
+            25px 20px 38px;
+
+    }
+
+
+    .login-panel {
+
+        padding:
+            45px 20px 35px;
+
+    }
+
+
+    .brand-logo {
+
+        margin-bottom:
+            55px;
+
+    }
+
+
+    .brand-logo-text {
+
+        font-size:
+            18px;
+
+    }
+
+
+    .brand-message h1 {
+
+        font-size:
+            40px;
+
+    }
+
+
+    .brand-message p {
+
+        font-size:
+            12px;
+
+    }
+
+
+    .login-heading h2 {
+
+        font-size:
+            34px;
+
+    }
+
+
+    .modal {
+
+        padding:
+            15px;
+
+    }
+
+
+    .modal-card {
 
         padding:
             35px 25px;
-    }
 
-    .visual-content {
-        padding: 35px 28px;
-    }
-
-    .visual-message h1 {
-        font-size: 48px;
-    }
-
-    .visual-footer {
-        flex-wrap: wrap;
-
-        gap: 8px;
     }
 
 }
 
 
-@media (max-width: 720px) {
+/* =========================================================
+   ACESSIBILIDADE
+========================================================= */
 
-    body {
-        display: block;
-    }
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
 
-    .login-visual {
-        width: 100%;
+    outline:
+        2px solid
+        var(--gold);
 
-        min-height: 260px;
-
-        height: 32vh;
-
-        max-height: 330px;
-    }
-
-    .visual-content {
-        padding: 25px;
-    }
-
-    .visual-message {
-        display: none;
-    }
-
-    .visual-footer {
-        font-size: 8px;
-    }
-
-    .login-area {
-        width: 100%;
-
-        min-height: auto;
-
-        padding:
-            35px 20px 50px;
-    }
-
-    .login-container {
-        max-width: 450px;
-    }
-
-    .back-link {
-        margin-bottom: 35px;
-    }
-
-    .mobile-logo {
-        width: 42px;
-        height: 42px;
-
-        display: flex;
-
-        align-items: center;
-        justify-content: center;
-
-        margin-bottom: 18px;
-
-        border-radius: 50%;
-
-        background: var(--black);
-
-        color: var(--white);
-
-        font-size: 11px;
-
-        font-weight: 800;
-    }
+    outline-offset:
+        3px;
 
 }
 
 
-@media (max-width: 450px) {
+/* =========================================================
+   REDUÇÃO DE MOVIMENTO
+========================================================= */
 
-    .login-area {
-        padding:
-            30px 17px 40px;
-    }
+@media (prefers-reduced-motion: reduce) {
 
-    .login-header h2 {
-        font-size: 39px;
-    }
+    *,
+    *::before,
+    *::after {
 
-    .login-header p {
-        font-size: 13px;
-    }
+        scroll-behavior:
+            auto !important;
 
-    .register-area {
-        flex-direction: column;
+        animation-duration:
+            0.01ms !important;
 
-        gap: 3px;
-    }
+        animation-iteration-count:
+            1 !important;
 
-    .modal-content {
-        padding:
-            40px 24px 30px;
+        transition-duration:
+            0.01ms !important;
+
     }
 
 }
