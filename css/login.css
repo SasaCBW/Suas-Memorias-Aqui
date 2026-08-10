@@ -1,0 +1,1172 @@
+```css
+/* =========================================================
+   SUAS MEMÓRIAS AQUI
+   LOGIN.CSS
+   Área exclusiva do cliente
+========================================================= */
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    display: flex;
+
+    font-family: "DM Sans", sans-serif;
+
+    background: #ffffff;
+
+    color: #191919;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   VARIÁVEIS
+========================================================= */
+
+:root {
+    --black: #171717;
+    --dark: #222222;
+
+    --gray-dark: #555555;
+    --gray: #777777;
+    --gray-light: #eeeeee;
+
+    --white: #ffffff;
+
+    --gold: #b18a55;
+    --gold-dark: #8e6c3e;
+    --gold-light: #d4b987;
+
+    --red: #b94040;
+
+    --border: #e6e2dc;
+
+    --shadow:
+        0 20px 60px rgba(0, 0, 0, 0.08);
+
+    --transition: 0.3s ease;
+}
+
+
+/* =========================================================
+   LADO VISUAL
+========================================================= */
+
+.login-visual {
+    position: relative;
+
+    width: 50%;
+    min-height: 100vh;
+
+    display: flex;
+
+    overflow: hidden;
+
+    color: var(--white);
+
+    background:
+        url("../assets/login.jpg")
+        center center / cover no-repeat;
+}
+
+.visual-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.78),
+            rgba(0, 0, 0, 0.35)
+        );
+}
+
+.visual-content {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    padding: 45px;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.visual-logo {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    width: fit-content;
+
+    font-family: "Playfair Display", serif;
+
+    font-size: 18px;
+}
+
+.visual-logo-icon {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--white);
+
+    color: var(--black);
+
+    font-family: "DM Sans", sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.visual-logo small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--gold-light);
+
+    font-family: "DM Sans", sans-serif;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   MENSAGEM VISUAL
+========================================================= */
+
+.visual-message {
+    max-width: 600px;
+}
+
+.visual-label {
+    display: block;
+
+    margin-bottom: 20px;
+
+    color: var(--gold-light);
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 3px;
+}
+
+.visual-message h1 {
+    font-family: "Playfair Display", serif;
+
+    font-size: clamp(48px, 5vw, 74px);
+
+    font-weight: 600;
+
+    line-height: 1.05;
+
+    letter-spacing: -2px;
+}
+
+.visual-message h1 span {
+    color: #dfc08d;
+}
+
+.visual-message p {
+    max-width: 520px;
+
+    margin-top: 25px;
+
+    color: rgba(255, 255, 255, 0.78);
+
+    font-size: 16px;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   RODAPÉ VISUAL
+========================================================= */
+
+.visual-footer {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    color: rgba(255, 255, 255, 0.65);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+.visual-footer i {
+    width: 4px;
+    height: 4px;
+
+    border-radius: 50%;
+
+    background: var(--gold);
+}
+
+
+/* =========================================================
+   ÁREA DO LOGIN
+========================================================= */
+
+.login-area {
+    width: 50%;
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 45px 30px;
+
+    background: var(--white);
+}
+
+.login-container {
+    width: min(430px, 100%);
+}
+
+
+/* =========================================================
+   VOLTAR
+========================================================= */
+
+.back-link {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 55px;
+
+    color: var(--gray);
+
+    font-size: 13px;
+
+    transition: var(--transition);
+}
+
+.back-link span {
+    font-size: 18px;
+
+    transition: var(--transition);
+}
+
+.back-link:hover {
+    color: var(--black);
+}
+
+.back-link:hover span {
+    transform: translateX(-4px);
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.login-header {
+    margin-bottom: 32px;
+}
+
+.mobile-logo {
+    display: none;
+}
+
+.login-label {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: var(--gold-dark);
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 3px;
+}
+
+.login-header h2 {
+    font-family: "Playfair Display", serif;
+
+    font-size: 46px;
+
+    font-weight: 600;
+
+    line-height: 1.1;
+
+    letter-spacing: -1px;
+}
+
+.login-header p {
+    margin-top: 10px;
+
+    color: var(--gray);
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   FORMULÁRIO
+========================================================= */
+
+.login-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 21px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #333333;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+.password-label {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.password-label label {
+    margin-bottom: 8px;
+}
+
+.password-label a {
+    color: var(--gold-dark);
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    margin-bottom: 8px;
+}
+
+.password-label a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.input-wrapper {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+
+    left: 16px;
+
+    color: #999999;
+
+    font-size: 15px;
+
+    pointer-events: none;
+}
+
+.input-wrapper input {
+    width: 100%;
+
+    height: 53px;
+
+    padding:
+        0 48px
+        0 45px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background: #fbfaf8;
+
+    color: var(--black);
+
+    font-size: 14px;
+
+    transition: var(--transition);
+}
+
+.input-wrapper input::placeholder {
+    color: #aaaaaa;
+}
+
+.input-wrapper input:focus {
+    border-color: var(--gold);
+
+    background: var(--white);
+
+    box-shadow:
+        0 0 0 4px rgba(177, 138, 85, 0.08);
+}
+
+
+/* =========================================================
+   MOSTRAR SENHA
+========================================================= */
+
+.toggle-password {
+    position: absolute;
+
+    right: 13px;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    background: transparent;
+
+    color: #777777;
+
+    font-size: 16px;
+}
+
+.toggle-password:hover {
+    color: var(--black);
+}
+
+
+/* =========================================================
+   MENSAGEM
+========================================================= */
+
+.form-message {
+    display: none;
+
+    padding: 12px 14px;
+
+    margin-bottom: 17px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+.form-message.show {
+    display: block;
+}
+
+.form-message.error {
+    background: #fff2f2;
+
+    border: 1px solid #f1cccc;
+
+    color: var(--red);
+}
+
+.form-message.success {
+    background: #f0f8f2;
+
+    border: 1px solid #cce5d1;
+
+    color: #397248;
+}
+
+
+/* =========================================================
+   BOTÃO LOGIN
+========================================================= */
+
+.login-button {
+    position: relative;
+
+    width: 100%;
+
+    height: 54px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: var(--black);
+
+    color: var(--white);
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    transition: var(--transition);
+}
+
+.login-button:hover {
+    background: var(--gold-dark);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 25px rgba(142, 108, 62, 0.18);
+}
+
+.login-button:disabled {
+    opacity: 0.65;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+.button-loader {
+    display: none;
+
+    width: 18px;
+    height: 18px;
+
+    margin-left: 10px;
+
+    border:
+        2px solid rgba(255, 255, 255, 0.35);
+
+    border-top-color: var(--white);
+
+    border-radius: 50%;
+
+    animation:
+        spin 0.8s linear infinite;
+}
+
+.login-button.loading .button-loader {
+    display: block;
+}
+
+.login-button.loading .button-text {
+    opacity: 0.75;
+}
+
+@keyframes spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   DIVISOR
+========================================================= */
+
+.divider {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 27px 0;
+}
+
+.divider::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    height: 1px;
+
+    background: var(--border);
+}
+
+.divider span {
+    position: relative;
+
+    z-index: 2;
+
+    padding: 0 15px;
+
+    background: var(--white);
+
+    color: #999999;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   GOOGLE
+========================================================= */
+
+.google-button {
+    width: 100%;
+
+    height: 53px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 11px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 10px;
+
+    background: var(--white);
+
+    color: #333333;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition: var(--transition);
+}
+
+.google-button:hover {
+    border-color: #cfc8bd;
+
+    background: #faf9f7;
+
+    transform: translateY(-2px);
+}
+
+.google-icon {
+    width: 25px;
+    height: 25px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: #4285f4;
+}
+
+
+/* =========================================================
+   CADASTRO
+========================================================= */
+
+.register-area {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    margin-top: 28px;
+
+    color: var(--gray);
+
+    font-size: 12px;
+}
+
+.register-area button {
+    border: none;
+
+    background: transparent;
+
+    color: var(--gold-dark);
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.register-area button:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   SEGURANÇA
+========================================================= */
+
+.security-info {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    margin-top: 32px;
+
+    padding: 14px;
+
+    border-radius: 9px;
+
+    background: #f8f7f5;
+}
+
+.security-info > span {
+    font-size: 14px;
+}
+
+.security-info p {
+    color: #777777;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CONTATO
+========================================================= */
+
+.login-contact {
+    margin-top: 28px;
+
+    text-align: center;
+
+    color: #999999;
+
+    font-size: 11px;
+}
+
+.login-contact a {
+    display: inline-block;
+
+    margin-top: 5px;
+
+    color: var(--gold-dark);
+
+    font-weight: 700;
+}
+
+.login-contact a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 5000;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(0, 0, 0, 0.65);
+
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    position: relative;
+
+    z-index: 2;
+
+    width: min(430px, 100%);
+
+    padding: 45px 35px;
+
+    border-radius: 18px;
+
+    background: var(--white);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.25);
+
+    text-align: center;
+
+    animation:
+        modalIn 0.25s ease;
+}
+
+@keyframes modalIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+.modal-close {
+    position: absolute;
+
+    top: 14px;
+    right: 14px;
+
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f4f2ef;
+
+    color: #555555;
+
+    font-size: 21px;
+
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    background: var(--black);
+
+    color: var(--white);
+}
+
+.modal-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 20px;
+
+    border-radius: 50%;
+
+    background: #f4ede2;
+
+    font-size: 25px;
+}
+
+.modal-content h3 {
+    margin-bottom: 12px;
+
+    font-family: "Playfair Display", serif;
+
+    font-size: 30px;
+}
+
+.modal-content > p {
+    margin-bottom: 25px;
+
+    color: var(--gray);
+
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+.modal-button {
+    width: 100%;
+
+    min-height: 50px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #25d366;
+
+    color: var(--white);
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    transition: var(--transition);
+}
+
+.modal-button:hover {
+    background: #1eaf55;
+
+    transform: translateY(-2px);
+}
+
+.modal-secondary {
+    display: block;
+
+    margin-top: 17px;
+
+    color: var(--gold-dark);
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.modal-secondary:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .login-visual {
+        width: 42%;
+    }
+
+    .login-area {
+        width: 58%;
+
+        padding:
+            35px 25px;
+    }
+
+    .visual-content {
+        padding: 35px 28px;
+    }
+
+    .visual-message h1 {
+        font-size: 48px;
+    }
+
+    .visual-footer {
+        flex-wrap: wrap;
+
+        gap: 8px;
+    }
+
+}
+
+
+@media (max-width: 720px) {
+
+    body {
+        display: block;
+    }
+
+    .login-visual {
+        width: 100%;
+
+        min-height: 260px;
+
+        height: 32vh;
+
+        max-height: 330px;
+    }
+
+    .visual-content {
+        padding: 25px;
+    }
+
+    .visual-message {
+        display: none;
+    }
+
+    .visual-footer {
+        font-size: 8px;
+    }
+
+    .login-area {
+        width: 100%;
+
+        min-height: auto;
+
+        padding:
+            35px 20px 50px;
+    }
+
+    .login-container {
+        max-width: 450px;
+    }
+
+    .back-link {
+        margin-bottom: 35px;
+    }
+
+    .mobile-logo {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 18px;
+
+        border-radius: 50%;
+
+        background: var(--black);
+
+        color: var(--white);
+
+        font-size: 11px;
+
+        font-weight: 800;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .login-area {
+        padding:
+            30px 17px 40px;
+    }
+
+    .login-header h2 {
+        font-size: 39px;
+    }
+
+    .login-header p {
+        font-size: 13px;
+    }
+
+    .register-area {
+        flex-direction: column;
+
+        gap: 3px;
+    }
+
+    .modal-content {
+        padding:
+            40px 24px 30px;
+    }
+
+}
+```
