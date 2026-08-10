@@ -2,28 +2,51 @@
 /* =========================================================
    SUAS MEMÓRIAS AQUI
    FIREBASE.JS
+
    Configuração central do Firebase
+   Authentication + Firestore + Storage
+========================================================= */
+
+
+/* =========================================================
+   FIREBASE APP
 ========================================================= */
 
 import {
     initializeApp
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-import {
-    getAuth
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-import {
-    getFirestore
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-import {
-    getStorage
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 
 
 /* =========================================================
-   CONFIGURAÇÃO DO PROJETO
+   FIREBASE AUTHENTICATION
+========================================================= */
+
+import {
+    getAuth,
+    GoogleAuthProvider
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+
+/* =========================================================
+   FIRESTORE
+========================================================= */
+
+import {
+    getFirestore
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+
+/* =========================================================
+   FIREBASE STORAGE
+========================================================= */
+
+import {
+    getStorage
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
+
+
+/* =========================================================
+   CONFIGURAÇÃO DO SEU PROJETO
 ========================================================= */
 
 const firebaseConfig = {
@@ -63,13 +86,29 @@ const app =
 
 
 /* =========================================================
-   FIREBASE AUTHENTICATION
+   AUTHENTICATION
 ========================================================= */
 
 const auth =
     getAuth(
         app
     );
+
+
+/* =========================================================
+   GOOGLE
+========================================================= */
+
+const googleProvider =
+    new GoogleAuthProvider();
+
+
+googleProvider.setCustomParameters({
+
+    prompt:
+        "select_account"
+
+});
 
 
 /* =========================================================
@@ -83,7 +122,7 @@ const db =
 
 
 /* =========================================================
-   FIREBASE STORAGE
+   STORAGE
 ========================================================= */
 
 const storage =
@@ -93,7 +132,7 @@ const storage =
 
 
 /* =========================================================
-   EXPORTAR SERVIÇOS
+   EXPORTAÇÕES
 ========================================================= */
 
 export {
@@ -101,6 +140,8 @@ export {
     app,
 
     auth,
+
+    googleProvider,
 
     db,
 
@@ -110,22 +151,10 @@ export {
 
 
 /* =========================================================
-   CONFIRMAÇÃO NO CONSOLE
+   TESTE
 ========================================================= */
 
 console.log(
-    "Suas Memórias Aqui — Firebase conectado."
-);
-
-console.log(
-    "Authentication: pronto."
-);
-
-console.log(
-    "Firestore: pronto."
-);
-
-console.log(
-    "Storage: pronto."
+    "Firebase conectado — Suas Memórias Aqui."
 );
 ```
