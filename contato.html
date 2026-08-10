@@ -1,0 +1,671 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#20201e"
+    >
+
+    <meta
+        name="description"
+        content="Entre em contato com a Suas Memórias Aqui. Fotografia e Story Maker."
+    >
+
+    <title>
+        Contato | Suas Memórias Aqui
+    </title>
+
+
+    <!-- =====================================================
+         FONTES
+    ====================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/contato.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="contact-header">
+
+        <div class="header-logo">
+
+            <a href="cliente.html">
+
+                <span class="logo-symbol">
+                    SM
+                </span>
+
+                <span class="logo-text">
+
+                    Suas Memórias
+
+                    <small>
+                        FOTOGRAFIA & STORIES
+                    </small>
+
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <a
+            href="cliente.html"
+            class="back-button"
+        >
+
+            <span>
+                ←
+            </span>
+
+            Voltar para minha área
+
+        </a>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTEÚDO
+    ====================================================== -->
+
+    <main class="contact-main">
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="contact-hero">
+
+            <div class="hero-content">
+
+                <span class="eyebrow">
+                    VAMOS CRIAR JUNTOS
+                </span>
+
+                <h1>
+
+                    Sua história merece
+                    <span>
+                        ser lembrada.
+                    </span>
+
+                </h1>
+
+                <p>
+
+                    Conte para nós o que você está
+                    planejando. Podemos conversar
+                    de forma online ou presencial para
+                    entender todos os detalhes.
+
+                </p>
+
+            </div>
+
+
+            <div class="hero-decoration">
+
+                <div class="hero-circle">
+
+                    <span>
+                        SM
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             GRID PRINCIPAL
+        ================================================== -->
+
+        <section class="contact-grid">
+
+
+            <!-- =================================================
+                 FORMULÁRIO
+            ================================================== -->
+
+            <div class="contact-form-area">
+
+                <div class="section-heading">
+
+                    <span class="eyebrow">
+                        FALE CONOSCO
+                    </span>
+
+                    <h2>
+                        Vamos conversar?
+                    </h2>
+
+                    <p>
+                        Preencha as informações abaixo
+                        e entre em contato conosco.
+                    </p>
+
+                </div>
+
+
+                <form
+                    id="contactForm"
+                    class="contact-form"
+                >
+
+
+                    <!-- NOME -->
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Seu nome
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Digite seu nome"
+                            autocomplete="name"
+                            required
+                        >
+
+                        <span
+                            id="nameError"
+                            class="field-error"
+                        ></span>
+
+                    </div>
+
+
+                    <!-- E-MAIL -->
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Seu e-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="seuemail@email.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                        <span
+                            id="emailError"
+                            class="field-error"
+                        ></span>
+
+                    </div>
+
+
+                    <!-- TELEFONE -->
+
+                    <div class="form-group">
+
+                        <label for="phone">
+                            WhatsApp / telefone
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="(42) 98862-0679"
+                            autocomplete="tel"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- TIPO DE ATENDIMENTO -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Como prefere conversar?
+                        </label>
+
+
+                        <div class="meeting-options">
+
+
+                            <label
+                                class="meeting-option"
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="meetingType"
+                                    value="Online"
+                                    required
+                                >
+
+                                <span
+                                    class="meeting-option-content"
+                                >
+
+                                    <span
+                                        class="option-icon"
+                                    >
+                                        ◉
+                                    </span>
+
+                                    <span>
+
+                                        <strong>
+                                            Online
+                                        </strong>
+
+                                        <small>
+                                            Reunião por chamada
+                                        </small>
+
+                                    </span>
+
+                                </span>
+
+                            </label>
+
+
+                            <label
+                                class="meeting-option"
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="meetingType"
+                                    value="Presencial"
+                                >
+
+                                <span
+                                    class="meeting-option-content"
+                                >
+
+                                    <span
+                                        class="option-icon"
+                                    >
+                                        ◇
+                                    </span>
+
+                                    <span>
+
+                                        <strong>
+                                            Presencial
+                                        </strong>
+
+                                        <small>
+                                            Vamos conversar pessoalmente
+                                        </small>
+
+                                    </span>
+
+                                </span>
+
+                            </label>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TIPO DE EVENTO -->
+
+                    <div class="form-group">
+
+                        <label for="eventType">
+                            Sobre qual evento?
+                        </label>
+
+                        <select
+                            id="eventType"
+                            name="eventType"
+                            required
+                        >
+
+                            <option
+                                value=""
+                            >
+                                Selecione uma opção
+                            </option>
+
+                            <option
+                                value="Casamento"
+                            >
+                                Casamento
+                            </option>
+
+                            <option
+                                value="Aniversário"
+                            >
+                                Aniversário
+                            </option>
+
+                            <option
+                                value="Festa"
+                            >
+                                Festa / Evento
+                            </option>
+
+                            <option
+                                value="Ensaio"
+                            >
+                                Ensaio fotográfico
+                            </option>
+
+                            <option
+                                value="Story Maker"
+                            >
+                                Story Maker
+                            </option>
+
+                            <option
+                                value="Outro"
+                            >
+                                Outro
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DATA -->
+
+                    <div class="form-group">
+
+                        <label for="eventDate">
+                            Data do evento
+                        </label>
+
+                        <input
+                            type="date"
+                            id="eventDate"
+                            name="eventDate"
+                        >
+
+                    </div>
+
+
+                    <!-- MENSAGEM -->
+
+                    <div class="form-group">
+
+                        <label for="message">
+                            Conte um pouco sobre o que você precisa
+                        </label>
+
+                        <textarea
+                            id="message"
+                            name="message"
+                            rows="5"
+                            placeholder="Conte-nos um pouco sobre seu evento, o que você deseja registrar e qualquer outro detalhe importante..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- MENSAGEM DE RETORNO -->
+
+                    <div
+                        id="contactMessage"
+                        class="contact-message"
+                    ></div>
+
+
+                    <!-- BOTÃO -->
+
+                    <button
+                        type="submit"
+                        id="contactButton"
+                        class="submit-button"
+                    >
+
+                        <span id="contactButtonText">
+                            Enviar solicitação
+                        </span>
+
+                        <span class="button-arrow">
+                            →
+                        </span>
+
+                    </button>
+
+
+                    <p class="form-note">
+
+                        Ao enviar, suas informações serão
+                        encaminhadas para nossa equipe.
+
+                    </p>
+
+
+                </form>
+
+            </div>
+
+
+            <!-- =================================================
+                 INFORMAÇÕES
+            ================================================== -->
+
+            <aside class="contact-info">
+
+
+                <div class="info-card dark-card">
+
+                    <span class="eyebrow">
+                        CONTATO DIRETO
+                    </span>
+
+                    <h3>
+                        Prefere falar diretamente?
+                    </h3>
+
+                    <p>
+                        Você também pode entrar em contato
+                        pelo WhatsApp e conversar conosco.
+                    </p>
+
+
+                    <a
+                        href="https://wa.me/5542988620679"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="whatsapp-button"
+                    >
+
+                        <span>
+                            WhatsApp
+                        </span>
+
+                        <strong>
+                            →
+                        </strong>
+
+                    </a>
+
+                </div>
+
+
+                <div class="info-card">
+
+                    <span class="info-label">
+                        TELEFONE / WHATSAPP
+                    </span>
+
+                    <a
+                        href="tel:+5542988620679"
+                        class="contact-value"
+                    >
+                        (42) 98862-0679
+                    </a>
+
+                </div>
+
+
+                <div class="info-card">
+
+                    <span class="info-label">
+                        INSTAGRAM
+                    </span>
+
+                    <a
+                        href="https://www.instagram.com/ls.fotostory/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="contact-value"
+                    >
+                        @ls.fotostory
+                    </a>
+
+                </div>
+
+
+                <div class="info-card meeting-info">
+
+                    <span class="info-label">
+                        REUNIÕES
+                    </span>
+
+                    <h3>
+                        Online ou presencial
+                    </h3>
+
+                    <p>
+                        Podemos marcar uma conversa para
+                        conhecer seu projeto, entender suas
+                        necessidades e planejar cada detalhe.
+                    </p>
+
+                </div>
+
+
+            </aside>
+
+
+        </section>
+
+
+        <!-- =================================================
+             FRASE FINAL
+        ================================================== -->
+
+        <section class="contact-quote">
+
+            <span>
+                “
+            </span>
+
+            <p>
+                Mais do que fotografar momentos,
+                queremos guardar histórias que
+                você terá prazer em reviver.
+            </p>
+
+            <small>
+                SUAS MEMÓRIAS AQUI
+            </small>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="contact-footer">
+
+        <div>
+
+            <strong>
+                Suas Memórias Aqui
+            </strong>
+
+            <span>
+                Fotografia & Story Maker
+            </span>
+
+        </div>
+
+
+        <span>
+            © 2026 Suas Memórias Aqui.
+            Todos os direitos reservados.
+        </span>
+
+
+        <a href="cliente.html">
+            Área do cliente →
+        </a>
+
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="js/contato.js"
+    ></script>
+
+
+</body>
+
+</html>
+```
