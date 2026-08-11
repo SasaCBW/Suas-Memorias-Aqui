@@ -1,18 +1,19 @@
+```javascript
 /* =========================================================
-   SUAS MEMÓRIAS AQUI
+   LS.FOTOSTORY
    ADMIN-LOGIN.JS
-   Login do administrador
+   Login exclusivo da administração
 ========================================================= */
-
-import {
-    auth
-} from "./firebase.js";
 
 import {
     signInWithEmailAndPassword,
     onAuthStateChanged,
     signOut
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+import {
+    auth
+} from "./firebase.js";
 
 
 /* =========================================================
@@ -20,63 +21,91 @@ import {
 ========================================================= */
 
 /*
- * COLOQUE AQUI O MESMO E-MAIL QUE SERÁ
- * AUTORIZADO NO admin.js
+ * Coloque aqui o e-mail que terá acesso administrativo.
  *
- * Exemplo:
- *
- * const ADMIN_EMAIL = "sarah@gmail.com";
+ * IMPORTANTE:
+ * Este controle é apenas uma camada visual.
+ * A segurança real deve ser feita também pelas
+ * regras do Firestore.
  */
 
-const ADMIN_EMAIL =
-    "SEU_EMAIL_ADMIN";
+const ADMIN_EMAILS = [
+    "SEU_EMAIL_ADMIN_AQUI"
+];
+
+
+const ADMIN_PAGE =
+    "admin.html";
+
+
+const LOGIN_PAGE =
+    "admin-login.html";
 
 
 /* =========================================================
    ELEMENTOS
 ========================================================= */
 
-const form =
+const loginForm =
     document.getElementById(
         "adminLoginForm"
     );
+
 
 const emailInput =
     document.getElementById(
         "adminEmail"
     );
 
+
 const passwordInput =
     document.getElementById(
         "adminPassword"
     );
+
 
 const loginButton =
     document.getElementById(
         "adminLoginButton"
     );
 
-const message =
+
+const errorMessage =
     document.getElementById(
-        "adminLoginMessage"
+        "adminLoginError"
     );
 
-const togglePassword =
+
+const successMessage =
     document.getElementById(
-        "toggleAdminPassword"
+        "adminLoginSuccess"
+    );
+
+
+const passwordToggle =
+    document.getElementById(
+        "adminPasswordToggle"
     );
 
 
 /* =========================================================
-   REDIRECIONAMENTO
+   INICIALIZAÇÃO
 ========================================================= */
 
-const ADMIN_PAGE =
-    "admin.html";
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        initializeAdminLogin();
+
+        initializePasswordToggle();
+
+    }
+);
 
 
 /* =========================================================
-   VERIFICAR USUÁRIO JÁ LOGADO
+   VERIFICAR SESSÃO
 ========================================================= */
 
 onAuthStateChanged(
@@ -88,49 +117,38 @@ onAuthStateChanged(
         }
 
 
-        const email =
-            (user.email || "")
-                .toLowerCase()
-                .trim();
-
-
-        const adminEmail =
-            ADMIN_EMAIL
-                .toLowerCase()
-                .trim();
-
-
         /*
-         * Se o e-mail configurado for diferente
-         * do usuário autenticado, não deixa entrar.
+         * Se a pessoa já estiver autenticada,
+         * verificamos se o e-mail possui acesso.
          */
 
         if (
-            adminEmail !==
-            "seu_email_admin" &&
-            email !== adminEmail
+            isAdminUser(
+                user
+            )
         ) {
 
-            await signOut(auth);
+            const currentPage =
+                window.location.pathname
+                    .split("/")
+                    .pop();
 
-            return;
 
-        }
+            /*
+             * Se estiver no login administrativo,
+             * pode ir direto ao painel.
+             */
 
+            if (
+                currentPage ===
+                LOGIN_PAGE
+            ) {
 
-        /*
-         * Conta autorizada.
-         */
+                window.location.replace(
+                    ADMIN_PAGE
+                );
 
-        if (
-            adminEmail !==
-            "seu_email_admin" &&
-            email === adminEmail
-        ) {
-
-            window.location.replace(
-                ADMIN_PAGE
-            );
+            }
 
         }
 
@@ -139,171 +157,136 @@ onAuthStateChanged(
 
 
 /* =========================================================
-   MOSTRAR / ESCONDER SENHA
+   LOGIN ADMINISTRATIVO
 ========================================================= */
 
-if (togglePassword) {
+function initializeAdminLogin() {
 
-    togglePassword.addEventListener(
-        "click",
-        () => {
-
-            const mostrando =
-                passwordInput.type ===
-                "text";
+    if (!loginForm) {
+        return;
+    }
 
 
-            if (mostrando) {
-
-                passwordInput.type =
-                    "password";
-
-                togglePassword.textContent =
-                    "◉";
-
-                togglePassword.setAttribute(
-                    "aria-label",
-                    "Mostrar senha"
-                );
-
-            } else {
-
-                passwordInput.type =
-                    "text";
-
-                togglePassword.textContent =
-                    "◌";
-
-                togglePassword.setAttribute(
-                    "aria-label",
-                    "Ocultar senha"
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
-if (form) {
-
-    form.addEventListener(
+    loginForm.addEventListener(
         "submit",
         async (event) => {
 
             event.preventDefault();
 
 
-            limparMensagem();
+            clearMessages();
 
 
             const email =
-                emailInput.value
+                emailInput?.value
                     .trim()
                     .toLowerCase();
 
 
             const password =
-                passwordInput.value;
+                passwordInput?.value ||
+                "";
 
 
-            /* =============================================
-               VALIDAÇÃO
-            ============================================== */
+            /* -----------------------------------------
+               VALIDAÇÕES
+            ----------------------------------------- */
 
-            if (!email || !password) {
+            if (!email) {
 
-                mostrarMensagem(
-                    "Digite seu e-mail e sua senha.",
-                    "error"
+                showError(
+                    "Digite o e-mail administrativo."
                 );
+
+                emailInput?.focus();
 
                 return;
 
             }
 
-
-            /*
-             * Verificação adicional.
-             *
-             * Se você ainda não colocou o seu e-mail
-             * no ADMIN_EMAIL, mostramos um aviso.
-             */
 
             if (
-                ADMIN_EMAIL ===
-                "SEU_EMAIL_ADMIN"
+                !isValidEmail(
+                    email
+                )
             ) {
 
-                mostrarMensagem(
-                    "Configure o e-mail administrador no arquivo admin-login.js antes de entrar.",
-                    "error"
+                showError(
+                    "Digite um e-mail válido."
                 );
+
+                emailInput?.focus();
 
                 return;
 
             }
 
 
-            /*
-             * Impede que uma conta diferente
-             * tente acessar o painel.
-             */
+            if (!password) {
 
-            if (
-                email !==
-                ADMIN_EMAIL
-                    .toLowerCase()
-                    .trim()
-            ) {
-
-                mostrarMensagem(
-                    "Esta conta não possui acesso ao painel administrativo.",
-                    "error"
+                showError(
+                    "Digite sua senha."
                 );
+
+                passwordInput?.focus();
 
                 return;
 
             }
 
 
-            /* =============================================
-               BOTÃO
-            ============================================== */
-
-            loginButton.disabled =
-                true;
-
-            loginButton.textContent =
-                "ENTRANDO...";
+            setLoading(
+                true
+            );
 
 
             try {
 
-                /* =========================================
-                   FIREBASE LOGIN
-                ========================================== */
+                /*
+                 * Login pelo Firebase Authentication
+                 */
 
-                await signInWithEmailAndPassword(
-                    auth,
-                    email,
-                    password
-                );
+                const credential =
+                    await signInWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
 
 
-                /* =========================================
-                   SUCESSO
-                ========================================== */
+                const user =
+                    credential.user;
 
-                mostrarMensagem(
-                    "Login realizado. Abrindo painel...",
-                    "success"
+
+                /*
+                 * Verificação adicional:
+                 * somente e-mails cadastrados como
+                 * administradores podem entrar.
+                 */
+
+                if (
+                    !isAdminUser(
+                        user
+                    )
+                ) {
+
+                    await signOut(
+                        auth
+                    );
+
+
+                    showError(
+                        "Esta conta não possui permissão para acessar o painel."
+                    );
+
+
+                    return;
+
+                }
+
+
+                showSuccess(
+                    "Acesso autorizado. Abrindo painel..."
                 );
 
 
@@ -315,7 +298,7 @@ if (form) {
                         );
 
                     },
-                    700
+                    500
                 );
 
 
@@ -327,16 +310,15 @@ if (form) {
                 );
 
 
-                tratarErroFirebase(
+                showFirebaseError(
                     error
                 );
 
+            } finally {
 
-                loginButton.disabled =
-                    false;
-
-                loginButton.textContent =
-                    "ENTRAR NO PAINEL";
+                setLoading(
+                    false
+                );
 
             }
 
@@ -347,42 +329,127 @@ if (form) {
 
 
 /* =========================================================
-   MENSAGEM
+   VERIFICAR ADMIN
 ========================================================= */
 
-function mostrarMensagem(
-    texto,
-    tipo
+function isAdminUser(
+    user
 ) {
 
-    if (!message) {
-        return;
+    if (!user) {
+        return false;
     }
 
 
-    message.textContent =
-        texto;
+    const email =
+        (
+            user.email ||
+            ""
+        )
+        .trim()
+        .toLowerCase();
 
 
-    message.className =
-        "admin-login-message " +
-        tipo;
+    return ADMIN_EMAILS
+        .map(
+            (adminEmail) =>
+                adminEmail
+                    .trim()
+                    .toLowerCase()
+        )
+        .includes(
+            email
+        );
 
 }
 
 
-function limparMensagem() {
+/* =========================================================
+   SENHA
+========================================================= */
 
-    if (!message) {
+function initializePasswordToggle() {
+
+    if (
+        !passwordToggle ||
+        !passwordInput
+    ) {
         return;
     }
 
 
-    message.textContent =
-        "";
+    passwordToggle.addEventListener(
+        "click",
+        () => {
 
-    message.className =
-        "admin-login-message";
+            const showingPassword =
+                passwordInput.type ===
+                "text";
+
+
+            passwordInput.type =
+                showingPassword
+                    ? "password"
+                    : "text";
+
+
+            const icon =
+                passwordToggle.querySelector(
+                    "i"
+                );
+
+
+            if (icon) {
+
+                icon.className =
+                    showingPassword
+                        ? "fa-regular fa-eye"
+                        : "fa-regular fa-eye-slash";
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function setLoading(
+    loading
+) {
+
+    if (!loginButton) {
+        return;
+    }
+
+
+    loginButton.disabled =
+        loading;
+
+
+    if (loading) {
+
+        loginButton.dataset.originalText =
+            loginButton.innerHTML;
+
+
+        loginButton.innerHTML =
+            `
+                <span class="admin-login-spinner"></span>
+                Verificando...
+            `;
+
+    } else {
+
+        loginButton.innerHTML =
+            loginButton.dataset.originalText ||
+            "Entrar no painel";
+
+    }
 
 }
 
@@ -391,123 +458,216 @@ function limparMensagem() {
    ERROS DO FIREBASE
 ========================================================= */
 
-function tratarErroFirebase(
+function showFirebaseError(
     error
 ) {
 
-    let texto =
-        "Não foi possível entrar. Tente novamente.";
+    let message =
+        "Não foi possível realizar o acesso.";
 
 
     switch (
         error.code
     ) {
 
-        case "auth/invalid-credential":
-
-            texto =
-                "E-mail ou senha incorretos.";
-
-            break;
-
-
         case "auth/invalid-email":
 
-            texto =
-                "Digite um e-mail válido.";
+            message =
+                "O e-mail informado é inválido.";
 
             break;
 
 
         case "auth/user-not-found":
 
-            texto =
-                "Não encontramos uma conta com esse e-mail.";
+            message =
+                "Conta administrativa não encontrada.";
 
             break;
 
 
         case "auth/wrong-password":
 
-            texto =
-                "Senha incorreta.";
+            message =
+                "Senha administrativa incorreta.";
 
             break;
 
 
-        case "auth/too-many-requests":
+        case "auth/invalid-credential":
 
-            texto =
-                "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
-
-            break;
-
-
-        case "auth/network-request-failed":
-
-            texto =
-                "Verifique sua conexão com a internet.";
+            message =
+                "E-mail ou senha administrativos incorretos.";
 
             break;
 
 
         case "auth/user-disabled":
 
-            texto =
-                "Esta conta foi desativada.";
+            message =
+                "Esta conta administrativa foi desativada.";
 
             break;
 
 
-        default:
+        case "auth/too-many-requests":
 
-            console.error(
-                "Código Firebase:",
-                error.code
-            );
+            message =
+                "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.";
+
+            break;
+
+
+        case "auth/network-request-failed":
+
+            message =
+                "Não foi possível conectar ao Firebase. Verifique sua internet.";
+
+            break;
+
+
+        case "auth/operation-not-allowed":
+
+            message =
+                "O login por e-mail e senha não está ativado no Firebase.";
+
+            break;
+
+
+        case "auth/unauthorized-domain":
+
+            message =
+                "Este domínio ainda não está autorizado no Firebase.";
 
             break;
 
     }
 
 
-    mostrarMensagem(
-        texto,
-        "error"
+    showError(
+        message
     );
 
 }
 
 
 /* =========================================================
-   ENTER / ESC
+   MENSAGENS
 ========================================================= */
 
-if (passwordInput) {
+function showError(
+    message
+) {
 
-    passwordInput.addEventListener(
-        "keydown",
-        event => {
+    if (!errorMessage) {
 
-            if (
-                event.key ===
-                "Enter"
-            ) {
+        alert(
+            message
+        );
 
-                form?.requestSubmit();
+        return;
 
-            }
+    }
+
+
+    errorMessage.textContent =
+        message;
+
+
+    errorMessage.classList.add(
+        "show"
+    );
+
+
+    successMessage?.classList.remove(
+        "show"
+    );
+
+}
+
+
+function showSuccess(
+    message
+) {
+
+    if (!successMessage) {
+        return;
+    }
+
+
+    successMessage.textContent =
+        message;
+
+
+    successMessage.classList.add(
+        "show"
+    );
+
+
+    errorMessage?.classList.remove(
+        "show"
+    );
+
+}
+
+
+function clearMessages() {
+
+    errorMessage?.classList.remove(
+        "show"
+    );
+
+
+    successMessage?.classList.remove(
+        "show"
+    );
+
+}
+
+
+/* =========================================================
+   VALIDAÇÃO DE E-MAIL
+========================================================= */
+
+function isValidEmail(
+    email
+) {
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(
+            email
+        );
+
+}
+
+
+/* =========================================================
+   ENTER
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.key !==
+            "Enter"
+        ) {
+            return;
+        }
+
+
+        if (
+            document.activeElement ===
+            emailInput ||
+            document.activeElement ===
+            passwordInput
+        ) {
+
+            loginForm?.requestSubmit();
 
         }
-    );
 
-}
-
-
-/* =========================================================
-   FINAL
-========================================================= */
-
-console.log(
-    "Suas Memórias Aqui — Login administrativo carregado."
+    }
 );
+```
