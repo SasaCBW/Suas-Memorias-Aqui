@@ -1,58 +1,53 @@
 ```javascript
 /* =========================================================
-   SUAS MEMÓRIAS AQUI
+   LS.FOTOSTORY
    FIREBASE.JS
-
    Configuração central do Firebase
 ========================================================= */
 
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
 import {
-    getAuth
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    getAuth,
+    GoogleAuthProvider
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 import {
     getFirestore
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 import {
     getStorage
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
-
-import {
-    getAnalytics
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
 
 
 /* =========================================================
-   CONFIGURAÇÃO DO SEU PROJETO
+   CONFIGURAÇÃO DO SEU PROJETO FIREBASE
+
+   IMPORTANTE:
+   Substitua somente os valores abaixo pelos dados
+   do seu projeto no Firebase.
 ========================================================= */
 
 const firebaseConfig = {
 
-    apiKey:
-        "AIzaSyBQtD6m2ti24SQjEqAFZ3idQP50xRYa7co",
+    apiKey: "COLOQUE_SUA_API_KEY_AQUI",
 
     authDomain:
-        "lsfotostory-d908f.firebaseapp.com",
+        "COLOQUE_SEU_PROJETO.firebaseapp.com",
 
     projectId:
-        "lsfotostory-d908f",
+        "COLOQUE_SEU_PROJECT_ID_AQUI",
 
     storageBucket:
-        "lsfotostory-d908f.firebasestorage.app",
+        "COLOQUE_SEU_STORAGE_BUCKET_AQUI",
 
     messagingSenderId:
-        "17338738179",
+        "COLOQUE_SEU_MESSAGING_SENDER_ID_AQUI",
 
     appId:
-        "1:17338738179:web:b193bba14d5dc0ce2f5036",
-
-    measurementId:
-        "G-GR899RTPSW"
+        "COLOQUE_SEU_APP_ID_AQUI"
 
 };
 
@@ -78,6 +73,19 @@ const auth =
 
 
 /* =========================================================
+   LOGIN GOOGLE
+========================================================= */
+
+const googleProvider =
+    new GoogleAuthProvider();
+
+
+googleProvider.setCustomParameters({
+    prompt: "select_account"
+});
+
+
+/* =========================================================
    FIRESTORE
 ========================================================= */
 
@@ -98,42 +106,14 @@ const storage =
 
 
 /* =========================================================
-   ANALYTICS
-========================================================= */
-
-let analytics = null;
-
-try {
-
-    analytics =
-        getAnalytics(
-            app
-        );
-
-} catch (error) {
-
-    console.info(
-        "Firebase Analytics não está disponível neste ambiente."
-    );
-
-}
-
-
-/* =========================================================
    EXPORTAÇÕES
 ========================================================= */
 
 export {
-
     app,
-
     auth,
-
     db,
-
     storage,
-
-    analytics
-
+    googleProvider
 };
 ```
