@@ -1,44 +1,48 @@
 ```javascript
 /* =========================================================
    SUAS MEMÓRIAS AQUI
-   JS / CLIENTE.JS
+   CLIENTE.JS
 
    Área exclusiva do cliente
 ========================================================= */
-
-import {
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-
-import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    getDocs,
-    orderBy,
-    limit
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-
-import {
-    getStorage,
-    ref,
-    getDownloadURL
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
-
-import {
-    auth,
-    app
-} from "./firebase.js";
 
 
 /* =========================================================
    FIREBASE
 ========================================================= */
 
-const db = getFirestore(app);
-const storage = getStorage(app);
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+import {
+    collection,
+    getDocs,
+    query,
+    where,
+    orderBy,
+    limit
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+import {
+    app,
+    auth,
+    db
+} from "./firebase.js";
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let currentUser = null;
+
+let currentPhotos = [];
+
+let filteredPhotos = [];
+
+let currentPhotoIndex = 0;
 
 
 /* =========================================================
@@ -48,131 +52,59 @@ const storage = getStorage(app);
 const pageLoading =
     document.getElementById("pageLoading");
 
-const clientApp =
-    document.getElementById("clientApp");
-
 const sidebar =
     document.getElementById("sidebar");
 
-const mobileMenuButton =
-    document.getElementById("mobileMenuButton");
+const mobileOverlay =
+    document.getElementById("mobileOverlay");
 
-const pageTitle =
-    document.getElementById("pageTitle");
-
-const userName =
-    document.getElementById("userName");
-
-const welcomeName =
-    document.getElementById("welcomeName");
-
-const userAvatar =
-    document.getElementById("userAvatar");
-
-const accountAvatar =
-    document.getElementById("accountAvatar");
-
-const accountName =
-    document.getElementById("accountName");
-
-const accountEmail =
-    document.getElementById("accountEmail");
-
-const profileMenu =
-    document.getElementById("profileMenu");
-
-const profileButton =
-    document.getElementById("profileButton");
+const menuToggle =
+    document.getElementById("menuToggle");
 
 const logoutButton =
     document.getElementById("logoutButton");
 
-const accountLogoutButton =
-    document.getElementById("accountLogoutButton");
-
-const logoutModal =
-    document.getElementById("logoutModal");
-
-const cancelLogout =
-    document.getElementById("cancelLogout");
-
-const confirmLogout =
-    document.getElementById("confirmLogout");
-
-const photoCountBadge =
-    document.getElementById("photoCountBadge");
-
-const dashboardPhotoCount =
-    document.getElementById("dashboardPhotoCount");
-
-const dashboardVideoCount =
-    document.getElementById("dashboardVideoCount");
-
-const photoGallery =
-    document.getElementById("photoGallery");
-
-const videoGallery =
-    document.getElementById("videoGallery");
-
-const recentPhotos =
-    document.getElementById("recentPhotos");
-
-const downloadAllButton =
-    document.getElementById("downloadAllButton");
+const profileLogoutButton =
+    document.getElementById("profileLogoutButton");
 
 const notificationButton =
     document.getElementById("notificationButton");
 
-const notificationDot =
-    document.getElementById("notificationDot");
+const notificationPanel =
+    document.getElementById("notificationPanel");
 
-const onlineMeetingButton =
-    document.getElementById("onlineMeetingButton");
+const closeNotificationPanel =
+    document.getElementById("closeNotificationPanel");
 
-const presentialMeetingButton =
-    document.getElementById(
-        "presentialMeetingButton"
-    );
+const photoViewer =
+    document.getElementById("photoViewer");
 
+const closePhotoViewer =
+    document.getElementById("closePhotoViewer");
 
-/* =========================================================
-   ESTADO
-========================================================= */
+const previousPhoto =
+    document.getElementById("previousPhoto");
 
-let currentUser = null;
+const nextPhoto =
+    document.getElementById("nextPhoto");
 
-let clientPhotos = [];
+const viewerImage =
+    document.getElementById("viewerImage");
 
-let clientVideos = [];
+const viewerPhotoName =
+    document.getElementById("viewerPhotoName");
 
-let selectedPhotos = [];
+const downloadCurrentPhoto =
+    document.getElementById("downloadCurrentPhoto");
 
+const photoSearch =
+    document.getElementById("photoSearch");
 
-/* =========================================================
-   TÍTULOS DAS SEÇÕES
-========================================================= */
+const galleryFilter =
+    document.getElementById("galleryFilter");
 
-const sectionTitles = {
-
-    inicio:
-        "Minha área",
-
-    fotos:
-        "Minhas fotos",
-
-    videos:
-        "Meus vídeos",
-
-    agendamento:
-        "Agendamento",
-
-    contato:
-        "Fale conosco",
-
-    conta:
-        "Minha conta"
-
-};
+const downloadAllButton =
+    document.getElementById("downloadAllButton");
 
 
 /* =========================================================
@@ -185,15 +117,19 @@ document.addEventListener(
 
         initializeNavigation();
 
-        initializeProfileMenu();
+        initializeMobileMenu();
+
+        initializeNotifications();
+
+        initializePhotoViewer();
+
+        initializeGallerySearch();
+
+        initializeQuickButtons();
 
         initializeLogout();
 
-        initializeMeetingButtons();
-
-        initializeNotification();
-
-        initializeDownloadButton();
+        initializeKeyboardControls();
 
     }
 );
@@ -222,51 +158,53 @@ onAuthStateChanged(
 
         try {
 
-            await loadClientData(user);
+            await loadClientData();
 
-            await loadClientPhotos(user);
+            await loadClientPhotos();
 
-            await loadClientVideos(user);
+            await loadClientVideos();
 
-            await loadRecentPhotos(user);
+            await loadClientAppointments();
+
+            await loadClientNotifications();
 
         } catch (error) {
 
             console.error(
-                "Erro ao carregar dados:",
+                "Erro ao carregar dados do cliente:",
                 error
             );
 
+        } finally {
+
+            hideLoading();
+
         }
-
-
-        showApplication();
 
     }
 );
 
 
 /* =========================================================
-   MOSTRAR APLICAÇÃO
+   ESCONDER LOADING
 ========================================================= */
 
-function showApplication() {
+function hideLoading() {
 
-    if (clientApp) {
+    setTimeout(
+        () => {
 
-        clientApp.style.visibility =
-            "visible";
+            if (pageLoading) {
 
-    }
+                pageLoading.classList.add(
+                    "hidden"
+                );
 
+            }
 
-    if (pageLoading) {
-
-        pageLoading.classList.add(
-            "hidden"
-        );
-
-    }
+        },
+        300
+    );
 
 }
 
@@ -275,131 +213,99 @@ function showApplication() {
    DADOS DO CLIENTE
 ========================================================= */
 
-async function loadClientData(user) {
+async function loadClientData() {
+
+    if (!currentUser) {
+        return;
+    }
+
 
     const displayName =
-        user.displayName ||
-        user.email?.split("@")[0] ||
+        currentUser.displayName ||
         "Cliente";
 
 
+    const email =
+        currentUser.email ||
+        "—";
+
+
     const firstName =
-        displayName
-            .trim()
-            .split(" ")[0];
+        getFirstName(displayName);
+
+
+    const initial =
+        getInitial(displayName);
 
 
     setText(
-        userName,
+        "headerUserName",
         displayName
     );
 
 
     setText(
-        welcomeName,
+        "welcomeUserName",
         firstName
     );
 
 
     setText(
-        accountName,
+        "profileName",
         displayName
     );
 
 
     setText(
-        accountEmail,
-        user.email || "—"
+        "profileFullName",
+        displayName
     );
 
 
-    setAvatar(
-        userAvatar,
-        displayName,
-        user.photoURL
+    setText(
+        "profileEmail",
+        email
     );
 
 
-    setAvatar(
-        accountAvatar,
-        displayName,
-        user.photoURL
+    setText(
+        "profileEmailField",
+        email
     );
 
 
-    /*
-     * Tentamos buscar informações adicionais
-     * do cliente no Firestore.
-     */
-
-    try {
-
-        const clientsRef =
-            collection(
-                db,
-                "clientes"
-            );
+    setText(
+        "headerAvatarInitial",
+        initial
+    );
 
 
-        const clientQuery =
-            query(
-                clientsRef,
-                where(
-                    "uid",
-                    "==",
-                    user.uid
-                ),
-                limit(1)
-            );
+    setText(
+        "profileAvatarInitial",
+        initial
+    );
 
 
-        const snapshot =
-            await getDocs(
-                clientQuery
-            );
+    if (currentUser.metadata) {
+
+        const creationTime =
+            currentUser.metadata.creationTime;
 
 
-        if (!snapshot.empty) {
+        if (creationTime) {
 
-            const client =
-                snapshot.docs[0].data();
-
-
-            if (client.nome) {
-
-                setText(
-                    userName,
-                    client.nome
+            const formattedDate =
+                formatDate(
+                    creationTime
                 );
 
 
-                setText(
-                    welcomeName,
-                    client.nome
-                        .trim()
-                        .split(" ")[0]
-                );
-
-
-                setText(
-                    accountName,
-                    client.nome
-                );
-
-            }
+            setText(
+                "profileCreatedAt",
+                formattedDate
+            );
 
         }
-
-    } catch (error) {
-
-        /*
-         * Se a coleção ainda não existir,
-         * mantemos os dados do Firebase Auth.
-         */
-
-        console.info(
-            "Coleção de clientes ainda não configurada."
-        );
 
     }
 
@@ -407,57 +313,38 @@ async function loadClientData(user) {
 
 
 /* =========================================================
-   AVATAR
+   PRIMEIRO NOME
 ========================================================= */
 
-function setAvatar(
-    element,
-    name,
-    photoURL
-) {
+function getFirstName(name) {
 
-    if (!element) {
-        return;
+    if (!name) {
+        return "cliente";
     }
 
 
-    if (photoURL) {
+    return name
+        .trim()
+        .split(/\s+/)[0];
 
-        element.innerHTML = "";
-
-        const image =
-            document.createElement(
-                "img"
-            );
+}
 
 
-        image.src =
-            photoURL;
+/* =========================================================
+   INICIAL
+========================================================= */
 
+function getInitial(name) {
 
-        image.alt =
-            name;
-
-
-        element.appendChild(
-            image
-        );
-
-
-        return;
-
+    if (!name) {
+        return "?";
     }
 
 
-    const firstLetter =
-        name
-            .trim()
-            .charAt(0)
-            .toUpperCase();
-
-
-    element.textContent =
-        firstLetter || "C";
+    return name
+        .trim()
+        .charAt(0)
+        .toUpperCase();
 
 }
 
@@ -468,18 +355,21 @@ function setAvatar(
 
 function initializeNavigation() {
 
-    const navigationItems =
+    const navItems =
         document.querySelectorAll(
-            "[data-section]"
+            ".nav-item"
         );
 
 
-    navigationItems.forEach(
+    navItems.forEach(
         (item) => {
 
             item.addEventListener(
                 "click",
-                () => {
+                (event) => {
+
+                    event.preventDefault();
+
 
                     const section =
                         item.dataset.section;
@@ -490,7 +380,7 @@ function initializeNavigation() {
                     }
 
 
-                    navigateToSection(
+                    showSection(
                         section
                     );
 
@@ -503,15 +393,65 @@ function initializeNavigation() {
         }
     );
 
+
+    window.addEventListener(
+        "hashchange",
+        handleHashNavigation
+    );
+
+
+    handleHashNavigation();
+
 }
 
 
 /* =========================================================
-   IR PARA SEÇÃO
+   HASH
 ========================================================= */
 
-function navigateToSection(
-    sectionName
+function handleHashNavigation() {
+
+    const hash =
+        window.location.hash
+            .replace("#", "")
+            .trim();
+
+
+    if (!hash) {
+        return;
+    }
+
+
+    const validSections = [
+        "inicio",
+        "fotos",
+        "videos",
+        "agendamento",
+        "perfil"
+    ];
+
+
+    if (
+        validSections.includes(hash)
+    ) {
+
+        showSection(
+            hash,
+            false
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MOSTRAR SEÇÃO
+========================================================= */
+
+function showSection(
+    section,
+    updateHash = true
 ) {
 
     const sections =
@@ -521,9 +461,9 @@ function navigateToSection(
 
 
     sections.forEach(
-        (section) => {
+        (element) => {
 
-            section.classList.remove(
+            element.classList.remove(
                 "active-section"
             );
 
@@ -531,42 +471,48 @@ function navigateToSection(
     );
 
 
-    const target =
+    const selectedSection =
         document.getElementById(
-            `section-${sectionName}`
+            `section-${section}`
         );
 
 
-    if (!target) {
+    if (selectedSection) {
 
-        console.warn(
-            `Seção não encontrada: ${sectionName}`
+        selectedSection.classList.add(
+            "active-section"
         );
-
-        return;
 
     }
 
 
-    target.classList.add(
-        "active-section"
+    const navItems =
+        document.querySelectorAll(
+            ".nav-item"
+        );
+
+
+    navItems.forEach(
+        (item) => {
+
+            item.classList.toggle(
+                "active",
+                item.dataset.section === section
+            );
+
+        }
     );
 
 
-    if (pageTitle) {
+    if (updateHash) {
 
-        pageTitle.textContent =
-            sectionTitles[
-                sectionName
-            ] ||
-            "Minha área";
+        history.replaceState(
+            null,
+            "",
+            `#${section}`
+        );
 
     }
-
-
-    updateActiveNavigation(
-        sectionName
-    );
 
 
     window.scrollTo({
@@ -578,37 +524,38 @@ function navigateToSection(
 
 
 /* =========================================================
-   NAVEGAÇÃO ATIVA
+   BOTÕES RÁPIDOS
 ========================================================= */
 
-function updateActiveNavigation(
-    sectionName
-) {
+function initializeQuickButtons() {
 
-    const navItems =
+    const buttons =
         document.querySelectorAll(
-            ".sidebar-nav .nav-item"
+            "[data-go-section]"
         );
 
 
-    navItems.forEach(
-        (item) => {
+    buttons.forEach(
+        (button) => {
 
-            item.classList.remove(
-                "active"
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const section =
+                        button.dataset.goSection;
+
+
+                    if (section) {
+
+                        showSection(
+                            section
+                        );
+
+                    }
+
+                }
             );
-
-
-            if (
-                item.dataset.section ===
-                sectionName
-            ) {
-
-                item.classList.add(
-                    "active"
-                );
-
-            }
 
         }
     );
@@ -620,17 +567,31 @@ function updateActiveNavigation(
    MENU MOBILE
 ========================================================= */
 
-if (mobileMenuButton) {
+function initializeMobileMenu() {
 
-    mobileMenuButton.addEventListener(
+    if (menuToggle) {
+
+        menuToggle.addEventListener(
+            "click",
+            () => {
+
+                sidebar?.classList.add(
+                    "open"
+                );
+
+                mobileOverlay?.classList.add(
+                    "show"
+                );
+
+            }
+        );
+
+    }
+
+
+    mobileOverlay?.addEventListener(
         "click",
-        () => {
-
-            sidebar.classList.toggle(
-                "mobile-open"
-            );
-
-        }
+        closeMobileMenu
     );
 
 }
@@ -638,36 +599,43 @@ if (mobileMenuButton) {
 
 function closeMobileMenu() {
 
-    if (sidebar) {
+    sidebar?.classList.remove(
+        "open"
+    );
 
-        sidebar.classList.remove(
-            "mobile-open"
-        );
-
-    }
+    mobileOverlay?.classList.remove(
+        "show"
+    );
 
 }
 
 
 /* =========================================================
-   MENU DO PERFIL
+   NOTIFICAÇÕES
 ========================================================= */
 
-function initializeProfileMenu() {
+function initializeNotifications() {
 
-    if (!profileButton) {
-        return;
-    }
-
-
-    profileButton.addEventListener(
+    notificationButton?.addEventListener(
         "click",
         (event) => {
 
             event.stopPropagation();
 
-            profileMenu.classList.toggle(
-                "open"
+            notificationPanel?.classList.toggle(
+                "show"
+            );
+
+        }
+    );
+
+
+    closeNotificationPanel?.addEventListener(
+        "click",
+        () => {
+
+            notificationPanel?.classList.remove(
+                "show"
             );
 
         }
@@ -679,12 +647,18 @@ function initializeProfileMenu() {
         (event) => {
 
             if (
-                profileMenu &&
-                !profileMenu.contains(event.target)
+                notificationPanel &&
+                !notificationPanel.contains(
+                    event.target
+                ) &&
+                notificationButton &&
+                !notificationButton.contains(
+                    event.target
+                )
             ) {
 
-                profileMenu.classList.remove(
-                    "open"
+                notificationPanel.classList.remove(
+                    "show"
                 );
 
             }
@@ -692,183 +666,132 @@ function initializeProfileMenu() {
         }
     );
 
-
-    document
-        .querySelectorAll(
-            ".profile-dropdown [data-section]"
-        )
-        .forEach(
-            (item) => {
-
-                item.addEventListener(
-                    "click",
-                    () => {
-
-                        navigateToSection(
-                            item.dataset.section
-                        );
+}
 
 
-                        profileMenu.classList.remove(
-                            "open"
-                        );
+/* =========================================================
+   CARREGAR NOTIFICAÇÕES
+========================================================= */
 
-                    }
+async function loadClientNotifications() {
+
+    if (!currentUser || !db) {
+        return;
+    }
+
+
+    const list =
+        document.getElementById(
+            "notificationsList"
+        );
+
+
+    if (!list) {
+        return;
+    }
+
+
+    try {
+
+        const notificationsRef =
+            collection(
+                db,
+                "notifications"
+            );
+
+
+        const notificationsQuery =
+            query(
+                notificationsRef,
+                where(
+                    "userId",
+                    "==",
+                    currentUser.uid
+                ),
+                orderBy(
+                    "createdAt",
+                    "desc"
+                ),
+                limit(20)
+            );
+
+
+        const snapshot =
+            await getDocs(
+                notificationsQuery
+            );
+
+
+        if (snapshot.empty) {
+
+            renderEmptyNotifications();
+
+            return;
+
+        }
+
+
+        list.innerHTML = "";
+
+
+        let unread = false;
+
+
+        snapshot.forEach(
+            (docSnapshot) => {
+
+                const data =
+                    docSnapshot.data();
+
+
+                if (
+                    data.read === false ||
+                    data.read === undefined
+                ) {
+
+                    unread = true;
+
+                }
+
+
+                const item =
+                    createNotificationElement(
+                        data
+                    );
+
+
+                list.appendChild(
+                    item
                 );
 
             }
         );
 
-}
+
+        const notificationDot =
+            document.getElementById(
+                "notificationDot"
+            );
 
 
-/* =========================================================
-   LOGOUT
-========================================================= */
+        if (notificationDot) {
 
-function initializeLogout() {
-
-    if (logoutButton) {
-
-        logoutButton.addEventListener(
-            "click",
-            openLogoutModal
-        );
-
-    }
-
-
-    if (accountLogoutButton) {
-
-        accountLogoutButton.addEventListener(
-            "click",
-            openLogoutModal
-        );
-
-    }
-
-
-    if (cancelLogout) {
-
-        cancelLogout.addEventListener(
-            "click",
-            closeLogoutModal
-        );
-
-    }
-
-
-    if (confirmLogout) {
-
-        confirmLogout.addEventListener(
-            "click",
-            logoutUser
-        );
-
-    }
-
-
-    if (logoutModal) {
-
-        logoutModal.addEventListener(
-            "click",
-            (event) => {
-
-                if (
-                    event.target ===
-                    logoutModal
-                ) {
-
-                    closeLogoutModal();
-
-                }
-
-            }
-        );
-
-    }
-
-}
-
-
-function openLogoutModal() {
-
-    if (profileMenu) {
-
-        profileMenu.classList.remove(
-            "open"
-        );
-
-    }
-
-
-    if (logoutModal) {
-
-        logoutModal.classList.add(
-            "show"
-        );
-
-    }
-
-}
-
-
-function closeLogoutModal() {
-
-    if (logoutModal) {
-
-        logoutModal.classList.remove(
-            "show"
-        );
-
-    }
-
-}
-
-
-async function logoutUser() {
-
-    try {
-
-        if (confirmLogout) {
-
-            confirmLogout.disabled =
-                true;
-
-            confirmLogout.textContent =
-                "Saindo...";
+            notificationDot.classList.toggle(
+                "show",
+                unread
+            );
 
         }
 
-
-        await signOut(auth);
-
-
-        window.location.href =
-            "cliente-login.html";
-
     } catch (error) {
 
-        console.error(
-            "Erro ao sair:",
+        console.warn(
+            "Não foi possível carregar notificações:",
             error
         );
 
 
-        if (confirmLogout) {
-
-            confirmLogout.disabled =
-                false;
-
-            confirmLogout.textContent =
-                "Sair";
-
-        }
-
-
-        alert(
-            "Não foi possível sair da conta. Tente novamente."
-        );
+        renderEmptyNotifications();
 
     }
 
@@ -876,12 +799,164 @@ async function logoutUser() {
 
 
 /* =========================================================
-   FOTOS DO CLIENTE
+   ELEMENTO NOTIFICAÇÃO
 ========================================================= */
 
-async function loadClientPhotos(user) {
+function createNotificationElement(
+    data
+) {
 
-    clientPhotos = [];
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "notification-item";
+
+
+    item.style.cssText = `
+        display:flex;
+        gap:12px;
+        padding:16px 20px;
+        border-bottom:1px solid #eee9e3;
+    `;
+
+
+    const icon =
+        document.createElement(
+            "div"
+        );
+
+
+    icon.style.cssText = `
+        width:34px;
+        height:34px;
+        flex:0 0 34px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-radius:50%;
+        background:#efebe5;
+        color:#615b54;
+        font-size:12px;
+    `;
+
+
+    icon.innerHTML =
+        `<i class="fa-regular fa-bell"></i>`;
+
+
+    const content =
+        document.createElement(
+            "div"
+        );
+
+
+    const title =
+        document.createElement(
+            "strong"
+        );
+
+
+    title.textContent =
+        data.title ||
+        "Nova notificação";
+
+
+    title.style.cssText = `
+        display:block;
+        margin-bottom:4px;
+        color:#403c37;
+        font-size:10px;
+    `;
+
+
+    const message =
+        document.createElement(
+            "p"
+        );
+
+
+    message.textContent =
+        data.message ||
+        "";
+
+
+    message.style.cssText = `
+        color:#8e877f;
+        font-size:9px;
+        line-height:1.5;
+    `;
+
+
+    content.appendChild(
+        title
+    );
+
+
+    content.appendChild(
+        message
+    );
+
+
+    item.appendChild(
+        icon
+    );
+
+
+    item.appendChild(
+        content
+    );
+
+
+    return item;
+
+}
+
+
+/* =========================================================
+   NOTIFICAÇÕES VAZIAS
+========================================================= */
+
+function renderEmptyNotifications() {
+
+    const list =
+        document.getElementById(
+            "notificationsList"
+        );
+
+
+    if (!list) {
+        return;
+    }
+
+
+    list.innerHTML = `
+        <div class="empty-notifications">
+
+            <i class="fa-regular fa-bell"></i>
+
+            <p>
+                Nenhuma notificação no momento.
+            </p>
+
+        </div>
+    `;
+
+}
+
+
+/* =========================================================
+   CARREGAR FOTOS
+========================================================= */
+
+async function loadClientPhotos() {
+
+    if (!currentUser || !db) {
+        return;
+    }
 
 
     try {
@@ -889,28 +964,17 @@ async function loadClientPhotos(user) {
         const photosRef =
             collection(
                 db,
-                "fotos"
+                "photos"
             );
-
-
-        /*
-         * Cada foto deve possuir:
-         *
-         * uidCliente
-         * url
-         * titulo
-         * createdAt
-         *
-         */
 
 
         const photosQuery =
             query(
                 photosRef,
                 where(
-                    "uidCliente",
+                    "clientId",
                     "==",
-                    user.uid
+                    currentUser.uid
                 )
             );
 
@@ -921,29 +985,34 @@ async function loadClientPhotos(user) {
             );
 
 
-        snapshot.forEach(
-            (doc) => {
+        currentPhotos = [];
 
-                clientPhotos.push({
-                    id: doc.id,
-                    ...doc.data()
+
+        snapshot.forEach(
+            (docSnapshot) => {
+
+                currentPhotos.push({
+                    id:
+                        docSnapshot.id,
+
+                    ...docSnapshot.data()
                 });
 
             }
         );
 
 
-        clientPhotos.sort(
+        currentPhotos.sort(
             (a, b) => {
 
                 const dateA =
-                    getDateValue(
+                    getTimestampValue(
                         a.createdAt
                     );
 
 
                 const dateB =
-                    getDateValue(
+                    getTimestampValue(
                         b.createdAt
                     );
 
@@ -954,19 +1023,35 @@ async function loadClientPhotos(user) {
         );
 
 
-        updatePhotoCounters();
+        filteredPhotos =
+            [...currentPhotos];
 
-        renderPhotoGallery();
+
+        updatePhotoCount();
+
+
+        renderGallery();
+
+
+        renderHomeGallery();
 
     } catch (error) {
 
-        console.error(
-            "Erro ao carregar fotos:",
+        console.warn(
+            "Não foi possível carregar fotos:",
             error
         );
 
 
-        updatePhotoCounters();
+        currentPhotos = [];
+
+        filteredPhotos = [];
+
+        updatePhotoCount();
+
+        renderGallery();
+
+        renderHomeGallery();
 
     }
 
@@ -974,59 +1059,60 @@ async function loadClientPhotos(user) {
 
 
 /* =========================================================
-   CONTADORES
+   CONTAGEM DE FOTOS
 ========================================================= */
 
-function updatePhotoCounters() {
+function updatePhotoCount() {
 
-    const total =
-        clientPhotos.length;
-
-
-    setText(
-        photoCountBadge,
-        total
-    );
+    const badge =
+        document.getElementById(
+            "photoCountBadge"
+        );
 
 
-    setText(
-        dashboardPhotoCount,
-        total
-    );
+    if (badge) {
+
+        badge.textContent =
+            currentPhotos.length;
+
+    }
 
 }
 
 
 /* =========================================================
-   GALERIA DE FOTOS
+   GALERIA
 ========================================================= */
 
-function renderPhotoGallery() {
+function renderGallery() {
 
-    if (!photoGallery) {
+    const gallery =
+        document.getElementById(
+            "clientGallery"
+        );
+
+
+    if (!gallery) {
         return;
     }
 
 
-    if (
-        clientPhotos.length === 0
-    ) {
+    if (!filteredPhotos.length) {
 
-        photoGallery.innerHTML = `
-            <div class="empty-state large">
+        gallery.innerHTML = `
+            <div class="empty-gallery">
 
                 <div class="empty-icon">
                     <i class="fa-regular fa-images"></i>
                 </div>
 
-                <h4>
-                    Sua galeria está sendo preparada
-                </h4>
+                <h3>
+                    Nenhuma foto disponível
+                </h3>
 
                 <p>
-                    Assim que suas fotografias
-                    forem disponibilizadas pela
-                    equipe, elas aparecerão aqui.
+                    Sua fotógrafa ainda não
+                    disponibilizou fotos nesta galeria.
                 </p>
 
             </div>
@@ -1037,19 +1123,20 @@ function renderPhotoGallery() {
     }
 
 
-    photoGallery.innerHTML = "";
+    gallery.innerHTML = "";
 
 
-    clientPhotos.forEach(
-        (photo) => {
+    filteredPhotos.forEach(
+        (photo, index) => {
 
             const card =
                 createPhotoCard(
-                    photo
+                    photo,
+                    index
                 );
 
 
-            photoGallery.appendChild(
+            gallery.appendChild(
                 card
             );
 
@@ -1059,8 +1146,13 @@ function renderPhotoGallery() {
 }
 
 
+/* =========================================================
+   CARD DE FOTO
+========================================================= */
+
 function createPhotoCard(
-    photo
+    photo,
+    index
 ) {
 
     const card =
@@ -1079,20 +1171,19 @@ function createPhotoCard(
         );
 
 
-    image.src =
-        photo.url ||
-        photo.imageUrl ||
-        "";
+    image.loading =
+        "lazy";
 
 
     image.alt =
-        photo.titulo ||
-        photo.title ||
-        "Fotografia do cliente";
+        photo.name ||
+        "Foto do cliente";
 
 
-    image.loading =
-        "lazy";
+    image.src =
+        photo.url ||
+        photo.downloadURL ||
+        "";
 
 
     card.appendChild(
@@ -1107,43 +1198,80 @@ function createPhotoCard(
 
 
     overlay.className =
-        "photo-card-overlay";
+        "photo-overlay";
 
 
-    const download =
+    const info =
+        document.createElement(
+            "div"
+        );
+
+
+    info.className =
+        "photo-info";
+
+
+    const name =
+        document.createElement(
+            "span"
+        );
+
+
+    name.textContent =
+        photo.name ||
+        "Fotografia";
+
+
+    const action =
         document.createElement(
             "button"
         );
 
 
-    download.type =
+    action.type =
         "button";
 
 
-    download.title =
-        "Baixar foto";
+    action.className =
+        "photo-action";
 
 
-    download.innerHTML =
-        '<i class="fa-solid fa-download"></i>';
+    action.setAttribute(
+        "aria-label",
+        "Visualizar foto"
+    );
 
 
-    download.addEventListener(
+    action.innerHTML =
+        `<i class="fa-solid fa-expand"></i>`;
+
+
+    action.addEventListener(
         "click",
         (event) => {
 
             event.stopPropagation();
 
-            downloadPhoto(
-                photo
+            openPhotoViewer(
+                index
             );
 
         }
     );
 
 
+    info.appendChild(
+        name
+    );
+
+
+    info.appendChild(
+        action
+    );
+
+
     overlay.appendChild(
-        download
+        info
     );
 
 
@@ -1156,8 +1284,8 @@ function createPhotoCard(
         "click",
         () => {
 
-            openPhoto(
-                photo
+            openPhotoViewer(
+                index
             );
 
         }
@@ -1170,48 +1298,38 @@ function createPhotoCard(
 
 
 /* =========================================================
-   FOTO RECENTE
+   GALERIA DA HOME
 ========================================================= */
 
-async function loadRecentPhotos(
-    user
-) {
+function renderHomeGallery() {
 
-    if (!recentPhotos) {
+    const gallery =
+        document.getElementById(
+            "homeGallery"
+        );
+
+
+    if (!gallery) {
         return;
     }
 
 
-    /*
-     * Usamos os dados já carregados
-     * para evitar consultas desnecessárias.
-     */
+    if (!currentPhotos.length) {
 
-    const recent =
-        clientPhotos.slice(
-            0,
-            4
-        );
-
-
-    if (recent.length === 0) {
-
-        recentPhotos.innerHTML = `
-            <div class="empty-state">
+        gallery.innerHTML = `
+            <div class="empty-gallery">
 
                 <div class="empty-icon">
                     <i class="fa-regular fa-images"></i>
                 </div>
 
-                <h4>
-                    Suas fotos aparecerão aqui
-                </h4>
+                <h3>
+                    Sua galeria está sendo preparada
+                </h3>
 
                 <p>
-                    Quando nossa equipe
-                    disponibilizar suas
-                    fotografias, elas serão
-                    exibidas neste espaço.
+                    Quando suas fotos forem
+                    disponibilizadas, elas aparecerão aqui.
                 </p>
 
             </div>
@@ -1222,11 +1340,30 @@ async function loadRecentPhotos(
     }
 
 
-    recentPhotos.innerHTML = "";
+    const photos =
+        currentPhotos.slice(
+            0,
+            4
+        );
 
 
-    recent.forEach(
-        (photo) => {
+    gallery.innerHTML = "";
+
+
+    gallery.style.display =
+        "grid";
+
+
+    gallery.style.gridTemplateColumns =
+        "repeat(4, 1fr)";
+
+
+    gallery.style.gap =
+        "8px";
+
+
+    photos.forEach(
+        (photo, index) => {
 
             const card =
                 document.createElement(
@@ -1246,12 +1383,12 @@ async function loadRecentPhotos(
 
             image.src =
                 photo.url ||
-                photo.imageUrl ||
+                photo.downloadURL ||
                 "";
 
 
             image.alt =
-                photo.titulo ||
+                photo.name ||
                 "Fotografia";
 
 
@@ -1268,15 +1405,19 @@ async function loadRecentPhotos(
                 "click",
                 () => {
 
-                    openPhoto(
-                        photo
+                    showSection(
+                        "fotos"
+                    );
+
+                    openPhotoViewer(
+                        index
                     );
 
                 }
             );
 
 
-            recentPhotos.appendChild(
+            gallery.appendChild(
                 card
             );
 
@@ -1287,121 +1428,319 @@ async function loadRecentPhotos(
 
 
 /* =========================================================
-   ABRIR FOTO
+   BUSCA E FILTROS
 ========================================================= */
 
-function openPhoto(
-    photo
-) {
+function initializeGallerySearch() {
 
-    const url =
-        photo.url ||
-        photo.imageUrl;
+    photoSearch?.addEventListener(
+        "input",
+        applyGalleryFilters
+    );
 
 
-    if (!url) {
+    galleryFilter?.addEventListener(
+        "change",
+        applyGalleryFilters
+    );
 
-        alert(
-            "Esta fotografia ainda não possui um arquivo disponível."
+}
+
+
+function applyGalleryFilters() {
+
+    const search =
+        (
+            photoSearch?.value ||
+            ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+    const filter =
+        galleryFilter?.value ||
+        "all";
+
+
+    filteredPhotos =
+        currentPhotos.filter(
+            (photo) => {
+
+                const name =
+                    (
+                        photo.name ||
+                        ""
+                    )
+                    .toLowerCase();
+
+
+                const matchesSearch =
+                    !search ||
+                    name.includes(
+                        search
+                    );
+
+
+                return matchesSearch;
+
+            }
         );
 
-        return;
+
+    if (filter === "favorites") {
+
+        filteredPhotos =
+            filteredPhotos.filter(
+                (photo) =>
+                    photo.favorite === true
+            );
 
     }
 
 
-    const newWindow =
-        window.open(
-            "",
-            "_blank"
+    if (filter === "recent") {
+
+        filteredPhotos.sort(
+            (a, b) => {
+
+                return (
+                    getTimestampValue(
+                        b.createdAt
+                    ) -
+                    getTimestampValue(
+                        a.createdAt
+                    )
+                );
+
+            }
         );
-
-
-    if (!newWindow) {
-
-        alert(
-            "Permita janelas pop-up para visualizar a fotografia."
-        );
-
-        return;
 
     }
 
 
-    newWindow.document.write(`
-        <!DOCTYPE html>
-
-        <html lang="pt-BR">
-
-        <head>
-
-            <meta charset="UTF-8">
-
-            <title>
-                Sua memória
-            </title>
-
-            <style>
-
-                * {
-                    box-sizing: border-box;
-                }
-
-                body {
-                    margin: 0;
-                    min-height: 100vh;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 20px;
-                    background: #181715;
-                }
-
-                img {
-                    max-width: 100%;
-                    max-height: 95vh;
-                    object-fit: contain;
-                }
-
-            </style>
-
-        </head>
-
-        <body>
-
-            <img
-                src="${escapeAttribute(url)}"
-                alt="Fotografia"
-            >
-
-        </body>
-
-        </html>
-    `);
-
-
-    newWindow.document.close();
+    renderGallery();
 
 }
 
 
 /* =========================================================
-   DOWNLOAD
+   VISUALIZADOR
 ========================================================= */
 
-async function downloadPhoto(
-    photo
+function initializePhotoViewer() {
+
+    closePhotoViewer?.addEventListener(
+        "click",
+        closeViewer
+    );
+
+
+    photoViewer?.addEventListener(
+        "click",
+        (event) => {
+
+            if (
+                event.target ===
+                photoViewer
+            ) {
+
+                closeViewer();
+
+            }
+
+        }
+    );
+
+
+    previousPhoto?.addEventListener(
+        "click",
+        showPreviousPhoto
+    );
+
+
+    nextPhoto?.addEventListener(
+        "click",
+        showNextPhoto
+    );
+
+
+    downloadCurrentPhoto?.addEventListener(
+        "click",
+        downloadCurrent
+    );
+
+}
+
+
+function openPhotoViewer(
+    index
 ) {
+
+    if (
+        !filteredPhotos.length ||
+        !photoViewer ||
+        !viewerImage
+    ) {
+        return;
+    }
+
+
+    currentPhotoIndex =
+        Math.max(
+            0,
+            Math.min(
+                index,
+                filteredPhotos.length - 1
+            )
+        );
+
+
+    updateViewer();
+
+
+    photoViewer.classList.add(
+        "show"
+    );
+
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+function closeViewer() {
+
+    photoViewer?.classList.remove(
+        "show"
+    );
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+function updateViewer() {
+
+    const photo =
+        filteredPhotos[
+            currentPhotoIndex
+        ];
+
+
+    if (!photo) {
+        return;
+    }
+
 
     const url =
         photo.url ||
-        photo.imageUrl;
+        photo.downloadURL ||
+        "";
+
+
+    viewerImage.src =
+        url;
+
+
+    viewerPhotoName.textContent =
+        photo.name ||
+        "Fotografia";
+
+
+    if (
+        filteredPhotos.length <= 1
+    ) {
+
+        previousPhoto.style.display =
+            "none";
+
+        nextPhoto.style.display =
+            "none";
+
+    } else {
+
+        previousPhoto.style.display =
+            "flex";
+
+        nextPhoto.style.display =
+            "flex";
+
+    }
+
+}
+
+
+function showPreviousPhoto() {
+
+    if (!filteredPhotos.length) {
+        return;
+    }
+
+
+    currentPhotoIndex =
+        (
+            currentPhotoIndex -
+            1 +
+            filteredPhotos.length
+        ) %
+        filteredPhotos.length;
+
+
+    updateViewer();
+
+}
+
+
+function showNextPhoto() {
+
+    if (!filteredPhotos.length) {
+        return;
+    }
+
+
+    currentPhotoIndex =
+        (
+            currentPhotoIndex +
+            1
+        ) %
+        filteredPhotos.length;
+
+
+    updateViewer();
+
+}
+
+
+/* =========================================================
+   DOWNLOAD DA FOTO ATUAL
+========================================================= */
+
+async function downloadCurrent() {
+
+    const photo =
+        filteredPhotos[
+            currentPhotoIndex
+        ];
+
+
+    if (!photo) {
+        return;
+    }
+
+
+    const url =
+        photo.url ||
+        photo.downloadURL;
 
 
     if (!url) {
 
-        alert(
-            "Arquivo indisponível."
+        showTemporaryMessage(
+            "Esta foto não possui um arquivo disponível."
         );
 
         return;
@@ -1412,14 +1751,9 @@ async function downloadPhoto(
     try {
 
         const response =
-            await fetch(url);
-
-
-        if (!response.ok) {
-            throw new Error(
-                "Falha no download."
+            await fetch(
+                url
             );
-        }
 
 
         const blob =
@@ -1443,10 +1777,11 @@ async function downloadPhoto(
 
 
         link.download =
-            getFileName(
-                photo,
-                "foto.jpg"
-            );
+            sanitizeFileName(
+                photo.name ||
+                "foto"
+            ) +
+            ".jpg";
 
 
         document.body.appendChild(
@@ -1472,11 +1807,6 @@ async function downloadPhoto(
         );
 
 
-        /*
-         * Fallback caso o navegador
-         * bloqueie o download direto.
-         */
-
         window.open(
             url,
             "_blank"
@@ -1491,67 +1821,132 @@ async function downloadPhoto(
    DOWNLOAD DAS SELECIONADAS
 ========================================================= */
 
-function initializeDownloadButton() {
+downloadAllButton?.addEventListener(
+    "click",
+    async () => {
 
-    if (!downloadAllButton) {
-        return;
-    }
+        if (!currentPhotos.length) {
+
+            showTemporaryMessage(
+                "Não há fotos disponíveis para baixar."
+            );
+
+            return;
+
+        }
 
 
-    downloadAllButton.addEventListener(
-        "click",
-        async () => {
+        showTemporaryMessage(
+            "Preparando o download..."
+        );
 
-            if (
-                clientPhotos.length === 0
-            ) {
 
-                alert(
-                    "Você ainda não possui fotos disponíveis."
-                );
+        for (
+            const photo
+            of currentPhotos
+        ) {
 
-                return;
+            const url =
+                photo.url ||
+                photo.downloadURL;
 
+
+            if (!url) {
+                continue;
             }
 
 
-            /*
-             * Por enquanto baixamos todas
-             * as fotos disponíveis.
-             *
-             * O sistema de seleção poderá
-             * ser ativado posteriormente.
-             */
+            try {
 
-            for (
-                const photo
-                of clientPhotos
-            ) {
+                const response =
+                    await fetch(
+                        url
+                    );
 
-                await downloadPhoto(
-                    photo
+
+                const blob =
+                    await response.blob();
+
+
+                const blobUrl =
+                    URL.createObjectURL(
+                        blob
+                    );
+
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                link.href =
+                    blobUrl;
+
+
+                link.download =
+                    sanitizeFileName(
+                        photo.name ||
+                        "foto"
+                    ) +
+                    ".jpg";
+
+
+                document.body.appendChild(
+                    link
                 );
 
 
-                await wait(350);
+                link.click();
+
+
+                link.remove();
+
+
+                URL.revokeObjectURL(
+                    blobUrl
+                );
+
+
+                await wait(
+                    250
+                );
+
+            } catch (error) {
+
+                console.warn(
+                    "Não foi possível baixar:",
+                    url
+                );
 
             }
 
         }
-    );
 
-}
+    }
+);
 
 
 /* =========================================================
    VÍDEOS
 ========================================================= */
 
-async function loadClientVideos(
-    user
-) {
+async function loadClientVideos() {
 
-    clientVideos = [];
+    if (!currentUser || !db) {
+        return;
+    }
+
+
+    const container =
+        document.getElementById(
+            "clientVideos"
+        );
+
+
+    if (!container) {
+        return;
+    }
 
 
     try {
@@ -1567,9 +1962,9 @@ async function loadClientVideos(
             query(
                 videosRef,
                 where(
-                    "uidCliente",
+                    "clientId",
                     "==",
-                    user.uid
+                    currentUser.uid
                 )
             );
 
@@ -1580,26 +1975,273 @@ async function loadClientVideos(
             );
 
 
-        snapshot.forEach(
-            (doc) => {
+        if (snapshot.empty) {
 
-                clientVideos.push({
-                    id: doc.id,
-                    ...doc.data()
+            return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        snapshot.forEach(
+            (docSnapshot) => {
+
+                const data =
+                    docSnapshot.data();
+
+
+                const card =
+                    createVideoCard(
+                        data
+                    );
+
+
+                container.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Não foi possível carregar vídeos:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CARD DE VÍDEO
+========================================================= */
+
+function createVideoCard(
+    data
+) {
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    card.className =
+        "video-card";
+
+
+    const thumbnail =
+        document.createElement(
+            "div"
+        );
+
+
+    thumbnail.className =
+        "video-thumbnail";
+
+
+    if (data.thumbnail) {
+
+        const image =
+            document.createElement(
+                "img"
+            );
+
+
+        image.src =
+            data.thumbnail;
+
+
+        image.alt =
+            data.name ||
+            "Vídeo";
+
+
+        thumbnail.appendChild(
+            image
+        );
+
+    }
+
+
+    const play =
+        document.createElement(
+            "a"
+        );
+
+
+    play.className =
+        "video-play";
+
+
+    play.href =
+        data.url ||
+        data.videoURL ||
+        "#";
+
+
+    play.target =
+        "_blank";
+
+
+    play.rel =
+        "noopener noreferrer";
+
+
+    play.innerHTML =
+        `<i class="fa-solid fa-play"></i>`;
+
+
+    thumbnail.appendChild(
+        play
+    );
+
+
+    const details =
+        document.createElement(
+            "div"
+        );
+
+
+    details.className =
+        "video-details";
+
+
+    const title =
+        document.createElement(
+            "h3"
+        );
+
+
+    title.textContent =
+        data.name ||
+        "Meu vídeo";
+
+
+    const description =
+        document.createElement(
+            "p"
+        );
+
+
+    description.textContent =
+        data.description ||
+        "Vídeo disponibilizado pela nossa equipe.";
+
+
+    details.appendChild(
+        title
+    );
+
+
+    details.appendChild(
+        description
+    );
+
+
+    card.appendChild(
+        thumbnail
+    );
+
+
+    card.appendChild(
+        details
+    );
+
+
+    return card;
+
+}
+
+
+/* =========================================================
+   AGENDAMENTOS
+========================================================= */
+
+async function loadClientAppointments() {
+
+    if (!currentUser || !db) {
+        return;
+    }
+
+
+    const container =
+        document.getElementById(
+            "appointmentsList"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    try {
+
+        const appointmentsRef =
+            collection(
+                db,
+                "agendamentos"
+            );
+
+
+        const appointmentsQuery =
+            query(
+                appointmentsRef,
+                where(
+                    "clienteId",
+                    "==",
+                    currentUser.uid
+                )
+            );
+
+
+        const snapshot =
+            await getDocs(
+                appointmentsQuery
+            );
+
+
+        if (snapshot.empty) {
+
+            return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        const appointments = [];
+
+
+        snapshot.forEach(
+            (docSnapshot) => {
+
+                appointments.push({
+                    id:
+                        docSnapshot.id,
+
+                    ...docSnapshot.data()
                 });
 
             }
         );
 
 
-        clientVideos.sort(
+        appointments.sort(
             (a, b) => {
 
                 return (
-                    getDateValue(
+                    getTimestampValue(
                         b.createdAt
                     ) -
-                    getDateValue(
+                    getTimestampValue(
                         a.createdAt
                     )
                 );
@@ -1608,296 +2250,258 @@ async function loadClientVideos(
         );
 
 
-        updateVideoCounter();
+        appointments.forEach(
+            (appointment) => {
 
-        renderVideoGallery();
+                const item =
+                    createAppointmentElement(
+                        appointment
+                    );
+
+
+                container.appendChild(
+                    item
+                );
+
+            }
+        );
 
     } catch (error) {
 
-        console.error(
-            "Erro ao carregar vídeos:",
+        console.warn(
+            "Não foi possível carregar agendamentos:",
             error
         );
 
-
-        updateVideoCounter();
-
     }
 
 }
 
 
 /* =========================================================
-   CONTADOR DE VÍDEOS
+   ITEM DE AGENDAMENTO
 ========================================================= */
 
-function updateVideoCounter() {
-
-    setText(
-        dashboardVideoCount,
-        clientVideos.length
-    );
-
-}
-
-
-/* =========================================================
-   GALERIA DE VÍDEOS
-========================================================= */
-
-function renderVideoGallery() {
-
-    if (!videoGallery) {
-        return;
-    }
-
-
-    if (
-        clientVideos.length === 0
-    ) {
-
-        videoGallery.innerHTML = `
-            <div class="empty-state large">
-
-                <div class="empty-icon">
-                    <i class="fa-solid fa-film"></i>
-                </div>
-
-                <h4>
-                    Nenhum vídeo disponível ainda
-                </h4>
-
-                <p>
-                    Seus vídeos aparecerão
-                    automaticamente aqui quando
-                    forem publicados.
-                </p>
-
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    videoGallery.innerHTML = "";
-
-
-    clientVideos.forEach(
-        (video) => {
-
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-
-            card.className =
-                "video-card";
-
-
-            const videoElement =
-                document.createElement(
-                    "video"
-                );
-
-
-            videoElement.controls =
-                true;
-
-
-            videoElement.preload =
-                "metadata";
-
-
-            videoElement.src =
-                video.url ||
-                video.videoUrl ||
-                "";
-
-
-            card.appendChild(
-                videoElement
-            );
-
-
-            const info =
-                document.createElement(
-                    "div"
-                );
-
-
-            info.className =
-                "video-info";
-
-
-            info.innerHTML = `
-                <span>
-                    SUAS MEMÓRIAS
-                </span>
-
-                <h4>
-                    ${escapeHTML(
-                        video.titulo ||
-                        video.title ||
-                        "Vídeo especial"
-                    )}
-                </h4>
-            `;
-
-
-            card.appendChild(
-                info
-            );
-
-
-            videoGallery.appendChild(
-                card
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   AGENDAMENTO
-========================================================= */
-
-function initializeMeetingButtons() {
-
-    if (onlineMeetingButton) {
-
-        onlineMeetingButton.addEventListener(
-            "click",
-            () => {
-
-                requestMeeting(
-                    "Online"
-                );
-
-            }
-        );
-
-    }
-
-
-    if (presentialMeetingButton) {
-
-        presentialMeetingButton.addEventListener(
-            "click",
-            () => {
-
-                requestMeeting(
-                    "Presencial"
-                );
-
-            }
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   SOLICITAR REUNIÃO
-========================================================= */
-
-function requestMeeting(
-    type
+function createAppointmentElement(
+    data
 ) {
 
-    const name =
-        currentUser?.displayName ||
-        currentUser?.email ||
-        "Cliente";
+    const item =
+        document.createElement(
+            "div"
+        );
 
 
-    const message =
-        `Olá! Sou ${name} e gostaria de solicitar uma reunião ${type.toLowerCase()} com a LS.fotostory.`;
+    item.className =
+        "appointment-item";
 
 
-    const whatsappNumber =
-        "5542988620679";
+    item.style.cssText = `
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:15px;
+        padding:15px 0;
+        border-bottom:1px solid #eee9e3;
+    `;
 
 
-    const url =
-        `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    const info =
+        document.createElement(
+            "div"
+        );
 
 
-    window.open(
-        url,
-        "_blank"
+    const date =
+        document.createElement(
+            "strong"
+        );
+
+
+    date.textContent =
+        formatAppointmentDate(
+            data.data ||
+            data.date
+        );
+
+
+    date.style.cssText = `
+        display:block;
+        color:#403c37;
+        font-size:11px;
+        margin-bottom:4px;
+    `;
+
+
+    const type =
+        document.createElement(
+            "span"
+        );
+
+
+    type.textContent =
+        data.tipo ||
+        data.servico ||
+        "Agendamento";
+
+
+    type.style.cssText = `
+        color:#918a82;
+        font-size:9px;
+    `;
+
+
+    info.appendChild(
+        date
     );
+
+
+    info.appendChild(
+        type
+    );
+
+
+    const status =
+        document.createElement(
+            "span"
+        );
+
+
+    const statusText =
+        data.status ||
+        "Pendente";
+
+
+    status.textContent =
+        capitalize(
+            statusText
+        );
+
+
+    status.style.cssText = `
+        padding:6px 9px;
+        border-radius:20px;
+        background:#efebe5;
+        color:#6d665f;
+        font-size:8px;
+        white-space:nowrap;
+    `;
+
+
+    item.appendChild(
+        info
+    );
+
+
+    item.appendChild(
+        status
+    );
+
+
+    return item;
 
 }
 
 
 /* =========================================================
-   NOTIFICAÇÕES
+   LOGOUT
 ========================================================= */
 
-function initializeNotification() {
+function initializeLogout() {
 
-    if (!notificationButton) {
-        return;
-    }
-
-
-    notificationButton.addEventListener(
+    logoutButton?.addEventListener(
         "click",
-        () => {
-
-            notificationDot?.classList.add(
-                "hidden"
-            );
+        handleLogout
+    );
 
 
-            alert(
-                "Você não possui novas notificações."
-            );
-
-        }
+    profileLogoutButton?.addEventListener(
+        "click",
+        handleLogout
     );
 
 }
 
 
-/* =========================================================
-   FIREBASE STORAGE
-========================================================= */
-
-async function getStorageFileUrl(
-    path
-) {
+async function handleLogout() {
 
     try {
 
-        const fileRef =
-            ref(
-                storage,
-                path
-            );
-
-
-        return await getDownloadURL(
-            fileRef
+        await signOut(
+            auth
         );
+
+
+        window.location.href =
+            "cliente-login.html";
 
     } catch (error) {
 
         console.error(
-            "Erro ao obter arquivo:",
+            "Erro ao sair:",
             error
         );
 
 
-        return null;
+        showTemporaryMessage(
+            "Não foi possível sair da conta."
+        );
 
     }
+
+}
+
+
+/* =========================================================
+   TECLADO
+========================================================= */
+
+function initializeKeyboardControls() {
+
+    document.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                !photoViewer?.classList.contains(
+                    "show"
+                )
+            ) {
+                return;
+            }
+
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                closeViewer();
+
+            }
+
+
+            if (
+                event.key ===
+                "ArrowLeft"
+            ) {
+
+                showPreviousPhoto();
+
+            }
+
+
+            if (
+                event.key ===
+                "ArrowRight"
+            ) {
+
+                showNextPhoto();
+
+            }
+
+        }
+    );
 
 }
 
@@ -1907,87 +2511,200 @@ async function getStorageFileUrl(
 ========================================================= */
 
 function setText(
-    element,
+    id,
     value
 ) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
 
     if (element) {
 
         element.textContent =
-            value ?? "";
+            value;
 
     }
 
 }
 
 
-function getDateValue(
-    value
+function formatDate(
+    date
 ) {
 
-    if (!value) {
+    const parsed =
+        new Date(
+            date
+        );
+
+
+    if (
+        Number.isNaN(
+            parsed.getTime()
+        )
+    ) {
+
+        return "—";
+
+    }
+
+
+    return parsed.toLocaleDateString(
+        "pt-BR",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+function formatAppointmentDate(
+    date
+) {
+
+    if (!date) {
+        return "Data não informada";
+    }
+
+
+    if (
+        typeof date ===
+        "object" &&
+        typeof date.toDate ===
+        "function"
+    ) {
+
+        return date
+            .toDate()
+            .toLocaleDateString(
+                "pt-BR",
+                {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric"
+                }
+            );
+
+    }
+
+
+    const parsed =
+        new Date(
+            date
+        );
+
+
+    if (
+        Number.isNaN(
+            parsed.getTime()
+        )
+    ) {
+
+        return String(
+            date
+        );
+
+    }
+
+
+    return parsed.toLocaleDateString(
+        "pt-BR",
+        {
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+function getTimestampValue(
+    timestamp
+) {
+
+    if (!timestamp) {
         return 0;
     }
 
 
     if (
-        typeof value.toMillis ===
+        typeof timestamp.toMillis ===
         "function"
     ) {
 
-        return value.toMillis();
+        return timestamp.toMillis();
 
     }
 
 
     if (
-        value.seconds !== undefined
+        typeof timestamp.toDate ===
+        "function"
     ) {
 
-        return (
-            value.seconds * 1000
-        );
+        return timestamp
+            .toDate()
+            .getTime();
 
     }
 
 
     const date =
-        new Date(value);
+        new Date(
+            timestamp
+        );
 
 
-    return Number.isNaN(
-        date.getTime()
-    )
+    const value =
+        date.getTime();
+
+
+    return Number.isNaN(value)
         ? 0
-        : date.getTime();
+        : value;
 
 }
 
 
-function getFileName(
-    item,
-    fallback
+function sanitizeFileName(
+    name
 ) {
 
-    const original =
-        item.nomeArquivo ||
-        item.fileName ||
-        item.titulo ||
-        item.title;
-
-
-    if (!original) {
-
-        return fallback;
-
-    }
-
-
-    return String(original)
+    return String(name)
         .replace(
-            /[^a-zA-Z0-9À-ÿ._-]/g,
-            "_"
-        );
+            /[<>:"/\\|?*]+/g,
+            ""
+        )
+        .trim()
+        .replace(
+            /\s+/g,
+            "-"
+        )
+        .toLowerCase() ||
+        "foto";
+
+}
+
+
+function capitalize(
+    text
+) {
+
+    const value =
+        String(text || "");
+
+
+    return value
+        .charAt(0)
+        .toUpperCase() +
+        value.slice(1);
 
 }
 
@@ -2010,73 +2727,105 @@ function wait(
 }
 
 
-function escapeHTML(
-    value
+/* =========================================================
+   MENSAGEM TEMPORÁRIA
+========================================================= */
+
+function showTemporaryMessage(
+    message
 ) {
 
-    return String(value)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
+    let toast =
+        document.getElementById(
+            "clientToast"
         );
 
-}
+
+    if (!toast) {
+
+        toast =
+            document.createElement(
+                "div"
+            );
 
 
-function escapeAttribute(
-    value
-) {
+        toast.id =
+            "clientToast";
 
-    return String(value)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
+
+        toast.style.cssText = `
+            position:fixed;
+            left:50%;
+            bottom:28px;
+            z-index:20000;
+            transform:translateX(-50%) translateY(20px);
+            max-width:calc(100vw - 30px);
+            padding:12px 18px;
+            border-radius:5px;
+            background:#292724;
+            color:#fff;
+            font-size:10px;
+            box-shadow:0 10px 30px rgba(0,0,0,.18);
+            opacity:0;
+            transition:all .25s ease;
+            pointer-events:none;
+        `;
+
+
+        document.body.appendChild(
+            toast
+        );
+
+    }
+
+
+    toast.textContent =
+        message;
+
+
+    requestAnimationFrame(
+        () => {
+
+            toast.style.opacity =
+                "1";
+
+            toast.style.transform =
+                "translateX(-50%) translateY(0)";
+
+        }
+    );
+
+
+    clearTimeout(
+        toast._timer
+    );
+
+
+    toast._timer =
+        setTimeout(
+            () => {
+
+                toast.style.opacity =
+                    "0";
+
+                toast.style.transform =
+                    "translateX(-50%) translateY(20px)";
+
+            },
+            3000
         );
 
 }
 
 
 /* =========================================================
-   EXPORTAÇÕES
+   EXPORTAÇÃO
 ========================================================= */
 
 export {
-
-    navigateToSection,
-
     loadClientPhotos,
-
     loadClientVideos,
-
-    requestMeeting
-
+    loadClientAppointments,
+    loadClientNotifications
 };
 ```
