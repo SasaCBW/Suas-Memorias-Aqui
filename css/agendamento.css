@@ -1,0 +1,285 @@
+/* =========================================================
+   LS.FOTOSTORY
+   AGENDAMENTO.CSS
+========================================================= */
+
+.agendamento-page {
+    min-height: 100vh;
+    padding: 130px 20px 70px;
+    background: #faf7f7;
+}
+
+.agendamento-wrapper {
+    width: min(1100px, 100%);
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 30px;
+}
+
+/* INFORMAÇÕES */
+
+.agendamento-info {
+    padding: 40px;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #b76e79,
+            #8f4d59
+        );
+
+    color: white;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.12);
+}
+
+.agendamento-info h1 {
+    margin-bottom: 15px;
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 2.8rem;
+    line-height: 1.15;
+}
+
+.agendamento-info > p {
+    margin-bottom: 30px;
+
+    color: rgba(255,255,255,.85);
+}
+
+.agendamento-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.agendamento-benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.agendamento-benefit-icon {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.15);
+}
+
+.agendamento-benefit h3 {
+    margin-bottom: 3px;
+    font-size: 1rem;
+}
+
+.agendamento-benefit p {
+    color: rgba(255,255,255,.75);
+    font-size: .83rem;
+}
+
+/* FORMULÁRIO */
+
+.agendamento-card {
+    padding: 38px;
+
+    background: white;
+
+    border:
+        1px solid #eadfe1;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.07);
+}
+
+.agendamento-card h2 {
+    margin-bottom: 7px;
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 2rem;
+    color: #202020;
+}
+
+.agendamento-card > p {
+    margin-bottom: 25px;
+    color: #777;
+    font-size: .9rem;
+}
+
+#agendamentoForm {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.agendamento-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.agendamento-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.agendamento-field label {
+    color: #333;
+    font-size: .87rem;
+    font-weight: 600;
+}
+
+.agendamento-field input,
+.agendamento-field select,
+.agendamento-field textarea {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    border:
+        1px solid #ded4d6;
+
+    border-radius: 11px;
+
+    outline: none;
+
+    background: white;
+
+    color: #222;
+
+    transition: .2s ease;
+}
+
+.agendamento-field input,
+.agendamento-field select {
+    min-height: 50px;
+}
+
+.agendamento-field textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.agendamento-field input:focus,
+.agendamento-field select:focus,
+.agendamento-field textarea:focus {
+    border-color: #b76e79;
+
+    box-shadow:
+        0 0 0 4px rgba(183,110,121,.1);
+}
+
+/* BOTÃO */
+
+#agendamentoButton {
+    width: 100%;
+
+    min-height: 52px;
+
+    border: 0;
+
+    border-radius: 11px;
+
+    background: #b76e79;
+
+    color: white;
+
+    font-weight: 700;
+
+    transition: .25s ease;
+}
+
+#agendamentoButton:hover {
+    background: #8f4d59;
+    transform: translateY(-1px);
+}
+
+#agendamentoButton:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* MENSAGENS */
+
+#agendamentoError,
+#agendamentoSuccess {
+    display: none;
+
+    padding: 13px 15px;
+
+    border-radius: 10px;
+
+    font-size: .85rem;
+}
+
+#agendamentoError.show,
+#agendamentoSuccess.show {
+    display: block;
+}
+
+#agendamentoError {
+    color: #8a2635;
+    background: #fdebed;
+    border: 1px solid #f3c7cd;
+}
+
+#agendamentoSuccess {
+    color: #24633d;
+    background: #eaf7ef;
+    border: 1px solid #c7e8d1;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 850px) {
+
+    .agendamento-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .agendamento-page {
+        padding:
+            110px 14px 50px;
+    }
+
+    .agendamento-info,
+    .agendamento-card {
+        padding: 25px 20px;
+    }
+
+    .agendamento-info h1 {
+        font-size: 2.2rem;
+    }
+
+    .agendamento-row {
+        grid-template-columns: 1fr;
+    }
+
+}
