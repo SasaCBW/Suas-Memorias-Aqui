@@ -18,43 +18,69 @@ import {
 
 
 /* =========================================================
-   ELEMENTOS
-========================================================= */
-
-const loginForm =
-    document.getElementById("loginForm");
-
-const emailInput =
-    document.getElementById("email");
-
-const passwordInput =
-    document.getElementById("password");
-
-const loginButton =
-    document.getElementById("loginButton");
-
-const googleButton =
-    document.getElementById("googleLogin");
-
-const errorMessage =
-    document.getElementById("loginError");
-
-const successMessage =
-    document.getElementById("loginSuccess");
-
-const passwordToggle =
-    document.getElementById("passwordToggle");
-
-const rememberCheckbox =
-    document.getElementById("rememberMe");
-
-
-/* =========================================================
-   REDIRECIONAMENTO
+   CONFIGURAÇÃO
 ========================================================= */
 
 const CLIENT_PAGE =
     "cliente.html";
+
+
+/* =========================================================
+   ELEMENTOS
+========================================================= */
+
+const loginForm =
+    document.getElementById(
+        "loginForm"
+    );
+
+
+const emailInput =
+    document.getElementById(
+        "email"
+    );
+
+
+const passwordInput =
+    document.getElementById(
+        "password"
+    );
+
+
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
+
+
+const googleButton =
+    document.getElementById(
+        "googleLogin"
+    );
+
+
+const errorMessage =
+    document.getElementById(
+        "loginError"
+    );
+
+
+const successMessage =
+    document.getElementById(
+        "loginSuccess"
+    );
+
+
+const passwordToggle =
+    document.getElementById(
+        "passwordToggle"
+    );
+
+
+const rememberCheckbox =
+    document.getElementById(
+        "rememberMe"
+    );
 
 
 /* =========================================================
@@ -76,7 +102,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   VERIFICAR USUÁRIO JÁ LOGADO
+   VERIFICAR SE JÁ ESTÁ LOGADO
 ========================================================= */
 
 onAuthStateChanged(
@@ -95,9 +121,9 @@ onAuthStateChanged(
 
 
         /*
-         * Se o usuário já estiver logado e estiver
-         * na página de login, vai direto para a área
-         * do cliente.
+         * Se o usuário já estiver logado
+         * e estiver em uma página de login,
+         * vai para a área do cliente.
          */
 
         if (
@@ -116,7 +142,7 @@ onAuthStateChanged(
 
 
 /* =========================================================
-   LOGIN
+   LOGIN COM E-MAIL E SENHA
 ========================================================= */
 
 function initializeLogin() {
@@ -143,8 +169,13 @@ function initializeLogin() {
 
 
             const password =
-                passwordInput?.value;
+                passwordInput?.value ||
+                "";
 
+
+            /* -----------------------------------------
+               VALIDAÇÃO DO E-MAIL
+            ----------------------------------------- */
 
             if (!email) {
 
@@ -159,7 +190,11 @@ function initializeLogin() {
             }
 
 
-            if (!isValidEmail(email)) {
+            if (
+                !isValidEmail(
+                    email
+                )
+            ) {
 
                 showError(
                     "Digite um e-mail válido."
@@ -171,6 +206,10 @@ function initializeLogin() {
 
             }
 
+
+            /* -----------------------------------------
+               VALIDAÇÃO DA SENHA
+            ----------------------------------------- */
 
             if (!password) {
 
@@ -201,6 +240,10 @@ function initializeLogin() {
             }
 
 
+            /* -----------------------------------------
+               LOADING
+            ----------------------------------------- */
+
             setLoading(
                 true
             );
@@ -215,8 +258,11 @@ function initializeLogin() {
                 );
 
 
+                saveRememberedEmail();
+
+
                 showSuccess(
-                    "Login realizado com sucesso."
+                    "Login realizado com sucesso!"
                 );
 
 
@@ -283,7 +329,7 @@ if (googleButton) {
 
 
                 showSuccess(
-                    "Login realizado com sucesso."
+                    "Login realizado com sucesso!"
                 );
 
 
@@ -342,7 +388,10 @@ if (googleButton) {
 
 function initializePasswordToggle() {
 
-    if (!passwordToggle) {
+    if (
+        !passwordToggle ||
+        !passwordInput
+    ) {
         return;
     }
 
@@ -351,34 +400,34 @@ function initializePasswordToggle() {
         "click",
         () => {
 
-            if (!passwordInput) {
-                return;
-            }
-
-
-            const isPassword =
+            const showingPassword =
                 passwordInput.type ===
-                "password";
+                "text";
 
 
             passwordInput.type =
-                isPassword
-                    ? "text"
-                    : "password";
+                showingPassword
+                    ? "password"
+                    : "text";
 
+
+            /*
+             * CORRETO:
+             * busca o <i> dentro do botão.
+             */
 
             const icon =
                 passwordToggle.querySelector(
-                   ("i")
+                    "i"
                 );
 
 
             if (icon) {
 
                 icon.className =
-                    isPassword
-                        ? "fa-regular fa-eye-slash"
-                        : "fa-regular fa-eye";
+                    showingPassword
+                        ? "fa-regular fa-eye"
+                        : "fa-regular fa-eye-slash";
 
             }
 
@@ -425,9 +474,7 @@ function initializeRememberMe() {
         "change",
         () => {
 
-            if (
-                !emailInput
-            ) {
+            if (!emailInput) {
                 return;
             }
 
@@ -496,13 +543,10 @@ function saveRememberedEmail() {
 
 
 /* =========================================================
-   REDIRECIONAR
+   REDIRECIONAMENTO
 ========================================================= */
 
 function redirectToClient() {
-
-    saveRememberedEmail();
-
 
     window.location.href =
         CLIENT_PAGE;
@@ -511,7 +555,7 @@ function redirectToClient() {
 
 
 /* =========================================================
-   LOADING LOGIN
+   LOADING DO LOGIN
 ========================================================= */
 
 function setLoading(
@@ -551,7 +595,7 @@ function setLoading(
 
 
 /* =========================================================
-   LOADING GOOGLE
+   LOADING DO GOOGLE
 ========================================================= */
 
 function setGoogleLoading(
@@ -673,6 +717,14 @@ function showFirebaseError(
             break;
 
 
+        case "auth/popup-closed-by-user":
+
+            message =
+                "A janela do Google foi fechada.";
+
+            break;
+
+
         case "auth/unauthorized-domain":
 
             message =
@@ -699,7 +751,7 @@ function showFirebaseError(
 
 
 /* =========================================================
-   MENSAGENS
+   MENSAGEM DE ERRO
 ========================================================= */
 
 function showError(
@@ -707,8 +759,13 @@ function showError(
 ) {
 
     if (!errorMessage) {
-        alert(message);
+
+        alert(
+            message
+        );
+
         return;
+
     }
 
 
@@ -721,16 +778,16 @@ function showError(
     );
 
 
-    if (successMessage) {
-
-        successMessage.classList.remove(
-            "show"
-        );
-
-    }
+    successMessage?.classList.remove(
+        "show"
+    );
 
 }
 
+
+/* =========================================================
+   MENSAGEM DE SUCESSO
+========================================================= */
 
 function showSuccess(
     message
@@ -750,16 +807,16 @@ function showSuccess(
     );
 
 
-    if (errorMessage) {
-
-        errorMessage.classList.remove(
-            "show"
-        );
-
-    }
+    errorMessage?.classList.remove(
+        "show"
+    );
 
 }
 
+
+/* =========================================================
+   LIMPAR MENSAGENS
+========================================================= */
 
 function clearMessages() {
 
@@ -792,7 +849,7 @@ function isValidEmail(
 
 
 /* =========================================================
-   ENTER NO FORMULÁRIO
+   ENTER PARA ENTRAR
 ========================================================= */
 
 document.addEventListener(
@@ -809,9 +866,9 @@ document.addEventListener(
 
         if (
             document.activeElement ===
-            emailInput ||
+                emailInput ||
             document.activeElement ===
-            passwordInput
+                passwordInput
         ) {
 
             loginForm?.requestSubmit();
