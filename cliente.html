@@ -12,17 +12,17 @@
     >
 
     <meta
-        name="description"
-        content="Área exclusiva do cliente — Suas Memórias Aqui."
-    >
-
-    <meta
         name="theme-color"
         content="#292724"
     >
 
+    <meta
+        name="description"
+        content="Área exclusiva do cliente - Suas Memórias Aqui"
+    >
+
     <title>
-        Minha área | Suas Memórias Aqui
+        Minha Área | Suas Memórias Aqui
     </title>
 
 
@@ -81,40 +81,53 @@
     class="page-loading"
 >
 
-    <div class="loading-spinner"></div>
+    <div class="loading-content">
 
-    <p>
-        Carregando seu espaço...
-    </p>
+        <div class="loading-logo">
+            SM
+        </div>
+
+        <div class="loading-spinner"></div>
+
+        <p>
+            Carregando sua área...
+        </p>
+
+    </div>
 
 </div>
 
 
 <!-- =========================================================
-     APLICAÇÃO
+     MENU MOBILE
 ========================================================= -->
 
 <div
-    id="clientApp"
-    class="client-app"
+    id="mobileOverlay"
+    class="mobile-overlay"
+></div>
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside
+    id="sidebar"
+    class="sidebar"
 >
 
 
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
+    <!-- MARCA -->
 
-    <aside
-        id="sidebar"
-        class="sidebar"
-    >
+    <div class="sidebar-brand">
 
+        <a
+            href="index.html"
+            class="brand-link"
+        >
 
-        <!-- MARCA -->
-
-        <div class="sidebar-brand">
-
-            <div class="brand-mark">
+            <div class="brand-symbol">
                 SM
             </div>
 
@@ -124,564 +137,790 @@
                     SUAS MEMÓRIAS
                 </strong>
 
-                <small>
+                <span>
                     FOTOGRAFIA &amp; STORY MAKER
-                </small>
+                </span>
 
             </div>
 
-        </div>
+        </a>
+
+    </div>
 
 
-        <!-- MENU -->
+    <!-- NAVEGAÇÃO -->
 
-        <nav
-            class="sidebar-nav"
-            aria-label="Navegação principal"
+    <nav class="sidebar-nav">
+
+
+        <span class="nav-title">
+            MINHA ÁREA
+        </span>
+
+
+        <a
+            href="#inicio"
+            class="nav-item active"
+            data-section="inicio"
         >
 
-            <p class="nav-label">
-                MINHA ÁREA
-            </p>
+            <i class="fa-solid fa-house"></i>
+
+            <span>
+                Início
+            </span>
+
+        </a>
 
 
-            <button
-                class="nav-item active"
-                data-section="inicio"
+        <a
+            href="#fotos"
+            class="nav-item"
+            data-section="fotos"
+        >
+
+            <i class="fa-regular fa-images"></i>
+
+            <span>
+                Minhas fotos
+            </span>
+
+            <span
+                id="photoCountBadge"
+                class="nav-badge"
+            >
+                0
+            </span>
+
+        </a>
+
+
+        <a
+            href="#videos"
+            class="nav-item"
+            data-section="videos"
+        >
+
+            <i class="fa-solid fa-play"></i>
+
+            <span>
+                Meus vídeos
+            </span>
+
+        </a>
+
+
+        <a
+            href="#agendamento"
+            class="nav-item"
+            data-section="agendamento"
+        >
+
+            <i class="fa-regular fa-calendar"></i>
+
+            <span>
+                Agendamento
+            </span>
+
+        </a>
+
+
+        <span class="nav-title second-title">
+            CONTA
+        </span>
+
+
+        <a
+            href="#perfil"
+            class="nav-item"
+            data-section="perfil"
+        >
+
+            <i class="fa-regular fa-user"></i>
+
+            <span>
+                Meu perfil
+            </span>
+
+        </a>
+
+    </nav>
+
+
+    <!-- RODAPÉ SIDEBAR -->
+
+    <div class="sidebar-bottom">
+
+        <a
+            href="index.html"
+            class="sidebar-site-link"
+        >
+
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+            <span>
+                Visitar o site
+            </span>
+
+        </a>
+
+
+        <button
+            type="button"
+            id="logoutButton"
+            class="logout-button"
+        >
+
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+            <span>
+                Sair da conta
+            </span>
+
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     CONTEÚDO PRINCIPAL
+========================================================= -->
+
+<main class="main-content">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="top-header">
+
+
+        <button
+            type="button"
+            id="menuToggle"
+            class="menu-toggle"
+            aria-label="Abrir menu"
+        >
+
+            <i class="fa-solid fa-bars"></i>
+
+        </button>
+
+
+        <div class="header-spacer"></div>
+
+
+        <!-- NOTIFICAÇÕES -->
+
+        <button
+            type="button"
+            id="notificationButton"
+            class="header-icon-button"
+            aria-label="Notificações"
+        >
+
+            <i class="fa-regular fa-bell"></i>
+
+            <span
+                id="notificationDot"
+                class="notification-dot"
+            ></span>
+
+        </button>
+
+
+        <!-- USUÁRIO -->
+
+        <button
+            type="button"
+            id="profileHeaderButton"
+            class="header-user"
+        >
+
+            <div
+                id="headerAvatar"
+                class="header-avatar"
             >
 
-                <i class="fa-solid fa-house"></i>
-
-                <span>
-                    Início
+                <span id="headerAvatarInitial">
+                    ?
                 </span>
 
-            </button>
+            </div>
 
 
-            <button
-                class="nav-item"
-                data-section="fotos"
-            >
+            <div class="header-user-info">
 
-                <i class="fa-regular fa-images"></i>
-
-                <span>
-                    Minhas fotos
-                </span>
-
-                <span
-                    id="photoCountBadge"
-                    class="nav-badge"
+                <strong
+                    id="headerUserName"
                 >
-                    0
-                </span>
-
-            </button>
-
-
-            <button
-                class="nav-item"
-                data-section="videos"
-            >
-
-                <i class="fa-solid fa-film"></i>
+                    Cliente
+                </strong>
 
                 <span>
-                    Meus vídeos
+                    Área do cliente
                 </span>
 
-            </button>
+            </div>
 
 
-            <button
-                class="nav-item"
-                data-section="agendamento"
-            >
+            <i class="fa-solid fa-chevron-down"></i>
 
-                <i class="fa-regular fa-calendar"></i>
+        </button>
 
-                <span>
-                    Agendamento
-                </span>
-
-            </button>
+    </header>
 
 
-            <p class="nav-label second-label">
-                ATENDIMENTO
-            </p>
+    <!-- =====================================================
+         ÁREA DAS SEÇÕES
+    ====================================================== -->
+
+    <div class="content-wrapper">
 
 
-            <button
-                class="nav-item"
-                data-section="contato"
-            >
+        <!-- =================================================
+             INÍCIO
+        ================================================== -->
 
-                <i class="fa-regular fa-comments"></i>
-
-                <span>
-                    Fale conosco
-                </span>
-
-            </button>
+        <section
+            id="section-inicio"
+            class="content-section active-section"
+        >
 
 
-            <a
-                href="https://www.instagram.com/ls.fotostory/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="nav-item nav-link"
-            >
+            <!-- HERO -->
 
-                <i class="fa-brands fa-instagram"></i>
-
-                <span>
-                    Instagram
-                </span>
-
-                <i class="fa-solid fa-arrow-up-right-from-square external-icon"></i>
-
-            </a>
-
-        </nav>
+            <div class="welcome-card">
 
 
-        <!-- RODAPÉ SIDEBAR -->
+                <div class="welcome-content">
 
-        <div class="sidebar-footer">
-
-            <div class="sidebar-help">
-
-                <i class="fa-regular fa-circle-question"></i>
-
-                <div>
-
-                    <strong>
-                        Precisa de ajuda?
-                    </strong>
-
-                    <span>
-                        Fale com nossa equipe.
+                    <span class="section-eyebrow">
+                        ÁREA EXCLUSIVA
                     </span>
+
+
+                    <h1>
+                        Olá,
+                        <span id="welcomeUserName">
+                            cliente
+                        </span>.
+                    </h1>
+
+
+                    <p>
+                        Que bom ter você aqui.
+                        Suas memórias estão
+                        esperando por você.
+                    </p>
+
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        data-go-section="fotos"
+                    >
+
+                        <i class="fa-regular fa-images"></i>
+
+                        Ver minhas fotos
+
+                    </button>
+
+                </div>
+
+
+                <div class="welcome-decoration">
+
+                    <div class="decoration-circle">
+                        SM
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
 
-    </aside>
+            <!-- CARDS -->
 
+            <div class="section-heading">
 
-    <!-- =====================================================
-         CONTEÚDO PRINCIPAL
-    ====================================================== -->
+                <div>
 
-    <main class="main-content">
+                    <span>
+                        ACESSO RÁPIDO
+                    </span>
 
+                    <h2>
+                        Suas memórias
+                    </h2>
 
-        <!-- =================================================
-             HEADER
-        ================================================== -->
-
-        <header class="topbar">
-
-
-            <button
-                id="mobileMenuButton"
-                class="mobile-menu-button"
-                aria-label="Abrir menu"
-            >
-
-                <i class="fa-solid fa-bars"></i>
-
-            </button>
-
-
-            <div class="topbar-title">
-
-                <span>
-                    ÁREA DO CLIENTE
-                </span>
-
-                <h1 id="pageTitle">
-                    Minha área
-                </h1>
+                </div>
 
             </div>
 
 
-            <div class="topbar-actions">
+            <div class="quick-grid">
 
-
-                <!-- NOTIFICAÇÕES -->
 
                 <button
-                    id="notificationButton"
-                    class="topbar-icon"
-                    aria-label="Notificações"
+                    type="button"
+                    class="quick-card"
+                    data-go-section="fotos"
                 >
 
-                    <i class="fa-regular fa-bell"></i>
+                    <div class="quick-icon">
 
-                    <span
-                        id="notificationDot"
-                        class="notification-dot hidden"
-                    ></span>
+                        <i class="fa-regular fa-images"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Minhas fotos
+                        </strong>
+
+                        <span>
+                            Veja e baixe suas fotografias
+                        </span>
+
+                    </div>
+
+                    <i class="fa-solid fa-arrow-right"></i>
 
                 </button>
 
 
-                <!-- PERFIL -->
-
-                <div
-                    id="profileMenu"
-                    class="profile-menu"
+                <button
+                    type="button"
+                    class="quick-card"
+                    data-go-section="videos"
                 >
 
-                    <button
-                        id="profileButton"
-                        class="profile-button"
-                    >
+                    <div class="quick-icon">
 
-                        <div
-                            id="userAvatar"
-                            class="user-avatar"
-                        >
-                            S
-                        </div>
-
-                        <div class="profile-info">
-
-                            <strong
-                                id="userName"
-                            >
-                                Cliente
-                            </strong>
-
-                            <span>
-                                Cliente
-                            </span>
-
-                        </div>
-
-                        <i class="fa-solid fa-chevron-down"></i>
-
-                    </button>
-
-
-                    <div
-                        id="profileDropdown"
-                        class="profile-dropdown"
-                    >
-
-                        <button
-                            class="dropdown-item"
-                            data-section="conta"
-                        >
-
-                            <i class="fa-regular fa-user"></i>
-
-                            Minha conta
-
-                        </button>
-
-
-                        <button
-                            class="dropdown-item"
-                            data-section="contato"
-                        >
-
-                            <i class="fa-regular fa-circle-question"></i>
-
-                            Ajuda
-
-                        </button>
-
-
-                        <div class="dropdown-divider"></div>
-
-
-                        <button
-                            id="logoutButton"
-                            class="dropdown-item logout-item"
-                        >
-
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                            Sair da conta
-
-                        </button>
+                        <i class="fa-solid fa-play"></i>
 
                     </div>
+
+                    <div>
+
+                        <strong>
+                            Meus vídeos
+                        </strong>
+
+                        <span>
+                            Assista aos seus vídeos
+                        </span>
+
+                    </div>
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="quick-card"
+                    data-go-section="agendamento"
+                >
+
+                    <div class="quick-icon">
+
+                        <i class="fa-regular fa-calendar"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Agendamento
+                        </strong>
+
+                        <span>
+                            Solicite seu próximo ensaio
+                        </span>
+
+                    </div>
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="quick-card"
+                    data-go-section="perfil"
+                >
+
+                    <div class="quick-icon">
+
+                        <i class="fa-regular fa-user"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Meu perfil
+                        </strong>
+
+                        <span>
+                            Confira seus dados
+                        </span>
+
+                    </div>
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- ÚLTIMA GALERIA -->
+
+            <div class="section-heading gallery-heading">
+
+                <div>
+
+                    <span>
+                        SUA GALERIA
+                    </span>
+
+                    <h2>
+                        Últimas memórias
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="text-button"
+                    data-go-section="fotos"
+                >
+
+                    Ver todas
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="homeGallery"
+                class="home-gallery"
+            >
+
+                <div class="empty-gallery">
+
+                    <div class="empty-icon">
+                        <i class="fa-regular fa-images"></i>
+                    </div>
+
+                    <h3>
+                        Sua galeria está sendo preparada
+                    </h3>
+
+                    <p>
+                        Quando suas fotos forem
+                        disponibilizadas, elas aparecerão aqui.
+                    </p>
 
                 </div>
 
             </div>
 
-        </header>
+
+        </section>
 
 
         <!-- =================================================
-             ÁREA DE SEÇÕES
+             FOTOS
         ================================================== -->
 
-        <div class="content-area">
+        <section
+            id="section-fotos"
+            class="content-section"
+        >
+
+            <div class="page-title">
+
+                <div>
+
+                    <span>
+                        GALERIA
+                    </span>
+
+                    <h1>
+                        Minhas fotos
+                    </h1>
+
+                    <p>
+                        Todas as fotografias disponibilizadas
+                        para você.
+                    </p>
+
+                </div>
 
 
-            <!-- =================================================
-                 INÍCIO
-            ================================================== -->
+                <button
+                    type="button"
+                    id="downloadAllButton"
+                    class="secondary-button"
+                >
 
-            <section
-                id="section-inicio"
-                class="content-section active-section"
+                    <i class="fa-solid fa-download"></i>
+
+                    Baixar selecionadas
+
+                </button>
+
+            </div>
+
+
+            <!-- FILTROS -->
+
+            <div class="gallery-toolbar">
+
+                <div class="gallery-search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="photoSearch"
+                        placeholder="Pesquisar fotos..."
+                    >
+
+                </div>
+
+
+                <select
+                    id="galleryFilter"
+                    class="gallery-filter"
+                >
+
+                    <option value="all">
+                        Todas as fotos
+                    </option>
+
+                    <option value="favorites">
+                        Favoritas
+                    </option>
+
+                    <option value="recent">
+                        Mais recentes
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="clientGallery"
+                class="client-gallery"
             >
 
+                <div class="empty-gallery">
 
-                <div class="welcome-section">
+                    <div class="empty-icon">
+                        <i class="fa-regular fa-images"></i>
+                    </div>
 
-                    <div>
+                    <h3>
+                        Nenhuma foto disponível
+                    </h3>
 
-                        <span class="section-eyebrow">
-                            BEM-VINDO(A)
-                        </span>
+                    <p>
+                        Sua fotógrafa ainda não
+                        disponibilizou fotos nesta galeria.
+                    </p>
 
-                        <h2>
-                            Olá,
-                            <span id="welcomeName">
-                                cliente
-                            </span>.
-                        </h2>
+                </div>
 
-                        <p>
-                            Seu espaço para guardar,
-                            acessar e reviver momentos
-                            especiais.
-                        </p>
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             VÍDEOS
+        ================================================== -->
+
+        <section
+            id="section-videos"
+            class="content-section"
+        >
+
+            <div class="page-title">
+
+                <div>
+
+                    <span>
+                        VÍDEOS
+                    </span>
+
+                    <h1>
+                        Meus vídeos
+                    </h1>
+
+                    <p>
+                        Assista aos vídeos preparados
+                        especialmente para você.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="clientVideos"
+                class="videos-grid"
+            >
+
+                <div class="empty-gallery">
+
+                    <div class="empty-icon">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+
+                    <h3>
+                        Nenhum vídeo disponível
+                    </h3>
+
+                    <p>
+                        Quando seus vídeos forem
+                        disponibilizados, aparecerão aqui.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             AGENDAMENTO
+        ================================================== -->
+
+        <section
+            id="section-agendamento"
+            class="content-section"
+        >
+
+            <div class="page-title">
+
+                <div>
+
+                    <span>
+                        AGENDA
+                    </span>
+
+                    <h1>
+                        Meu agendamento
+                    </h1>
+
+                    <p>
+                        Solicite um novo atendimento
+                        ou acompanhe seus agendamentos.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="appointment-layout">
+
+
+                <!-- NOVO AGENDAMENTO -->
+
+                <div class="appointment-card">
+
+                    <div class="appointment-icon">
+
+                        <i class="fa-regular fa-calendar-plus"></i>
 
                     </div>
 
 
-                    <div class="welcome-decoration">
+                    <span>
+                        NOVO AGENDAMENTO
+                    </span>
 
-                        <i class="fa-regular fa-heart"></i>
 
-                    </div>
+                    <h2>
+                        Vamos registrar
+                        seu próximo momento?
+                    </h2>
+
+
+                    <p>
+                        Escolha uma data e envie
+                        sua solicitação para nossa equipe.
+                    </p>
+
+
+                    <a
+                        href="agendamento.html"
+                        class="primary-button"
+                    >
+
+                        Solicitar agendamento
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
 
                 </div>
 
 
-                <!-- DESTAQUE -->
+                <!-- AGENDAMENTOS -->
 
-                <div class="memory-hero">
+                <div class="appointment-list-card">
 
-
-                    <div class="memory-hero-content">
-
-                        <span>
-                            SUAS MEMÓRIAS
-                        </span>
-
-                        <h3>
-                            Cada momento merece
-                            ser lembrado.
-                        </h3>
-
-                        <p>
-                            Aqui você encontrará as
-                            fotografias e vídeos
-                            preparados especialmente
-                            para você.
-                        </p>
-
-
-                        <button
-                            class="primary-button"
-                            data-section="fotos"
-                        >
-
-                            <span>
-                                Ver minhas fotos
-                            </span>
-
-                            <i class="fa-solid fa-arrow-right"></i>
-
-                        </button>
-
-                    </div>
-
-
-                    <div class="memory-hero-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1531058020387-3be344556be6?auto=format&fit=crop&w=1200&q=85"
-                            alt="Momento especial"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- CARDS -->
-
-                <div class="dashboard-grid">
-
-
-                    <button
-                        class="dashboard-card"
-                        data-section="fotos"
-                    >
-
-                        <div class="card-icon">
-
-                            <i class="fa-regular fa-images"></i>
-
-                        </div>
-
-                        <div class="card-text">
-
-                            <span>
-                                FOTOGRAFIAS
-                            </span>
-
-                            <strong
-                                id="dashboardPhotoCount"
-                            >
-                                0
-                            </strong>
-
-                            <small>
-                                fotos disponíveis
-                            </small>
-
-                        </div>
-
-                        <i class="fa-solid fa-arrow-right card-arrow"></i>
-
-                    </button>
-
-
-                    <button
-                        class="dashboard-card"
-                        data-section="videos"
-                    >
-
-                        <div class="card-icon">
-
-                            <i class="fa-solid fa-film"></i>
-
-                        </div>
-
-                        <div class="card-text">
-
-                            <span>
-                                VÍDEOS
-                            </span>
-
-                            <strong
-                                id="dashboardVideoCount"
-                            >
-                                0
-                            </strong>
-
-                            <small>
-                                vídeos disponíveis
-                            </small>
-
-                        </div>
-
-                        <i class="fa-solid fa-arrow-right card-arrow"></i>
-
-                    </button>
-
-
-                    <button
-                        class="dashboard-card"
-                        data-section="agendamento"
-                    >
-
-                        <div class="card-icon">
-
-                            <i class="fa-regular fa-calendar"></i>
-
-                        </div>
-
-                        <div class="card-text">
-
-                            <span>
-                                ATENDIMENTO
-                            </span>
-
-                            <strong>
-                                Reunião
-                            </strong>
-
-                            <small>
-                                online ou presencial
-                            </small>
-
-                        </div>
-
-                        <i class="fa-solid fa-arrow-right card-arrow"></i>
-
-                    </button>
-
-                </div>
-
-
-                <!-- ÚLTIMA ATUALIZAÇÃO -->
-
-                <div class="recent-section">
-
-                    <div class="section-heading">
+                    <div class="card-heading">
 
                         <div>
 
                             <span>
-                                ATUALIZAÇÕES
+                                MEUS PEDIDOS
                             </span>
 
                             <h3>
-                                Últimas memórias
+                                Agendamentos
                             </h3>
 
                         </div>
-
-                        <button
-                            class="text-button"
-                            data-section="fotos"
-                        >
-                            Ver todas
-                        </button>
 
                     </div>
 
 
                     <div
-                        id="recentPhotos"
-                        class="recent-grid"
+                        id="appointmentsList"
+                        class="appointments-list"
                     >
 
-                        <div class="empty-state">
+                        <div class="empty-list">
 
-                            <div class="empty-icon">
-
-                                <i class="fa-regular fa-images"></i>
-
-                            </div>
-
-                            <h4>
-                                Suas fotos aparecerão aqui
-                            </h4>
+                            <i class="fa-regular fa-calendar"></i>
 
                             <p>
-                                Quando nossa equipe
-                                disponibilizar suas
-                                fotografias, elas serão
-                                exibidas neste espaço.
+                                Você ainda não possui
+                                agendamentos.
                             </p>
 
                         </div>
@@ -690,486 +929,102 @@
 
                 </div>
 
+            </div>
 
-            </section>
+        </section>
 
 
-            <!-- =================================================
-                 FOTOS
-            ================================================== -->
+        <!-- =================================================
+             PERFIL
+        ================================================== -->
 
-            <section
-                id="section-fotos"
-                class="content-section"
-            >
+        <section
+            id="section-perfil"
+            class="content-section"
+        >
 
-                <div class="section-page-header">
+            <div class="page-title">
 
-                    <div>
-
-                        <span>
-                            SUA GALERIA
-                        </span>
-
-                        <h2>
-                            Minhas fotos
-                        </h2>
-
-                        <p>
-                            Todas as fotografias
-                            disponibilizadas para você.
-                        </p>
-
-                    </div>
-
-
-                    <button
-                        id="downloadAllButton"
-                        class="secondary-button"
-                    >
-
-                        <i class="fa-solid fa-download"></i>
-
-                        Baixar selecionadas
-
-                    </button>
-
-                </div>
-
-
-                <div
-                    id="photoGallery"
-                    class="photo-gallery"
-                >
-
-                    <div class="empty-state large">
-
-                        <div class="empty-icon">
-
-                            <i class="fa-regular fa-images"></i>
-
-                        </div>
-
-                        <h4>
-                            Sua galeria está sendo preparada
-                        </h4>
-
-                        <p>
-                            Assim que suas fotografias
-                            forem disponibilizadas pela
-                            equipe, elas aparecerão aqui.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 VÍDEOS
-            ================================================== -->
-
-            <section
-                id="section-videos"
-                class="content-section"
-            >
-
-                <div class="section-page-header">
-
-                    <div>
-
-                        <span>
-                            SEUS REGISTROS
-                        </span>
-
-                        <h2>
-                            Meus vídeos
-                        </h2>
-
-                        <p>
-                            Seus vídeos e stories
-                            preparados pela nossa equipe.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="videoGallery"
-                    class="video-gallery"
-                >
-
-                    <div class="empty-state large">
-
-                        <div class="empty-icon">
-
-                            <i class="fa-solid fa-film"></i>
-
-                        </div>
-
-                        <h4>
-                            Nenhum vídeo disponível ainda
-                        </h4>
-
-                        <p>
-                            Seus vídeos aparecerão
-                            automaticamente aqui quando
-                            forem publicados.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 AGENDAMENTO
-            ================================================== -->
-
-            <section
-                id="section-agendamento"
-                class="content-section"
-            >
-
-                <div class="section-page-header">
-
-                    <div>
-
-                        <span>
-                            ATENDIMENTO
-                        </span>
-
-                        <h2>
-                            Agende uma reunião
-                        </h2>
-
-                        <p>
-                            Podemos conversar de forma
-                            online ou presencial.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="meeting-grid">
-
-
-                    <div class="meeting-card">
-
-                        <div class="meeting-icon">
-
-                            <i class="fa-solid fa-video"></i>
-
-                        </div>
-
-                        <span>
-                            ONLINE
-                        </span>
-
-                        <h3>
-                            Reunião online
-                        </h3>
-
-                        <p>
-                            Converse conosco de onde
-                            estiver através de uma
-                            reunião online.
-                        </p>
-
-                        <button
-                            class="primary-button"
-                            id="onlineMeetingButton"
-                        >
-
-                            Solicitar reunião
-
-                            <i class="fa-solid fa-arrow-right"></i>
-
-                        </button>
-
-                    </div>
-
-
-                    <div class="meeting-card">
-
-                        <div class="meeting-icon">
-
-                            <i class="fa-solid fa-location-dot"></i>
-
-                        </div>
-
-                        <span>
-                            PRESENCIAL
-                        </span>
-
-                        <h3>
-                            Reunião presencial
-                        </h3>
-
-                        <p>
-                            Prefere conversar pessoalmente?
-                            Solicite um horário para
-                            combinarmos o encontro.
-                        </p>
-
-                        <button
-                            class="secondary-button"
-                            id="presentialMeetingButton"
-                        >
-
-                            Solicitar reunião
-
-                            <i class="fa-solid fa-arrow-right"></i>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <div class="meeting-info">
-
-                    <i class="fa-regular fa-lightbulb"></i>
-
-                    <div>
-
-                        <strong>
-                            Vamos conversar sobre seu evento?
-                        </strong>
-
-                        <p>
-                            Podemos falar sobre fotografia,
-                            vídeos, story maker, cobertura
-                            de eventos e todos os detalhes
-                            do seu projeto.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 CONTATO
-            ================================================== -->
-
-            <section
-                id="section-contato"
-                class="content-section"
-            >
-
-                <div class="section-page-header">
-
-                    <div>
-
-                        <span>
-                            FALE CONOSCO
-                        </span>
-
-                        <h2>
-                            Estamos aqui para você
-                        </h2>
-
-                        <p>
-                            Entre em contato com a nossa
-                            equipe para tirar dúvidas ou
-                            conversar sobre seu evento.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="contact-grid">
-
-
-                    <a
-                        href="https://wa.me/5542988620679"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="contact-card"
-                    >
-
-                        <div class="contact-icon whatsapp">
-
-                            <i class="fa-brands fa-whatsapp"></i>
-
-                        </div>
-
-                        <span>
-                            WHATSAPP
-                        </span>
-
-                        <h3>
-                            Falar com Sarah
-                        </h3>
-
-                        <p>
-                            Entre em contato diretamente
-                            pelo WhatsApp.
-                        </p>
-
-                        <strong>
-                            (42) 98862-0679
-                        </strong>
-
-                        <i class="fa-solid fa-arrow-up-right-from-square contact-arrow"></i>
-
-                    </a>
-
-
-                    <a
-                        href="https://www.instagram.com/ls.fotostory/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="contact-card"
-                    >
-
-                        <div class="contact-icon instagram">
-
-                            <i class="fa-brands fa-instagram"></i>
-
-                        </div>
-
-                        <span>
-                            INSTAGRAM
-                        </span>
-
-                        <h3>
-                            @ls.fotostory
-                        </h3>
-
-                        <p>
-                            Acompanhe nossos trabalhos,
-                            bastidores e novidades.
-                        </p>
-
-                        <strong>
-                            Ver perfil
-                        </strong>
-
-                        <i class="fa-solid fa-arrow-up-right-from-square contact-arrow"></i>
-
-                    </a>
-
-
-                    <div class="contact-card">
-
-                        <div class="contact-icon">
-
-                            <i class="fa-regular fa-calendar"></i>
-
-                        </div>
-
-                        <span>
-                            REUNIÕES
-                        </span>
-
-                        <h3>
-                            Online ou presencial
-                        </h3>
-
-                        <p>
-                            Escolha a melhor forma de
-                            conversar conosco sobre seu
-                            projeto.
-                        </p>
-
-                        <button
-                            class="contact-action"
-                            data-section="agendamento"
-                        >
-                            Agendar conversa
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <div class="contact-quote">
-
-                    <i class="fa-solid fa-quote-left"></i>
-
-                    <p>
-                        "Não registramos apenas imagens.
-                        Criamos formas de você reviver
-                        cada momento."
-                    </p>
+                <div>
 
                     <span>
-                        SUAS MEMÓRIAS AQUI
+                        MINHA CONTA
                     </span>
 
+                    <h1>
+                        Meu perfil
+                    </h1>
+
+                    <p>
+                        Consulte as informações
+                        da sua conta.
+                    </p>
+
                 </div>
 
-            </section>
+            </div>
 
 
-            <!-- =================================================
-                 CONTA
-            ================================================== -->
+            <div class="profile-layout">
 
-            <section
-                id="section-conta"
-                class="content-section"
-            >
 
-                <div class="section-page-header">
+                <div class="profile-card">
 
-                    <div>
+                    <div class="profile-avatar-large">
 
-                        <span>
-                            MINHA CONTA
+                        <span id="profileAvatarInitial">
+                            ?
                         </span>
 
-                        <h2>
-                            Dados do cliente
-                        </h2>
-
-                        <p>
-                            Informações da sua conta
-                            na plataforma.
-                        </p>
-
                     </div>
+
+
+                    <h2
+                        id="profileName"
+                    >
+                        Cliente
+                    </h2>
+
+
+                    <p
+                        id="profileEmail"
+                    >
+                        —
+                    </p>
 
                 </div>
 
 
-                <div class="account-card">
+                <div class="profile-info-card">
 
+                    <div class="card-heading">
 
-                    <div
-                        id="accountAvatar"
-                        class="account-avatar"
-                    >
-                        S
+                        <div>
+
+                            <span>
+                                INFORMAÇÕES
+                            </span>
+
+                            <h3>
+                                Dados da conta
+                            </h3>
+
+                        </div>
+
                     </div>
 
 
-                    <div class="account-details">
+                    <div class="profile-fields">
 
-                        <div>
+
+                        <div class="profile-field">
 
                             <span>
-                                NOME
+                                Nome
                             </span>
 
                             <strong
-                                id="accountName"
+                                id="profileFullName"
                             >
                                 —
                             </strong>
@@ -1177,14 +1032,14 @@
                         </div>
 
 
-                        <div>
+                        <div class="profile-field">
 
                             <span>
-                                E-MAIL
+                                E-mail
                             </span>
 
                             <strong
-                                id="accountEmail"
+                                id="profileEmailField"
                             >
                                 —
                             </strong>
@@ -1192,10 +1047,10 @@
                         </div>
 
 
-                        <div>
+                        <div class="profile-field">
 
                             <span>
-                                TIPO DE CONTA
+                                Tipo de acesso
                             </span>
 
                             <strong>
@@ -1204,12 +1059,28 @@
 
                         </div>
 
+
+                        <div class="profile-field">
+
+                            <span>
+                                Conta criada em
+                            </span>
+
+                            <strong
+                                id="profileCreatedAt"
+                            >
+                                —
+                            </strong>
+
+                        </div>
+
                     </div>
 
 
                     <button
-                        id="accountLogoutButton"
-                        class="secondary-button"
+                        type="button"
+                        id="profileLogoutButton"
+                        class="logout-profile-button"
                     >
 
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -1220,79 +1091,169 @@
 
                 </div>
 
-            </section>
+            </div>
 
+        </section>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="main-footer">
+
+        <span>
+            © 2026 Suas Memórias Aqui
+        </span>
+
+        <span>
+            Feito para guardar momentos.
+        </span>
+
+    </footer>
+
+
+</main>
+
+
+<!-- =========================================================
+     MODAL DE NOTIFICAÇÕES
+========================================================= -->
+
+<div
+    id="notificationPanel"
+    class="notification-panel"
+>
+
+    <div class="notification-header">
+
+        <div>
+
+            <span>
+                CENTRAL
+            </span>
+
+            <h3>
+                Notificações
+            </h3>
 
         </div>
 
 
-        <!-- =================================================
-             FOOTER
-        ================================================== -->
+        <button
+            type="button"
+            id="closeNotificationPanel"
+            aria-label="Fechar notificações"
+        >
 
-        <footer class="main-footer">
+            <i class="fa-solid fa-xmark"></i>
 
-            <span>
-                © 2026 Suas Memórias Aqui
-            </span>
+        </button>
 
-            <span>
-                Fotografia &amp; Story Maker
-            </span>
-
-        </footer>
+    </div>
 
 
-    </main>
+    <div
+        id="notificationsList"
+        class="notifications-list"
+    >
+
+        <div class="empty-notifications">
+
+            <i class="fa-regular fa-bell"></i>
+
+            <p>
+                Nenhuma notificação no momento.
+            </p>
+
+        </div>
+
+    </div>
 
 </div>
 
 
 <!-- =========================================================
-     MODAL DE LOGOUT
+     MODAL VISUALIZAÇÃO DA FOTO
 ========================================================= -->
 
 <div
-    id="logoutModal"
-    class="modal-overlay"
+    id="photoViewer"
+    class="photo-viewer"
 >
 
-    <div class="modal-box">
+    <button
+        type="button"
+        id="closePhotoViewer"
+        class="viewer-close"
+        aria-label="Fechar foto"
+    >
 
-        <div class="modal-icon">
+        <i class="fa-solid fa-xmark"></i>
 
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+    </button>
 
-        </div>
 
-        <h3>
-            Sair da conta?
-        </h3>
+    <button
+        type="button"
+        id="previousPhoto"
+        class="viewer-navigation viewer-prev"
+        aria-label="Foto anterior"
+    >
 
-        <p>
-            Você precisará entrar novamente
-            para acessar suas memórias.
-        </p>
+        <i class="fa-solid fa-chevron-left"></i>
 
-        <div class="modal-actions">
+    </button>
+
+
+    <div class="viewer-content">
+
+        <img
+            id="viewerImage"
+            src=""
+            alt="Fotografia do cliente"
+        >
+
+
+        <div class="viewer-caption">
+
+            <span
+                id="viewerPhotoName"
+            >
+                Fotografia
+            </span>
+
 
             <button
-                id="cancelLogout"
-                class="secondary-button"
+                type="button"
+                id="downloadCurrentPhoto"
+                class="viewer-download"
             >
-                Cancelar
-            </button>
 
-            <button
-                id="confirmLogout"
-                class="danger-button"
-            >
-                Sair
+                <i class="fa-solid fa-download"></i>
+
+                Baixar
+
             </button>
 
         </div>
 
     </div>
+
+
+    <button
+        type="button"
+        id="nextPhoto"
+        class="viewer-navigation viewer-next"
+        aria-label="Próxima foto"
+    >
+
+        <i class="fa-solid fa-chevron-right"></i>
+
+    </button>
 
 </div>
 
